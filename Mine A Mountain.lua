@@ -1365,15 +1365,15 @@ OthersSection:NewToggle("Instant Interaction", "No Crystal Interaction Delay", f
             if instantinteract then
                 for _, v in pairs(crystal:GetChildren()) do
                     if v:FindFirstChild("ProximityPrompt") then
-                        if v.ProximityPrompt.HoldDuration ~= 0 then
-                            v.ProximityPrompt.HoldDuration = 0
+                        if v.ProximityPrompt.HoldDuration ~= 0.1 then
+                            v.ProximityPrompt.HoldDuration = 0.1
                         end
                     end
                 end
                 for _, v in pairs(droppedcrystal:GetChildren()) do
                     if v:FindFirstChild("ProximityPrompt") then
-                        if v.ProximityPrompt.HoldDuration ~= 0 then
-                            v.ProximityPrompt.HoldDuration = 0
+                        if v.ProximityPrompt.HoldDuration ~= 0.1 then
+                            v.ProximityPrompt.HoldDuration = 0.1
                         end
                     end
                 end
