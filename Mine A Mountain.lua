@@ -1521,7 +1521,7 @@ TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expen
 
         if value and value > drophighestValue then
             drophighestValue = value
-            drophighestObject = v
+            drophighestObject = v2
         end
     end
     if highestValue > drophighestValue then
@@ -1542,7 +1542,7 @@ TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expen
     elseif drophighestValue > highestValue then
         local part = Instance.new("Part")
         part.Name = "TPPart"
-        part.Position = drophighestObject.Position
+        part.Position = drophighestObject.Position --potential error
         part.Size = Vector3.new(5, 1, 5)
         part.Anchored = true
         part.Parent = game.workspace
