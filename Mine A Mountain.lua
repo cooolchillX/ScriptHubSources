@@ -1565,7 +1565,7 @@ OthersSection:NewButton("Sell All", "Sell Everything", function()
     part:Destroy()
 end)
 
-OthersSection:NewToggle("Show Mine All Near Aura (Don't Keep Enabled)", "Show The Distance", function(state)
+OthersSection:NewToggle("Show Mine All Near Aura", "Show The Distance", function(state)
     if state then
         local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
         local sphere = Instance.new("Part")
@@ -1586,7 +1586,7 @@ OthersSection:NewToggle("Show Mine All Near Aura (Don't Keep Enabled)", "Show Th
     end
 end)
 
-OthersSection:NewButton("Mine All Near You (Check Desc)", "Take Out And Put Away Your Pickaxe", function()
+OthersSection:NewButton("Mine All Near You (Finicky Also Check Desc)", "Take Out And Put Away Your Pickaxe", function()
     local crystal = workspace.Things.Crystals
     local droppedcrystal = workspace.DroppedCrystals
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
