@@ -1581,7 +1581,7 @@ TPSection:NewButton("Teleport To Heaviest Crystal", "Teleport To Most Heavy Crys
 
         if value and value > drophighestValue then
             drophighestValue = value
-            drophighestObject = v
+            drophighestObject = v2
         end
     end
     if highestValue > drophighestValue then
