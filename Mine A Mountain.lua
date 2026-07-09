@@ -1389,6 +1389,7 @@ end)
 OthersSection:NewButton("Sell All", "Sell Everything", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
     local old = hrp.CFrame
+	task.wait(0.1)
     hrp.CFrame = CFrame.new(-42.009037, 29.2260914, 1071.25964, -0.0540008135, 4.4243552e-29, 0.998540878, -4.36407661e-29, 1, -4.66682828e-29, -0.998540878, -4.60972145e-29, -0.0540008135)
     task.wait(0.1)
     game:GetService("ReplicatedStorage").Remotes.SellRequest:FireServer("all")
