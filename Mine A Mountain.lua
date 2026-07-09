@@ -1134,8 +1134,20 @@ TPSection:NewButton("Teleport To Common Crystal", "Teleport To A Tier 1", functi
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T1" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1148,8 +1160,20 @@ TPSection:NewButton("Teleport To Common Crystal", "Teleport To A Tier 1", functi
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T1" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1172,8 +1196,20 @@ TPSection:NewButton("Teleport To Uncommon Crystal", "Teleport To A Tier 2", func
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T2" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1186,8 +1222,20 @@ TPSection:NewButton("Teleport To Uncommon Crystal", "Teleport To A Tier 2", func
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T2" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1210,8 +1258,20 @@ TPSection:NewButton("Teleport To Rare Crystal", "Teleport To A Tier 3", function
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T3" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1224,8 +1284,20 @@ TPSection:NewButton("Teleport To Rare Crystal", "Teleport To A Tier 3", function
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T3" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1248,8 +1320,20 @@ TPSection:NewButton("Teleport To Epic Crystal", "Teleport To A Tier 4", function
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T4" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1262,8 +1346,20 @@ TPSection:NewButton("Teleport To Epic Crystal", "Teleport To A Tier 4", function
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T4" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1286,8 +1382,20 @@ TPSection:NewButton("Teleport To Legendary Crystal", "Teleport To A Tier 5", fun
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T5" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1300,8 +1408,20 @@ TPSection:NewButton("Teleport To Legendary Crystal", "Teleport To A Tier 5", fun
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T5" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1324,8 +1444,20 @@ TPSection:NewButton("Teleport To Mythical Crystal", "Teleport To A Tier 6", func
 
     for _, v in pairs(droppedcrystal:GetChildren()) do
         if v.Name == "DroppedCrystal_T6" then
+            local part = Instance.new("Part")
+            part.Name = "TPPart"
+            part.Position = v.Position
+            part.Size = Vector3.new(5, 1, 5)
+            part.Anchored = true
+            part.Parent = game.workspace
+            local high = Instance.new("Highlight")
+            high.Parent = part
             count += 1
-            hrp.CFrame = v.CFrame
+            hrp.CFrame = part.CFrame
+            hrp.Anchored = true
+            task.wait(1)
+            hrp.Anchored = false
+            part:Destroy()
 
             game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Dropped Crystal", Duration = 4,})
 
@@ -1338,8 +1470,20 @@ TPSection:NewButton("Teleport To Mythical Crystal", "Teleport To A Tier 6", func
 
         for _, v2 in pairs(crystal:GetChildren()) do
             if v2.Name == "Crystal_T6" then
+                local part = Instance.new("Part")
+                part.Name = "TPPart"
+                part.Position = v2.Position
+                part.Size = Vector3.new(5, 1, 5)
+                part.Anchored = true
+                part.Parent = game.workspace
+                local high = Instance.new("Highlight")
+                high.Parent = part
                 count += 1
-                hrp.CFrame = v2.CFrame
+                hrp.CFrame = part.CFrame
+                hrp.Anchored = true
+                task.wait(1)
+                hrp.Anchored = false
+                part:Destroy()
 
                 game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Found Crystal", Duration = 4,})
 
@@ -1365,15 +1509,15 @@ OthersSection:NewToggle("Instant Interaction", "No Crystal Interaction Delay", f
             if instantinteract then
                 for _, v in pairs(crystal:GetChildren()) do
                     if v:FindFirstChild("ProximityPrompt") then
-                        if v.ProximityPrompt.HoldDuration ~= 0.1 then
-                            v.ProximityPrompt.HoldDuration = 0.1
+                        if v.ProximityPrompt.HoldDuration ~= 0 then
+                            v.ProximityPrompt.HoldDuration = 0
                         end
                     end
                 end
                 for _, v in pairs(droppedcrystal:GetChildren()) do
                     if v:FindFirstChild("ProximityPrompt") then
-                        if v.ProximityPrompt.HoldDuration ~= 0.1 then
-                            v.ProximityPrompt.HoldDuration = 0.1
+                        if v.ProximityPrompt.HoldDuration ~= 0 then
+                            v.ProximityPrompt.HoldDuration = 0
                         end
                     end
                 end
@@ -1388,13 +1532,81 @@ end)
 
 OthersSection:NewButton("Sell All", "Sell Everything", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-    local old = hrp.CFrame
-	task.wait(0.1)
-    hrp.CFrame = CFrame.new(-42.009037, 29.2260914, 1071.25964, -0.0540008135, 4.4243552e-29, 0.998540878, -4.36407661e-29, 1, -4.66682828e-29, -0.998540878, -4.60972145e-29, -0.0540008135)
+    local old = hrp.Position
+
     task.wait(0.1)
+    local part = Instance.new("Part")
+    part.Name = "TPPart"
+    part.Position = Vector3.new(-40.29936599731445, 29.226091384887695, 1071.1024169921875)
+    part.Size = Vector3.new(5, 1, 5)
+    part.Anchored = true
+    part.Parent = game.workspace
+    local high = Instance.new("Highlight")
+    high.Parent = part
+    hrp.CFrame = part.CFrame
+    hrp.Anchored = true
+    task.wait(1)
+    hrp.Anchored = false
+    part:Destroy()
     game:GetService("ReplicatedStorage").Remotes.SellRequest:FireServer("all")
-    task.wait(0.1)
-    hrp.CFrame = old
+    task.wait(0.5)
+    local part = Instance.new("Part")
+    part.Name = "TPPart"
+    part.Position = old
+    part.Size = Vector3.new(5, 1, 5)
+    part.Anchored = true
+    part.Parent = game.workspace
+    local high = Instance.new("Highlight")
+    high.Parent = part
+    hrp.CFrame = part.CFrame
+    hrp.Anchored = true
+    task.wait(1)
+    hrp.Anchored = false
+    part:Destroy()
+end)
+
+OthersSection:NewToggle("Show Mine All Near Aura (Don't Keep Enabled)", "Show The Distance", function(state)
+    if state then
+        local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local sphere = Instance.new("Part")
+        sphere.Name = "AuraSphere"
+        sphere.Shape = Enum.PartType.Ball
+        sphere.Size = Vector3.new(20, 20, 20)
+        sphere.Position = hrp.Position
+        sphere.Color = Color3.new(1, 0, 0)
+        sphere.Transparency = 0.9
+        sphere.CanCollide = false
+        sphere.Parent = workspace
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = hrp
+        weld.Part1 = sphere
+        weld.Parent = sphere
+    else
+        game.workspace.AuraSphere:Destroy()
+    end
+end)
+
+OthersSection:NewButton("Mine All Near You (Buggy)", "Mine Close Crystals", function()
+    local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local distance = (hrp.Position - v.Position).Magnitude
+        if distance <= 20 then
+            if v:FindFirstChild("ProximityPrompt") then
+                fireproximityprompt(v.ProximityPrompt)
+            end
+        end
+    end
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local distance = (hrp.Position - v2.Position).Magnitude
+        if distance <= 20 then
+            if v2:FindFirstChild("ProximityPrompt") then
+                fireproximityprompt(v2.ProximityPrompt)
+            end
+        end
+    end
 end)
 
 local Visual = Window:NewTab("Visuals")
