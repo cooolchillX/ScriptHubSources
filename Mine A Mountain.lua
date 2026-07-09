@@ -1586,7 +1586,7 @@ OthersSection:NewToggle("Show Mine All Near Aura (Don't Keep Enabled)", "Show Th
     end
 end)
 
-OthersSection:NewButton("Mine All Near You (Buggy)", "Mine Close Crystals", function()
+OthersSection:NewButton("Mine All Near You (Check Desc)", "Take Out And Put Away Your Pickaxe", function()
     local crystal = workspace.Things.Crystals
     local droppedcrystal = workspace.DroppedCrystals
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
