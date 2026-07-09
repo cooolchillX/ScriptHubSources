@@ -1497,6 +1497,126 @@ TPSection:NewButton("Teleport To Mythical Crystal", "Teleport To A Tier 6", func
     end
 end)
 
+TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expensive Crystal", function()
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+
+    local highestObject = nil
+    local highestValue = -math.huge
+    local drophighestObject = nil
+    local drophighestValue = -math.huge
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local value = v:GetAttribute("Value")
+
+        if value and value > highestValue then
+            highestValue = value
+            highestObject = v
+        end
+    end
+
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local value = v2:GetAttribute("Value")
+
+        if value and value > drophighestValue then
+            drophighestValue = value
+            drophighestObject = v
+        end
+    end
+    if highestValue > drophighestValue then
+        local part = Instance.new("Part")
+        part.Name = "TPPart"
+        part.Position = highestObject.Position
+        part.Size = Vector3.new(5, 1, 5)
+        part.Anchored = true
+        part.Parent = game.workspace
+        local high = Instance.new("Highlight")
+        high.Parent = part
+        hrp.CFrame = part.CFrame
+        hrp.Anchored = true
+        task.wait(1)
+        hrp.Anchored = false
+        part:Destroy()
+        game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Value: $" .. highestValue, Duration = 4,})
+    elseif drophighestValue > highestValue then
+        local part = Instance.new("Part")
+        part.Name = "TPPart"
+        part.Position = drophighestObject.Position
+        part.Size = Vector3.new(5, 1, 5)
+        part.Anchored = true
+        part.Parent = game.workspace
+        local high = Instance.new("Highlight")
+        high.Parent = part
+        hrp.CFrame = part.CFrame
+        hrp.Anchored = true
+        task.wait(1)
+        hrp.Anchored = false
+        part:Destroy()
+        game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = "Value: $" .. drophighestValue, Duration = 4,})
+    end
+end)
+
+TPSection:NewButton("Teleport To Heaviest Crystal", "Teleport To Most Heavy Crystal", function()
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+
+    local highestObject = nil
+    local highestValue = -math.huge
+    local drophighestObject = nil
+    local drophighestValue = -math.huge
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local value = v:GetAttribute("WeightKg")
+
+        if value and value > highestValue then
+            highestValue = value
+            highestObject = v
+        end
+    end
+
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local value = v2:GetAttribute("WeightKg")
+
+        if value and value > drophighestValue then
+            drophighestValue = value
+            drophighestObject = v
+        end
+    end
+    if highestValue > drophighestValue then
+        local part = Instance.new("Part")
+        part.Name = "TPPart"
+        part.Position = highestObject.Position
+        part.Size = Vector3.new(5, 1, 5)
+        part.Anchored = true
+        part.Parent = game.workspace
+        local high = Instance.new("Highlight")
+        high.Parent = part
+        hrp.CFrame = part.CFrame
+        hrp.Anchored = true
+        task.wait(1)
+        hrp.Anchored = false
+        part:Destroy()
+        game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = highestValue .. "kg", Duration = 4,})
+    elseif drophighestValue > highestValue then
+        local part = Instance.new("Part")
+        part.Name = "TPPart"
+        part.Position = drophighestObject.Position
+        part.Size = Vector3.new(5, 1, 5)
+        part.Anchored = true
+        part.Parent = game.workspace
+        local high = Instance.new("Highlight")
+        high.Parent = part
+        hrp.CFrame = part.CFrame
+        hrp.Anchored = true
+        task.wait(1)
+        hrp.Anchored = false
+        part:Destroy()
+        game.StarterGui:SetCore("SendNotification", {Title = "Teleported", Text = drophighestValue .. "kg", Duration = 4,})
+    end
+end)
+
 local Others = Window:NewTab("Others")
 local OthersSection = Others:NewSection("Extra Things To Mess With")
 
