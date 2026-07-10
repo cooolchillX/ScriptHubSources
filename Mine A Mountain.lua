@@ -1706,7 +1706,7 @@ OthersSection:NewToggle("Show Mine All Near Aura", "Show The Distance", function
     end
 end)
 
-OthersSection:NewButton("Mine All Near You (Finicky Also Check Desc)", "Take Out And Put Away Your Pickaxe", function()
+OthersSection:NewButton("Mine All Near You (Finicky)", "Often Takes Time After Teleporting", function()
     local crystal = workspace.Things.Crystals
     local droppedcrystal = workspace.DroppedCrystals
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
