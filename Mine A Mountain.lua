@@ -18,6 +18,7 @@ local gemgenbelow = false
 local antiragdoll = false
 local kglimit = nil
 local debrisclearer = false
+local crystalglow = false
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Mine A Mountain", Duration = 4,})
 
@@ -1771,6 +1772,47 @@ OthersSection:NewKeybind("Mine All Near You Keybind", "Easier To Access", Enum.K
     end
 end)
 
+local OthersSection = Others:NewSection("Low Level Is For Executors Like Xeno And Solara")
+
+OthersSection:NewButton("Mine All Near You (Low Level)", "Often Takes Time After Teleporting", function()
+    local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local remote = game:GetService("ReplicatedStorage").Remotes.CrystalHoldComplete
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local distance = (hrp.Position - v.Position).Magnitude
+        if distance <= 20 then
+            remote:FireServer(v)
+        end
+    end
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local distance = (hrp.Position - v2.Position).Magnitude
+        if distance <= 20 then
+            remote:FireServer(v2)
+        end
+    end
+end)
+
+OthersSection:NewKeybind("Mine All Near You Keybind (Low Level)", "Easier To Access", Enum.KeyCode.BackSlash, function()
+	local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local remote = game:GetService("ReplicatedStorage").Remotes.CrystalHoldComplete
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local distance = (hrp.Position - v.Position).Magnitude
+        if distance <= 20 then
+            remote:FireServer(v)
+        end
+    end
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local distance = (hrp.Position - v2.Position).Magnitude
+        if distance <= 20 then
+            remote:FireServer(v2)
+        end
+    end
+end)
 
 local Visual = Window:NewTab("Visuals")
 local VisualSection = Visual:NewSection("Change Things You See")
@@ -1798,6 +1840,32 @@ VisualSection:NewToggle("Disable Fog", "No Fog", function(state)
     else
         local lighting = game:GetService("Lighting")
         lighting.FogEnd = 1000
+    end
+end)
+
+VisualSection:NewToggle("Remove Crystal Glow", "Remove The Annoying Glow", function(state)
+    if state then
+        crystalglow = true
+        while task.wait(0.1) do
+            local crystal = workspace.Things.Crystals
+            local droppedcrystal = workspace.DroppedCrystals
+            if crystalglow then
+                for _, v in pairs(crystal:GetChildren()) do
+                    if v:FindFirstChild("CrystalGlow") then
+                        v.CrystalGlow:Destroy()
+                    end
+                end
+                for _, v2 in pairs(droppedcrystal:GetChildren()) do
+                    if v2:FindFirstChild("CrystalGlow") then
+                        v2.CrystalGlow:Destroy()
+                    end
+                end
+            elseif crystalglow == false then
+                break
+            end
+        end
+    else
+        crystalglow = false
     end
 end)
 
