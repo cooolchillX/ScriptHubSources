@@ -1637,6 +1637,48 @@ TPSection:NewButton("Teleport To Heaviest Crystal", "Teleport To Most Heavy Crys
     end
 end)
 
+local TPSection = TP:NewSection("Waypoints")
+
+TPSection:NewToggle("Toggle Waypoint", "Waypoint For Teleporting To Later", function(state)
+    if state then
+        local part = Instance.new("Part")
+        part.Name = "Waypoint"
+        part.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, -1, 0)
+        part.Size = Vector3.new(1, 1, 1)
+        part.Anchored = true
+        part.CanCollide = false
+        part.Parent = game.workspace
+        local high = Instance.new("Highlight")
+        high.FillColor = Color3.new(0, 0, 1)
+        high.Parent = part
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ESPBillboard"
+        billboard.Size = UDim2.new(0, 100, 0, 25)
+        billboard.StudsOffset = Vector3.new(0, 0, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = part
+        local name = Instance.new("TextLabel")
+        name.Name = "name"
+        name.Size = UDim2.new(1, 0, 0, 25)
+        name.Position = UDim2.new(0, 0, 0, 0)
+        name.BackgroundTransparency = 1
+        name.TextColor3 = Color3.new(0, 0, 1)
+        name.TextScaled = true
+        name.Text = "Waypoint"
+        name.Parent = billboard
+    else
+        game.workspace.Waypoint:Destroy()
+    end
+end)
+
+TPSection:NewButton("Teleport To Waypoint", "Go To The Waypoint You Set", function()
+    hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    hrp.CFrame = game.workspace.Waypoint.CFrame
+    hrp.Anchored = true
+    task.wait(1)
+    hrp.Anchored = false
+end)
+
 local Others = Window:NewTab("Others")
 local OthersSection = Others:NewSection("Extra Things To Mess With")
 
