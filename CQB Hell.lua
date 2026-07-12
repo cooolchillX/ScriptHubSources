@@ -67,36 +67,29 @@ ESPSection:NewToggle("Support Machine ESP", "See Support Machines Throught Walls
             if support then
                 for _, v in pairs(game.Workspace:GetChildren()) do
                     if v.Name == "Ammo Dispencer" or v.Name == "Armor Dispencer" or v.Name == "Grenade Dispencer" or v.Name == "Medkit Dispencer" or v.Name == "Random Dispencer" then
+                        local button = v:FindFirstChild("Button")
                         local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
                         local rounded = math.round(distance)
-                        local button = v:FindFirstChild("Button")
-                        if not v.PrimaryPart:FindFirstChild("ESPBillboard") then
-                            if button then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 100, 0, 25)
-                                billboard.StudsOffset = Vector3.new(0, 1, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v.PrimaryPart
-
-                                local name = Instance.new("TextLabel")
-                                name.Name = "name"
-                                name.Size = UDim2.new(1, 0, 0, 25)
-                                name.Position = UDim2.new(0, 0, 0, 0)
-                                name.BackgroundTransparency = 1
-                                name.TextColor3 = Color3.new(1, 1, 1)
-                                name.TextScaled = true
-                                name.Text = v.Name .. " [" .. rounded .. "]"
-                                name.Parent = billboard
-                            end
-                        elseif v.PrimaryPart:FindFirstChild("ESPBillboard") then
-                            if not button then
-                                v.PrimaryPart.ESPBillboard:Destroy()
-                            end
+                        if button and not button:FindFirstChild("ESPBillboard") then
+                            local billboard = Instance.new("BillboardGui")
+                            billboard.Name = "ESPBillboard"
+                            billboard.Size = UDim2.new(0, 100, 0, 25)
+                            billboard.StudsOffset = Vector3.new(0, 0, 0)
+                            billboard.AlwaysOnTop = true
+                            billboard.Parent = v.Button
+                            local name = Instance.new("TextLabel")
+                            name.Name = "name"
+                            name.Size = UDim2.new(1, 0, 0, 25)
+                            name.Position = UDim2.new(0, 0, 0, 0)
+                            name.BackgroundTransparency = 1
+                            name.TextColor3 = Color3.new(1, 1, 1)
+                            name.TextScaled = true
+                            name.Text = v.Name .. " [" .. rounded .. "]"
+                            name.Parent = billboard
                         end
-                        if v.PrimaryPart:FindFirstChild("ESPBillboard") and button then
-                            v.PrimaryPart.ESPBillboard.name.TextColor3 = espcolor2
-                            v.PrimaryPart.ESPBillboard.name.Text = v.Name .. " [" .. rounded .. "]"
+                        if button and button:FindFirstChild("ESPBillboard") then
+                            button.ESPBillboard.name.TextColor3 = espcolor2
+                            button.ESPBillboard.name.Text = v.Name .. " [" .. rounded .. "]"
                         end
                     elseif v.Name == "table" then
                         local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
