@@ -8,6 +8,16 @@ local t4esp = false
 local t5esp = false
 local t6esp = false
 local instantinteract = false
+local dropdown = nil
+local pickaxes = {"Drill"}
+for _, pick in pairs(game:GetService("ReplicatedStorage").Assets.Pickaxes:GetChildren()) do
+    table.insert(pickaxes, pick.Name)
+end
+local gemgenabove = false
+local gemgenbelow = false
+local antiragdoll = false
+local kglimit = nil
+local debrisclearer = false
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Mine A Mountain", Duration = 4,})
 
@@ -1497,6 +1507,13 @@ TPSection:NewButton("Teleport To Mythical Crystal", "Teleport To A Tier 6", func
     end
 end)
 
+local TPSection = TP:NewSection("For Best Results Input Your Bag Weight Limit")
+
+TPSection:NewTextBox("Max Kg", "Only teleport To Lighter Crystals", function(txt)
+	kglimit = tonumber(txt)
+end)
+
+
 TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expensive Crystal", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
     local crystal = workspace.Things.Crystals
@@ -1509,8 +1526,9 @@ TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expen
 
     for _, v in pairs(crystal:GetChildren()) do
         local value = v:GetAttribute("Value")
+        local kg = v:GetAttribute("WeightKg")
 
-        if value and value > highestValue then
+        if value and value > highestValue and kg <= kglimit then
             highestValue = value
             highestObject = v
         end
@@ -1518,8 +1536,9 @@ TPSection:NewButton("Teleport To Most Valuable Crystal", "Teleport To Most Expen
 
     for _, v2 in pairs(droppedcrystal:GetChildren()) do
         local value = v2:GetAttribute("Value")
+        local kg = v2:GetAttribute("WeightKg")
 
-        if value and value > drophighestValue then
+        if value and value > drophighestValue and kg <= kglimit then
             drophighestValue = value
             drophighestObject = v2
         end
@@ -1570,7 +1589,7 @@ TPSection:NewButton("Teleport To Heaviest Crystal", "Teleport To Most Heavy Crys
     for _, v in pairs(crystal:GetChildren()) do
         local value = v:GetAttribute("WeightKg")
 
-        if value and value > highestValue then
+        if value and value > highestValue and value <= kglimit then
             highestValue = value
             highestObject = v
         end
@@ -1579,7 +1598,7 @@ TPSection:NewButton("Teleport To Heaviest Crystal", "Teleport To Most Heavy Crys
     for _, v2 in pairs(droppedcrystal:GetChildren()) do
         local value = v2:GetAttribute("WeightKg")
 
-        if value and value > drophighestValue then
+        if value and value > drophighestValue and value <= kglimit then
             drophighestValue = value
             drophighestObject = v2
         end
@@ -1729,6 +1748,30 @@ OthersSection:NewButton("Mine All Near You (Finicky)", "Often Takes Time After T
     end
 end)
 
+OthersSection:NewKeybind("Mine All Near You Keybind", "Easier To Access", Enum.KeyCode.B, function()
+	local crystal = workspace.Things.Crystals
+    local droppedcrystal = workspace.DroppedCrystals
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+    for _, v in pairs(crystal:GetChildren()) do
+        local distance = (hrp.Position - v.Position).Magnitude
+        if distance <= 20 then
+            if v:FindFirstChild("ProximityPrompt") then
+                fireproximityprompt(v.ProximityPrompt)
+            end
+        end
+    end
+    for _, v2 in pairs(droppedcrystal:GetChildren()) do
+        local distance = (hrp.Position - v2.Position).Magnitude
+        if distance <= 20 then
+            if v2:FindFirstChild("ProximityPrompt") then
+                fireproximityprompt(v2.ProximityPrompt)
+            end
+        end
+    end
+end)
+
+
 local Visual = Window:NewTab("Visuals")
 local VisualSection = Visual:NewSection("Change Things You See")
 
@@ -1758,9 +1801,124 @@ VisualSection:NewToggle("Disable Fog", "No Fog", function(state)
     end
 end)
 
+local Fun = Window:NewTab("Fun")
+local FunSection = Fun:NewSection("Gem Generation")
+
+FunSection:NewDropdown("Select A Pickaxe", "Choose Your Pickaxe", pickaxes, function(currentOption)
+    dropdown = currentOption
+end)
+
+FunSection:NewToggle("Generate Gems Above You (Most Effective)", "Creates Gems Above You", function(state)
+    if state then
+        gemgenabove = true
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+        while task.wait(0.1) do
+            if gemgenabove then
+                if dropdown ~= nil then
+                    local name = dropdown
+                    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 5, 0)
+                    game:GetService("ReplicatedStorage").Remotes.DigRequest:FireServer(name, pos)
+                elseif dropdown == nil then
+                    game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Select A Pickaxe First", Duration = 4,})
+                    gemgenabove = false
+                end
+            elseif gemgenabove == false then
+                break
+            end
+        end
+    else
+        gemgenabove = false
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+    end
+end)
+
+FunSection:NewToggle("Generate Gems Below You", "Creates Gems Below You", function(state)
+    if state then
+        gemgenbelow = true
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+        while task.wait(0.1) do
+            if gemgenbelow then
+                if dropdown ~= nil then
+                    local name = dropdown
+                    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, -5, 0)
+                    game:GetService("ReplicatedStorage").Remotes.DigRequest:FireServer(name, pos)
+                elseif dropdown == nil then
+                    game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Select A Pickaxe First", Duration = 4,})
+                    gemgenbelow = false
+                end
+            elseif gemgenbelow == false then
+                break
+            end
+        end
+    else
+        gemgenbelow = false
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+    end
+end)
+
+local FunSection = Fun:NewSection("Extra Things To Do")
+
+FunSection:NewButton("Activate namecall (Needed For Disable Ragdoll)", "Loss Of Frames If Executed Multiple Times", function()
+    local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RagdollRequest")
+    local remote2 = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FallDamage")
+    local remote3 = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RagdollSound")
+    local namecall
+    namecall = hookmetamethod(game, "__namecall", function(self, ...)
+    if not antiragdoll then
+        return namecall(self, ...)
+    end
+
+    if self ~= remote and self ~= remote2 and self ~= remote3 then
+        return namecall(self, ...)
+    end
+
+    if checkcaller() then
+        return namecall(self, ...)
+    end
+
+    if getnamecallmethod() == "FireServer" then
+        local args = {...}
+        args[1] = nil
+        args[2] = nil
+        return namecall(self, unpack(args))
+    end
+
+    return namecall(self, ...)
+end)
+end)
+
+FunSection:NewToggle("Disable Ragdoll", "Prevents Yourself From Ragdolling", function(state)
+    if state then
+        antiragdoll = true
+    else
+        antiragdoll = false
+    end
+end)
+
+FunSection:NewToggle("Debris Clearer", "Delete Debris", function(state)
+    if state then
+        debrisclearer = true
+        while task.wait(0.1) do
+            if debrisclearer then
+                for _, v in pairs(game.workspace:GetChildren()) do
+                    if v.Name == "Part" then
+                        v:Destroy()
+                    end
+                end
+            elseif debrisclearer == false then
+                break
+            end
+        end
+    else
+        debrisclearer = false
+    end
+end)
+
 local UI = Window:NewTab("UI Toggle")
 local UISection = UI:NewSection("Show/Hide")
 
 UISection:NewKeybind("Show/Hide GUI", "Toggle UI", Enum.KeyCode.RightShift, function()
 	Library:ToggleUI()
 end)
+
+firesignal(game:GetService("ReplicatedStorage").Remotes.Notify.OnClientEvent, "Notif","Welcome To Cooolchill_X Hub, Enjoy!")
