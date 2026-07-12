@@ -1926,38 +1926,18 @@ end)
 
 local FunSection = Fun:NewSection("Extra Things To Do")
 
-FunSection:NewButton("Activate namecall (Needed For Disable Ragdoll)", "Loss Of Frames If Executed Multiple Times", function()
-    local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RagdollRequest")
-    local remote2 = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FallDamage")
-    local remote3 = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RagdollSound")
-    local namecall
-    namecall = hookmetamethod(game, "__namecall", function(self, ...)
-    if not antiragdoll then
-        return namecall(self, ...)
-    end
-
-    if self ~= remote and self ~= remote2 and self ~= remote3 then
-        return namecall(self, ...)
-    end
-
-    if checkcaller() then
-        return namecall(self, ...)
-    end
-
-    if getnamecallmethod() == "FireServer" then
-        local args = {...}
-        args[1] = nil
-        args[2] = nil
-        return namecall(self, unpack(args))
-    end
-
-    return namecall(self, ...)
-end)
-end)
-
-FunSection:NewToggle("Disable Ragdoll", "Prevents Yourself From Ragdolling", function(state)
+FunSection:NewToggle("Slow Fall (Prevent Falling)", "Prevent Fall Damage And Ragdolling", function(state)
     if state then
         antiragdoll = true
+        while task.wait(0.05) do
+            if antiragdoll then
+                if game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity.Y <= -65 then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity.X, -10, game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity.Z)
+                end
+            elseif antiragdoll == false then
+                break
+            end
+        end
     else
         antiragdoll = false
     end
