@@ -10,10 +10,13 @@ local civilian = false
 local safe = false
 local keycard = false
 local atm = false
+local prox = 50
 local polcolor = Color3.fromRGB(255, 0, 0)
 local keycardguardcolor = Color3.fromRGB(255, 255, 0)
 local camcolor = Color3.fromRGB(255, 165, 0)
 local civcolor = Color3.fromRGB(0, 255, 0)
+local untiedcivcolor = Color3.fromRGB(255, 115, 115)
+local tiedcivcolor = Color3.fromRGB(255, 100, 0)
 local noguards = false
 local secure = false
 local teleportpolice = false
@@ -175,6 +178,8 @@ RemoveSection:NewButton("Remove Glass", "Gets Rid Of All Glass", function()
     end
 end)
 
+local RemoveSection = Remove:NewSection("For Stealth Ensure You Kill The Camera Guard First")
+
 RemoveSection:NewToggle("Remove Police (Solo Heist Only)", "Gets Rid Of All Police", function(state)
     if state then
         noguards = true
@@ -292,6 +297,10 @@ end)
 local ESP = Window:NewTab("ESP")
 local ESPSection = ESP:NewSection("See Things Throught Walls")
 
+ESPSection:NewSlider("Proximity Size", "How Close Before Proximity ESP Activates", 200, 50, function(s) -- 200 (MaxValue) | 50 (MinValue)
+    prox = s
+end)
+
 ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
     if state then
         police = true
@@ -303,7 +312,7 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                         if not v:FindFirstChild("Lanyard") then
                             local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                             local rounded = math.round(distance)
-                            if rounded <= 50 then
+                            if rounded <= prox then
                                 if v and not v:FindFirstChild("PoliceHighlight") then
                                     local highlight = Instance.new("Highlight")
                                     highlight.Name = "PoliceHighlight"
@@ -315,7 +324,7 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                                 elseif v and v:FindFirstChild("PoliceHighlight") then
                                     v.PoliceHighlight.FillColor = polcolor
                                 end
-                            elseif rounded > 50 and v and v:FindFirstChild("PoliceHighlight") then
+                            elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
                                 v.PoliceHighlight:Destroy()
                             end
                         end
@@ -323,7 +332,7 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                         if not v:FindFirstChild("KeyAccessory") then
                             local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                             local rounded = math.round(distance)
-                            if rounded <= 50 then
+                            if rounded <= prox then
                                 if v and not v:FindFirstChild("PoliceHighlight") then
                                     local highlight = Instance.new("Highlight")
                                     highlight.Name = "PoliceHighlight"
@@ -335,14 +344,14 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                                 elseif v and v:FindFirstChild("PoliceHighlight") then
                                     v.PoliceHighlight.FillColor = polcolor
                                 end
-                            elseif rounded > 50 and v and v:FindFirstChild("PoliceHighlight") then
+                            elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
                                 v.PoliceHighlight:Destroy()
                             end
                         end
                     else
                         local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                         local rounded = math.round(distance)
-                        if rounded <= 50 then
+                        if rounded <= prox then
                             if v and not v:FindFirstChild("PoliceHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "PoliceHighlight"
@@ -354,7 +363,7 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                             elseif v and v:FindFirstChild("PoliceHighlight") then
                                 v.PoliceHighlight.FillColor = polcolor
                             end
-                        elseif rounded > 50 and v and v:FindFirstChild("PoliceHighlight") then
+                        elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
                             v.PoliceHighlight:Destroy()
                         end
                     end
@@ -385,22 +394,16 @@ ESPSection:NewToggle("Keycard Guard Proximity ESP", "ESP Keycard Guards", functi
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Police:GetChildren()) do
                     if v:FindFirstChild("Lanyard") then
-                        local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
-                        local rounded = math.round(distance)
-                        if rounded <= 50 then
-                            if v and not v:FindFirstChild("KeycardGuardHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "KeycardGuardHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = keycardguardcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("KeycardGuardHighlight") then
-                                v.KeycardGuardHighlight.FillColor = keycardguardcolor
-                            end
-                        elseif rounded > 50 and v and v:FindFirstChild("KeycardGuardHighlight") then
-                            v.KeycardGuardHighlight:Destroy()
+                        if v and not v:FindFirstChild("KeycardGuardHighlight") then
+                            local highlight = Instance.new("Highlight")
+                            highlight.Name = "KeycardGuardHighlight"
+                            highlight.FillTransparency = 0.5
+                            highlight.FillColor = keycardguardcolor
+                            highlight.OutlineTransparency = 0.5
+                            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                            highlight.Parent = v
+                        elseif v and v:FindFirstChild("KeycardGuardHighlight") then
+                            v.KeycardGuardHighlight.FillColor = keycardguardcolor
                         end
                     end
                 end
@@ -431,10 +434,10 @@ ESPSection:NewToggle("Camera Proximity ESP", "ESP Cameras", function(state)
             if camera then
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Cameras:GetChildren()) do
-                    if v.Name == "Camera" or v.Name == "DeathwishCamera" then
+                    if v.Name == "Camera" then
                         local distance = (hrp.Position - v.HeadPart.Position).Magnitude
                         local rounded = math.round(distance)
-                        if rounded <= 50 then
+                        if rounded <= prox then
                             if v and not v:FindFirstChild("CameraHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "CameraHighlight"
@@ -446,8 +449,30 @@ ESPSection:NewToggle("Camera Proximity ESP", "ESP Cameras", function(state)
                             elseif v and v:FindFirstChild("CameraHighlight") then
                                 v.CameraHighlight.FillColor = camcolor
                             end
-                        elseif rounded > 50 and v and v:FindFirstChild("CameraHighlight") then
+                        elseif rounded > prox and v and v:FindFirstChild("CameraHighlight") then
                             v.CameraHighlight:Destroy()
+                        end
+                    elseif v.Name == "DeathwishCamera" then
+                        local distance = (hrp.Position - v.Union.Position).Magnitude
+                        local rounded = math.round(distance)
+                        if rounded <= prox then
+                            if v and not v:FindFirstChild("CameraHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "CameraHighlight"
+                                highlight.FillTransparency = 0.5
+                                highlight.FillColor = camcolor
+                                highlight.OutlineTransparency = 0.5
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.Parent = v
+                            elseif v and v:FindFirstChild("CameraHighlight") then
+                                v.CameraHighlight.FillColor = camcolor
+                            end
+                        elseif rounded > prox and v and v:FindFirstChild("CameraHighlight") then
+                            v.CameraHighlight:Destroy()
+                        end
+                    elseif v.Name == "Disabled" then
+                        if v and v:FindFirstChild("ESPHighlight") then
+                            v.ESPHighlight:Destroy()
                         end
                     end
                 end
@@ -478,19 +503,45 @@ ESPSection:NewToggle("Civilian Proximity ESP", "ESP Civilians", function(state)
                 for _, v in pairs(game.workspace.Citizens:GetChildren()) do
                     local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                     local rounded = math.round(distance)
-                    if rounded <= 50 then
-                        if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
-                            local highlight = Instance.new("Highlight")
-                            highlight.Name = "CivilianHighlight"
-                            highlight.FillTransparency = 0.5
-                            highlight.FillColor = civcolor
-                            highlight.OutlineTransparency = 0.5
-                            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                            highlight.Parent = v
-                        elseif v and v:FindFirstChild("CivilianHighlight") then
-                            v.CivilianHighlight.FillColor = civcolor
+                    if rounded <= prox then
+                        if v.Name == "Citizen" then
+                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "CivilianHighlight"
+                                highlight.FillTransparency = 0.5
+                                highlight.FillColor = civcolor
+                                highlight.OutlineTransparency = 0.5
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.Parent = v
+                            elseif v and v:FindFirstChild("CivilianHighlight") then
+                                v.CivilianHighlight.FillColor = civcolor
+                            end
+                        elseif v.Name == "CitizenHostage" then
+                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "CivilianHighlight"
+                                highlight.FillTransparency = 0.5
+                                highlight.FillColor = untiedcivcolor
+                                highlight.OutlineTransparency = 0.5
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.Parent = v
+                            elseif v and v:FindFirstChild("CivilianHighlight") then
+                                v.CivilianHighlight.FillColor = untiedcivcolor
+                            end
+                        elseif v.Name == "CitizenTied" then
+                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "CivilianHighlight"
+                                highlight.FillTransparency = 0.5
+                                highlight.FillColor = tiedcivcolor
+                                highlight.OutlineTransparency = 0.5
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.Parent = v
+                            elseif v and v:FindFirstChild("CivilianHighlight") then
+                                v.CivilianHighlight.FillColor = tiedcivcolor
+                            end
                         end
-                    elseif rounded > 50 and v and v:FindFirstChild("CivilianHighlight") then
+                    elseif rounded > prox and v and v:FindFirstChild("CivilianHighlight") then
                         v.CivilianHighlight:Destroy()
                     end
                 end
@@ -510,6 +561,14 @@ end)
 
 ESPSection:NewColorPicker("Civilian ESP Color", "Change Its Color", Color3.fromRGB(0,255,0), function(color)
     civcolor = color
+end)
+
+ESPSection:NewColorPicker("Untied Civilian ESP Color", "Change Its Color", Color3.fromRGB(255,115,115), function(color)
+    untiedcivcolor = color
+end)
+
+ESPSection:NewColorPicker("Tied Civilian ESP Color", "Change Its Color", Color3.fromRGB(255,100,0), function(color)
+    tiedcivcolor = color
 end)
 
 ESPSection:NewToggle("Keycard ESP", "ESP Keycards", function(state)
@@ -674,7 +733,7 @@ MapSection:NewToggle("Key Guard Proximity ESP", "ESP Key Guards", function(state
                     if v:FindFirstChild("KeyAccessory") then
                         local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                         local rounded = math.round(distance)
-                        if rounded <= 50 then
+                        if rounded <= prox then
                             if v and not v:FindFirstChild("KeyGuardHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "KeyGuardHighlight"
@@ -686,7 +745,7 @@ MapSection:NewToggle("Key Guard Proximity ESP", "ESP Key Guards", function(state
                             elseif v and v:FindFirstChild("KeyGuardHighlight") then
                                 v.KeyGuardHighlight.FillColor = keyguardcolor
                             end
-                        elseif rounded > 50 and v and v:FindFirstChild("KeyGuardHighlight") then
+                        elseif rounded > prox and v and v:FindFirstChild("KeyGuardHighlight") then
                             v.KeyGuardHighlight:Destroy()
                         end
                     end
