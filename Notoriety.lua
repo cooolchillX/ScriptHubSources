@@ -471,8 +471,8 @@ ESPSection:NewToggle("Camera Proximity ESP", "ESP Cameras", function(state)
                             v.CameraHighlight:Destroy()
                         end
                     elseif v.Name == "Disabled" then
-                        if v and v:FindFirstChild("ESPHighlight") then
-                            v.ESPHighlight:Destroy()
+                        if v and v:FindFirstChild("CameraHighlight") then
+                            v.CameraHighlight:Destroy()
                         end
                     end
                 end
