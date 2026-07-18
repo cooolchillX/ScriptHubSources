@@ -15,7 +15,7 @@ local polcolor = Color3.fromRGB(255, 0, 0)
 local keycardguardcolor = Color3.fromRGB(255, 255, 0)
 local camcolor = Color3.fromRGB(255, 165, 0)
 local civcolor = Color3.fromRGB(0, 255, 0)
-local untiedcivcolor = Color3.fromRGB(255, 115, 115)
+local untiedcivcolor = Color3.fromRGB(255, 0, 0)
 local tiedcivcolor = Color3.fromRGB(255, 100, 0)
 local noguards = false
 local secure = false
@@ -563,7 +563,7 @@ ESPSection:NewColorPicker("Civilian ESP Color", "Change Its Color", Color3.fromR
     civcolor = color
 end)
 
-ESPSection:NewColorPicker("Untied Civilian ESP Color", "Change Its Color", Color3.fromRGB(255,115,115), function(color)
+ESPSection:NewColorPicker("Untied Civilian ESP Color", "Change Its Color", Color3.fromRGB(255,0,0), function(color)
     untiedcivcolor = color
 end)
 
