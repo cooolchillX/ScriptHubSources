@@ -180,7 +180,7 @@ end)
 
 local RemoveSection = Remove:NewSection("For Stealth Ensure You Kill The Camera Guard First")
 
-RemoveSection:NewToggle("Remove Police (Solo Heist Only)", "Gets Rid Of All Police", function(state)
+RemoveSection:NewToggle("Remove Police (Host Only)", "Gets Rid Of All Police", function(state)
     if state then
         noguards = true
         while task.wait(0.5) do
