@@ -1276,5 +1276,3 @@ local UISection = UI:NewSection("Show/Hide")
 UISection:NewKeybind("Show/Hide GUI", "Toggle UI", Enum.KeyCode.RightShift, function()
 	Library:ToggleUI()
 end)
-
-firesignal(game:GetService("ReplicatedStorage").RS_Package.Remotes.Narration.OnClientEvent, "Nice Job For Choosing Cooolchill_X Hub, Hope You Enjoy", 1)
