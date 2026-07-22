@@ -1,6 +1,17 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local wp = false
+local jp = false
+local hh = false
+local esp = false
+local espcolor = Color3.fromRGB(255, 0, 0)
+local hitbox = false
+local gradual = false
+local mapcolor = Color3.fromRGB(255, 0, 0)
+local materials = {"Air", "Asphalt", "Basalt", "Brick", "Cobblestone", "Concrete", "CorrodedMetal", "CrackedLava", "DiamondPlate", "Fabric", "Foil", "ForceField", "Glass", "Granite", "Grass", "Ground", "Ice", "LeafyGrass", "Limestone", "Marble", "Metal", "Mud", "Neon", "Pavement", "Pebble", "Plastic", "Rock", "Salt", "Sand", "Sandstone", "Slate", "SmoothPlastic", "Snow", "Water", "Wood", "WoodPlanks"}
+local selectedmaterial = nil
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Universal", Duration = 4,})
 
 --MAIN
@@ -21,51 +32,51 @@ end)
 
 MainSection:NewToggle("Loop Walkspeed", "Loop Speed", function(state)
     if state then
-        a = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
-        i = true
-        while wait() do
-            if i == true then
+        wp = true
+        local a = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
+        while task.wait(0.1) do
+            if wp then
                 game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = a
-            elseif i == false then
+            elseif wp == false then
                 break
             end
         end
     else
-        i = false
+        wp = false
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
     end
 end)
 
 MainSection:NewToggle("Loop JumpPower", "Loop Jump Height", function(state)
     if state then
-        a = game.Players.LocalPlayer.Character.Humanoid.JumpPower
-        i = true
-        while wait() do
-            if i == true then
+        jp = true
+        local a = game.Players.LocalPlayer.Character.Humanoid.JumpPower
+        while task.wait(0.1) do
+            if jp then
                 game.Players.LocalPlayer.Character.Humanoid.JumpPower = a
-            elseif i == false then
+            elseif jp == false then
                 break
             end
         end
     else
-        i = false
+        jp = false
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
     end
 end)
 
 MainSection:NewToggle("Loop HipHeight", "Loop HipHeight", function(state)
     if state then
-        a = game.Players.LocalPlayer.Character.Humanoid.HipHeight
-        i = true
-        while wait() do
-            if i == true then
+        hh = true
+        local a = game.Players.LocalPlayer.Character.Humanoid.HipHeight
+        while task.wait(0.1) do
+            if hh then
                 game.Players.LocalPlayer.Character.Humanoid.HipHeight = a
-            elseif i == false then
+            elseif hh == false then
                 break
             end
         end
     else
-        i = false
+        hh = false
         game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
     end
 end)
@@ -79,87 +90,43 @@ local ESPSection = ESP:NewSection("ESP Players")
 
 ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
     if state then
-        i = true
-        while wait(0.5) do
-            if i == true then
-                local People = game.Players
-                for _, Players in ipairs(People:GetPlayers()) do
+        esp = true
+        while task.wait(0.1) do
+            if esp then
+                for _, Players in ipairs(game.Players:GetPlayers()) do
                     if Players ~= game.Players.LocalPlayer then
                         local character = Players.Character
                         if character then
-                            local Head = character:FindFirstChild("Head")
-                            local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                            local LeftArm = character:FindFirstChild("Left Arm")
-                            local LeftLeg = character:FindFirstChild("Left Leg")
-                            local RightArm = character:FindFirstChild("Right Arm")
-                            local RightLeg = character:FindFirstChild("Right Leg")
-                            local Torso = character:FindFirstChild("Torso")
-
-                            if Head and not Head:FindFirstChild("Highlight") then
-                                local highlight1 = Instance.new("Highlight")
-                                highlight1.Name = "Highlight"
-                                highlight1.FillColor = Color3.new(1, 0, 0)
-                                highlight1.Parent = Head
-                            end
-                            if HumanoidRootPart and not HumanoidRootPart:FindFirstChild("Highlight") then
-                                local highlight2 = Instance.new("Highlight")
-                                highlight2.Name = "Highlight"
-                                highlight2.FillColor = Color3.new(1, 0, 0)
-                                highlight2.Parent = HumanoidRootPart
-                            end
-                            if LeftArm and not LeftArm:FindFirstChild("Highlight") then
-                                local highlight3 = Instance.new("Highlight")
-                                highlight3.Name = "Highlight"
-                                highlight3.FillColor = Color3.new(1, 0, 0)
-                                highlight3.Parent = LeftArm
-                            end
-                            if LeftLeg and not LeftLeg:FindFirstChild("Highlight") then
-                                local highlight4 = Instance.new("Highlight")
-                                highlight4.Name = "Highlight"
-                                highlight4.FillColor = Color3.new(1, 0, 0)
-                                highlight4.Parent = LeftLeg
-                            end
-                            if RightArm and not RightArm:FindFirstChild("Highlight") then
-                                local highlight5 = Instance.new("Highlight")
-                                highlight5.Name = "Highlight"
-                                highlight5.FillColor = Color3.new(1, 0, 0)
-                                highlight5.Parent = RightArm
-                            end
-                            if RightLeg and not RightLeg:FindFirstChild("Highlight") then
-                                local highlight6 = Instance.new("Highlight")
-                                highlight6.Name = "Highlight"
-                                highlight6.FillColor = Color3.new(1, 0, 0)
-                                highlight6.Parent = RightLeg
-                            end
-                            if Torso and not Torso:FindFirstChild("Highlight") then
-                                local highlight7 = Instance.new("Highlight")
-                                highlight7.Name = "Highlight"
-                                highlight7.FillColor = Color3.new(1, 0, 0)
-                                highlight7.Parent = Torso
+                            if not character:FindFirstChild("ESPHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "ESPHighlight"
+                                highlight.FillColor = espcolor
+                                highlight.Parent = character
+                            elseif character:FindFirstChild("ESPHighlight") then
+                                character.ESPHighlight.FillColor = espcolor
                             end
                         end
                     end
                 end
-            elseif i == false then
+            elseif esp == false then
                 break
             end
         end
     else
-        i = false
-        local People2 = game.Players
-        for _, Players2 in ipairs(People2:GetPlayers()) do
-            if Players2 ~= game.Players.LocalPlayer then
-                local character = Players2.Character
-                if character then
-                    for _, BP in ipairs(character:GetChildren()) do
-                        if BP:IsA("BasePart") and BP:FindFirstChild("Highlight") then
-                            BP.Highlight:Destroy()
-                        end
-                    end
+        esp = false
+        for _, Players in ipairs(game.Players:GetPlayers()) do
+            if Players ~= game.Players.LocalPlayer then
+                local character = Players.Character
+                if character and character:FindFirstChild("ESPHighlight") then
+                    character.ESPHighlight:Destroy()
                 end
             end
         end
     end
+end)
+
+ESPSection:NewColorPicker("Player ESP Color", "Change The ESP Color", Color3.fromRGB(255,0,0), function(color)
+    espcolor = color
 end)
 
 local Full = Window:NewTab("Fullbright")
@@ -197,17 +164,12 @@ end)
 local Identity = Window:NewTab("ID")
 local IdentitySection = Identity:NewSection("Get Stuff About The Games Id")
 
-IdentitySection:NewButton("Get The Game Id", "Send The Id In A Notification", function()
-    local function sendNotificationWithValue()
-        local id = game.PlaceId
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Game Id",
-            Text = "The Id Is: " .. tostring(id),
-            Duration = 5
-        })
-    end
+IdentitySection:NewButton("Get The Game ID", "Copy To Clipboard", function()
+    setclipboard(game.GameId)
+end)
 
-    sendNotificationWithValue()
+IdentitySection:NewButton("Get The Place ID", "Copy To Clipboard", function()
+    setclipboard(game.PlaceId)
 end)
 
 local Hit = Window:NewTab("Hitbox")
@@ -215,12 +177,10 @@ local HitSection = Hit:NewSection("Change Stuff About The Hitbox")
 
 HitSection:NewToggle("Large Head Hitbox", "Make Everybodys Head Larger", function(state)
     if state then
-        i = true
-        while wait(0.5) do
-            if i == true then
-                local Players = game.Players:GetPlayers()
-
-                for _, player in ipairs(Players) do
+        hitbox = true
+        while task.wait(0.1) do
+            if hitbox then
+                for _, player in pairs(game.Players:GetPlayers()) do
                     if player ~= game.Players.LocalPlayer then
                         local character = player.Character
                         if character then
@@ -231,15 +191,13 @@ HitSection:NewToggle("Large Head Hitbox", "Make Everybodys Head Larger", functio
                         end
                     end
                 end
-            elseif i == false then
+            elseif hitbox == false then
                 break
             end
         end
     else
-        i = false
-        local Players = game.Players:GetPlayers()
-
-        for _, player in ipairs(Players) do
+        hitbox = false
+        for _, player in pairs(game.Players:GetPlayers()) do
             if player ~= game.Players.LocalPlayer then
                 local character = player.Character
                 if character then
@@ -285,8 +243,131 @@ end)
 local FOV = Window:NewTab("FOV Changer")
 local FOVSection = FOV:NewSection("Change Your FOV")
 
-FOVSection:NewSlider("FOV", "Change Your Field Of View", 120, 70, function(s) -- 500 (MaxValue) | 0 (MinValue)
+FOVSection:NewSlider("FOV", "Change Your Field Of View", 120, 70, function(s) -- 120 (MaxValue) | 70 (MinValue)
     game.Workspace.Camera.FieldOfView = s
+end)
+
+local Map = Window:NewTab("Map")
+local MapSection = Map:NewSection("Modify The Map Or Break It")
+
+MapSection:NewToggle("Gradual Changes", "Makes Options Below Happen Gradually", function(state)
+    if state then
+        gradual = true
+    else
+        gradual = false
+    end
+end)
+
+MapSection:NewButton("Change Map Colors", "Change All Objects Color", function()
+    local things = game.workspace:GetDescendants()
+    for i = #things, 2, -1 do
+	    local j = math.random(i)
+	    things[i], things[j] = things[j], things[i]
+    end
+    for _, v in pairs(things) do
+        if v and v:IsA("Part") or v:IsA("MeshPart") then
+            v.Color = mapcolor
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+end)
+
+MapSection:NewColorPicker("Map Color Picker", "Color Choice For Map", Color3.fromRGB(255,0,0), function(color)
+    mapcolor = color
+end)
+
+MapSection:NewButton("Change Map Materials", "Change All Objects Material", function()
+    local things = game.workspace:GetDescendants()
+    for i = #things, 2, -1 do
+	    local j = math.random(i)
+	    things[i], things[j] = things[j], things[i]
+    end
+    for _, v in pairs(things) do
+        if v and selectedmaterial ~= nil and v:IsA("Part") or v:IsA("MeshPart") then
+            v.Material = selectedmaterial
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+end)
+
+MapSection:NewDropdown("Change Map Materials", "Change All Part Material", materials, function(currentOption)
+    selectedmaterial = currentOption
+end)
+
+MapSection:NewButton("Delete Map", "Funny With Gradual", function()
+    local things = game.workspace:GetDescendants()
+    for i = #things, 2, -1 do
+	    local j = math.random(i)
+	    things[i], things[j] = things[j], things[i]
+    end
+    for _, v in pairs(things) do
+        if v and v.Name ~= "Camera" and v.Name ~= "Terrain" and v ~= game.Players.LocalPlayer.Character and not v:IsDescendantOf(game.Players.LocalPlayer.Character) then
+            v:Destroy()
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+end)
+
+MapSection:NewButton("Devastate Map (Use Gradual For Best Experience)", "Commit 3 Payloads Of Irreversible Damage", function()
+    game.StarterGui:SetCore("SendNotification", {Title = "Setup Started", Text = "Started Pre-Load", Duration = 4,})
+    local things = game.workspace:GetDescendants()
+    for i = #things, 2, -1 do
+	    local j = math.random(i)
+	    things[i], things[j] = things[j], things[i]
+    end
+    for _, v in pairs(game.ReplicatedStorage:GetChildren()) do
+        v:Destroy()
+    end
+    local cc = game.Lighting:FindFirstChild("ColorCorrection")
+    local num = 255
+    for num = 255, 100, -1 do
+        cc.TintColor = Color3.fromRGB(num, num, num)
+        task.wait(0.1)
+    end
+    task.wait(1)
+    game.StarterGui:SetCore("SendNotification", {Title = "Layer 1 Started", Text = "Started Load 1/3", Duration = 4,})
+    for _, v in pairs(things) do
+        if v and v:IsA("Part") or v:IsA("MeshPart") then
+            v.Color = Color3.fromRGB(255, 0, 0)
+            v.Material = "Neon"
+            v.Transparency = 0
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+    game.StarterGui:SetCore("SendNotification", {Title = "Layer 2 Started", Text = "Started Load 2/3", Duration = 4,})
+    for _, v in pairs(things) do
+        if v and v:IsA("Part") or v:IsA("MeshPart") then
+            local fire = Instance.new("Fire")
+            fire.Name = "BURN"
+            fire.Size = 30
+            fire.Heat = 25
+            fire.Color = Color3.new(0, 0, 0)
+            fire.SecondaryColor = Color3.new(0, 0, 0)
+            fire.TimeScale = 10
+            fire.Parent = v
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+    game.StarterGui:SetCore("SendNotification", {Title = "Layer 3 Started", Text = "Started Load 3/3", Duration = 4,})
+    for _, v in pairs(things) do
+        if v and v.Name ~= "Camera" and v.Name ~= "Terrain" and v ~= game.Players.LocalPlayer.Character and not v:IsDescendantOf(game.Players.LocalPlayer.Character) then
+            v:Destroy()
+            if gradual then
+                task.wait(0.01)
+            end
+        end
+    end
+    game.StarterGui:SetCore("SendNotification", {Title = "All Done", Text = "Now What Is Left?...", Duration = 4,})
 end)
 
 local UI = Window:NewTab("UI Toggle")
