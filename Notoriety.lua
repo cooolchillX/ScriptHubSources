@@ -35,6 +35,8 @@ local painting = false
 local masterpainting = false
 local rfid = false
 
+game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Notoriety", Duration = 4,})
+
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Common Things")
 
