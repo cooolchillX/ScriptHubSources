@@ -987,7 +987,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
                             elseif v:FindFirstChild("ESPBillboard") then
                                 v.ESPBillboard.TextLabel.Text = "Candlebearer" .. "[" .. rounded .. "]"
                             end
-                        elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
+                        elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
                             local distance = (hrp.Position - v:GetPivot().Position).Magnitude
                             local rounded = math.round(distance)
                             if not v:FindFirstChild("ESPBillboard") then
