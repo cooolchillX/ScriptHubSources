@@ -186,11 +186,11 @@ game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure"
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Useful For Evading Anglers")
 
-MainSection:NewKeybind("Tp Up", "Tp Up", Enum.KeyCode.B, function()
+MainSection:NewKeybind("Tp Up", "Tp Up", Enum.KeyCode.PageUp, function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
 end)
 
-MainSection:NewKeybind("Tp Down", "Tp Down", Enum.KeyCode.N, function()
+MainSection:NewKeybind("Tp Down", "Tp Down", Enum.KeyCode.PageDown, function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, -20, 0)
 end)
 
@@ -1491,16 +1491,31 @@ OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", fu
             if v:IsA("Model") then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "MeatWallDweller" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
+                    end
                 elseif v.Name == "BiggerState" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Candlebrute" .. " Has Spawned", Duration = 4,})
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
+                    end
                 elseif v.name == "State" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Candlebearer" .. " Has Spawned", Duration = 4,})
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
+                    end
                 elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "WallDweller" .. " Has Spawned", Duration = 4,})
-                end
-                if notif then
-                    if game.SoundService:FindFirstChild("CustomNotifSound") then
-                        game.SoundService.CustomNotifSound:Play()
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
                     end
                 end
             end
