@@ -1105,7 +1105,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     task.wait(1)
-                    print("connect1 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
@@ -1114,7 +1113,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     task.wait(1)
-                    print("connect2 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
@@ -1123,7 +1121,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     task.wait(1)
-                    print("connect3 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
@@ -1132,7 +1129,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     task.wait(1)
-                    print("connect4 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
@@ -1140,7 +1136,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities5connect = game.Workspace.DescendantAdded:Connect(function(v)
             if v.Name == "DwellerModel" and v:IsA("Model") then
                 task.wait(0.5)
-                print("connect5 Added entity:", v.Name, v:GetFullName())
                 table.insert(entitytable, v)
             end
         end)
@@ -1152,7 +1147,6 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
                     for i = #entitytable, 1, -1 do
                         local v = entitytable[i]
                         if not v or not v.Parent then
-                            print("Removed entity:", v.Name)
                             table.remove(entitytable, i)
                         else
                             if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" then
