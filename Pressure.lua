@@ -9,9 +9,16 @@ local doortable = {}
 local doors = false
 local doorconnect
 local doorscolor = Color3.fromRGB(0, 255, 255)
+local playerstable = {}
+local players = false
+local playersconnect
+local playerscolor = Color3.fromRGB(0, 255, 0)
 local keycardtable = {}
 local keycards = false
 local keycardconnect
+local batteriestable = {}
+local batteries = false
+local batteriesconnect
 local itemtable = {}
 local items = false
 local itemconnect
@@ -38,6 +45,8 @@ local entitytable = {}
 local entities = false
 local entitiesconnect
 local entities2connect
+local entities3connect
+local entities4connect
 local generatortable = {}
 local generators = false
 local generatorconnect
@@ -53,6 +62,9 @@ local itemauraconnect
 local neostykauratable = {}
 local neostykaura = false
 local neostykauraconnect
+local batteryauratable = {}
+local batteryaura = false
+local batteryauraconnect
 local tripwireauratable = {}
 local tripwireaura = false
 local tripwireauraconnect
@@ -74,12 +86,17 @@ local antifearconnect
 local visiblesubspacetable = {}
 local visiblesubspace = false
 local visiblesubspaceconnect
-local triggertripwiretable = {}
-local triggertripwire = false
-local triggertripwireconnect
+local imaginetable = {}
+local imagine = false
+local imagineconnect
 local triggerlandminetable = {}
 local triggerlandmine = false
 local triggerlandmineconnect
+local keypadtable = {}
+local keypad = false
+local keypad2table = {}
+local keypad2 = false
+local usedcodes = {}
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -220,22 +237,27 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
         end)
         while task.wait(0.1) do
             if assets then
-                for i = #assettable, 1, -1 do
-                    local v = assettable[i]
-                    if not v or not v.Parent then
-                        table.remove(assettable, i)
-                    else
-                        if not v:FindFirstChild("ESPHighlight") then
-                            local highlight = Instance.new("Highlight")
-                            highlight.Name = "ESPHighlight"
-                            highlight.FillColor = assetscolor
-                            highlight.OutlineTransparency = 1
-                            highlight.Parent = v
-                        elseif v:FindFirstChild("ESPHighlight") then
-                            v.ESPHighlight.FillColor = assetscolor
+                xpcall(function()
+                    for i = #assettable, 1, -1 do
+                        local v = assettable[i]
+                        if not v or not v.Parent then
+                            table.remove(assettable, i)
+                        else
+                            if not v:FindFirstChild("ESPHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "ESPHighlight"
+                                highlight.FillColor = assetscolor
+                                highlight.OutlineTransparency = 1
+                                highlight.Parent = v
+                            elseif v:FindFirstChild("ESPHighlight") then
+                                v.ESPHighlight.FillColor = assetscolor
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Asset ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif assets == false then
                 break
             end
@@ -273,34 +295,39 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
         end)
         while task.wait(0.1) do
             if doors then
-                for i = #doortable, 1, -1 do
-                    local v = doortable[i]
-                    if not v or not v.Parent then
-                        table.remove(doortable, i)
-                    else
-                        if v:FindFirstChild("OpenValue") then
-                            if not v.OpenValue.Value then
-                                if v:FindFirstChild("Door") then
-                                    if not v.Door:FindFirstChild("ESPHighlight") then
-                                        local highlight = Instance.new("Highlight")
-                                        highlight.Name = "ESPHighlight"
-                                        highlight.FillColor = doorscolor
-                                        highlight.OutlineTransparency = 1
-                                        highlight.Parent = v.Door
-                                    elseif v.Door:FindFirstChild("ESPHighlight") then
-                                        v.Door.ESPHighlight.FillColor = doorscolor
+                xpcall(function()
+                    for i = #doortable, 1, -1 do
+                        local v = doortable[i]
+                        if not v or not v.Parent then
+                            table.remove(doortable, i)
+                        else
+                            if v:FindFirstChild("OpenValue") then
+                                if not v.OpenValue.Value then
+                                    if v:FindFirstChild("Door") then
+                                        if not v.Door:FindFirstChild("ESPHighlight") then
+                                            local highlight = Instance.new("Highlight")
+                                            highlight.Name = "ESPHighlight"
+                                            highlight.FillColor = doorscolor
+                                            highlight.OutlineTransparency = 1
+                                            highlight.Parent = v.Door
+                                        elseif v.Door:FindFirstChild("ESPHighlight") then
+                                            v.Door.ESPHighlight.FillColor = doorscolor
+                                        end
                                     end
-                                end
-                            elseif v.OpenValue.Value then
-                                if v:FindFirstChild("Door") then
-                                    if v.Door:FindFirstChild("ESPHighlight") then
-                                        v.Door.ESPHighlight:Destroy()
+                                elseif v.OpenValue.Value then
+                                    if v:FindFirstChild("Door") then
+                                        if v.Door:FindFirstChild("ESPHighlight") then
+                                            v.Door.ESPHighlight:Destroy()
+                                        end
                                     end
                                 end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Door ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif doors == false then
                 break
             end
@@ -325,6 +352,65 @@ ESPSection:NewColorPicker("Door ESP Color", "Change Its Color", Color3.fromRGB(0
     doorscolor = color
 end)
 
+ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
+    if state then
+        for _, v in pairs(game.Players:GetPlayers()) do
+            table.insert(playerstable, v)
+        end
+        playersconnect = game.Players.PlayerAdded:Connect(function(v)
+            table.insert(playerstable, v)
+        end)
+        players = true
+        while task.wait(0.1) do
+            if players then
+                xpcall(function()
+                    for i = #playerstable, 1, -1 do
+                        local v = playerstable[i]
+                        if not v or not v.Parent then
+                            table.remove(playerstable, i)
+                        else
+                            if v ~= game.Players.LocalPlayer then
+                                local character = v.Character
+                                if character then
+                                    if not character:FindFirstChild("ESPHighlight") then
+                                        local highlight = Instance.new("Highlight")
+                                        highlight.Name = "ESPHighlight"
+                                        highlight.FillColor = playerscolor
+                                        highlight.Parent = character
+                                    elseif character:FindFirstChild("ESPHighlight") then
+                                        character.ESPHighlight.FillColor = playerscolor
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Player ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif players == false then
+                break
+            end
+        end
+    else
+        players = false
+        playersconnect:Disconnect()
+        playerstable = {}
+        for _, Players in pairs(game.Players:GetPlayers()) do
+            if Players ~= game.Players.LocalPlayer then
+                local character = Players.Character
+                if character and character:FindFirstChild("ESPHighlight") then
+                    character.ESPHighlight:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+ESPSection:NewColorPicker("Player ESP Color", "Change The ESP Color", Color3.fromRGB(0,255,0), function(color)
+    playerscolor = color
+end)
+
 ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
     if state then
         keycards = true
@@ -340,80 +426,85 @@ ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
         end)
         while task.wait(0.1) do
             if keycards then
-                for i = #keycardtable, 1, -1 do
-                    local v = keycardtable[i]
-                    if not v or not v.Parent then
-                        table.remove(keycardtable, i)
-                    else
-                        if not v:FindFirstChild("ESPBillboard") then
-                            if v.Name == "NormalKeyCard" then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                xpcall(function()
+                    for i = #keycardtable, 1, -1 do
+                        local v = keycardtable[i]
+                        if not v or not v.Parent then
+                            table.remove(keycardtable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                if v.Name == "NormalKeyCard" then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Keycard"
-                                label.Parent = billboard
-                            elseif v.Name == "InnerKeyCard" then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Keycard"
+                                    label.Parent = billboard
+                                elseif v.Name == "InnerKeyCard" then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Purple Keycard"
-                                label.Parent = billboard
-                            elseif v.Name == "RidgeKeyCard" then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Purple Keycard"
+                                    label.Parent = billboard
+                                elseif v.Name == "RidgeKeyCard" then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Yellow Keycard"
-                                label.Parent = billboard
-                            elseif v.Name == "PasswordPaper" then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Yellow Keycard"
+                                    label.Parent = billboard
+                                elseif v.Name == "PasswordPaper" then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Password"
-                                label.Parent = billboard
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Password"
+                                    label.Parent = billboard
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Keycard ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif keycards == false then
                 break
             end
@@ -424,6 +515,68 @@ ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
         keycardtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+                if v:FindFirstChild("ESPBillboard") then
+                    v.ESPBillboard:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+ESPSection:NewToggle("Battery ESP", "See All Batteries", function(state)
+    if state then
+        batteries = true
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
+                table.insert(batteriestable, v)
+            end
+        end
+        batteriesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
+                table.insert(batteriestable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if batteries then
+                xpcall(function()
+                    for i = #batteriestable, 1, -1 do
+                        local v = batteriestable[i]
+                        if not v or not v.Parent then
+                            table.remove(batteriestable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
+
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(1, 1, 0)
+                                label.TextScaled = true
+                                label.Text = "Battery"
+                                label.Parent = billboard
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Battery ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif batteries == false then
+                break
+            end
+        end
+    else
+        batteries = false
+        batteriesconnect:Disconnect()
+        batteriestable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
                 if v:FindFirstChild("ESPBillboard") then
                     v.ESPBillboard:Destroy()
                 end
@@ -451,68 +604,73 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
         end)
         while task.wait(0.1) do
             if items then
-                for i = #itemtable, 1, -1 do
-                    local v = itemtable[i]
-                    if not v or not v.Parent then
-                        table.remove(itemtable, i)
-                    else
-                        if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" then
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                xpcall(function()
+                    for i = #itemtable, 1, -1 do
+                        local v = itemtable[i]
+                        if not v or not v.Parent then
+                            table.remove(itemtable, i)
+                        else
+                            if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" then
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 0)
-                                label.TextScaled = true
-                                label.Text = v:GetAttribute("DisplayName")
-                                label.Parent = billboard
-                            end
-                        elseif v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" then
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 0)
+                                    label.TextScaled = true
+                                    label.Text = v:GetAttribute("DisplayName")
+                                    label.Parent = billboard
+                                end
+                            elseif v.Name == "Blacklight" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" then
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 0)
-                                label.TextScaled = true
-                                label.Text = v.Name
-                                label.Parent = billboard
-                            end
-                        elseif v.Name == "BlueToyRemote" then
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 0)
+                                    label.TextScaled = true
+                                    label.Text = v.Name
+                                    label.Parent = billboard
+                                end
+                            elseif v.Name == "BlueToyRemote" then
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 0)
-                                label.TextScaled = true
-                                label.Text = "Blue Toy Remote"
-                                label.Parent = billboard
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Blue Toy Remote"
+                                    label.Parent = billboard
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Item ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif items == false then
                 break
             end
@@ -548,22 +706,27 @@ ESPSection:NewToggle("Locker ESP", "See All Lockers", function(state)
         lockers = true
         while task.wait(0.1) do
             if lockers then
-                for i = #lockertable, 1, -1 do
-                    local v = lockertable[i]
-                    if not v or not v.Parent then
-                        table.remove(lockertable, i)
-                    else
-                        if not v:FindFirstChild("ESPHighlight") then
-                            local highlight = Instance.new("Highlight")
-                            highlight.Name = "ESPHighlight"
-                            highlight.FillColor = lockerscolor
-                            highlight.OutlineTransparency = 1
-                            highlight.Parent = v
-                        elseif v:FindFirstChild("ESPHighlight") then
-                            v.ESPHighlight.FillColor = lockerscolor
+                xpcall(function()
+                    for i = #lockertable, 1, -1 do
+                        local v = lockertable[i]
+                        if not v or not v.Parent then
+                            table.remove(lockertable, i)
+                        else
+                            if not v:FindFirstChild("ESPHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "ESPHighlight"
+                                highlight.FillColor = lockerscolor
+                                highlight.OutlineTransparency = 1
+                                highlight.Parent = v
+                            elseif v:FindFirstChild("ESPHighlight") then
+                                v.ESPHighlight.FillColor = lockerscolor
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Locker ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif lockers == false then
                 break
             end
@@ -601,30 +764,35 @@ ESPSection:NewToggle("NeoStyk ESP", "See All NeoStyks", function(state)
         end)
         while task.wait(0.1) do
             if neostyks then
-                for i = #neostyktable, 1, -1 do
-                    local v = neostyktable[i]
-                    if not v or not v.Parent then
-                        table.remove(neostyktable, i)
-                    else
-                        if not v:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 50, 0, 50)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v
+                xpcall(function()
+                    for i = #neostyktable, 1, -1 do
+                        local v = neostyktable[i]
+                        if not v or not v.Parent then
+                            table.remove(neostyktable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
 
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 0.25, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(0, 1, 1)
-                            label.TextScaled = true
-                            label.Text = "NeoStyk"
-                            label.Parent = billboard
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(0, 1, 1)
+                                label.TextScaled = true
+                                label.Text = "NeoStyk"
+                                label.Parent = billboard
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("NeoStyk ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif neostyks == false then
                 break
             end
@@ -658,30 +826,35 @@ ESPSection:NewToggle("Fake Door ESP", "See All Fake Doors", function(state)
         fakedoors = true
         while task.wait(0.1) do
             if fakedoors then
-                for i = #fakedoortable, 1, -1 do
-                    local v = fakedoortable[i]
-                    if not v or not v.Parent then
-                        table.remove(fakedoortable, i)
-                    else
-                        if not v:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 50, 0, 50)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v
+                xpcall(function()
+                    for i = #fakedoortable, 1, -1 do
+                        local v = fakedoortable[i]
+                        if not v or not v.Parent then
+                            table.remove(fakedoortable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
 
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 0.25, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(1, 0, 0)
-                            label.TextScaled = true
-                            label.Text = "Fake Door"
-                            label.Parent = billboard
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(1, 0, 0)
+                                label.TextScaled = true
+                                label.Text = "Fake Door"
+                                label.Parent = billboard
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Fake Door ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif fakedoors == false then
                 break
             end
@@ -715,30 +888,35 @@ ESPSection:NewToggle("Tripwire ESP", "See All Tripwires", function(state)
         tripwires = true
         while task.wait(0.1) do
             if tripwires then
-                for i = #tripwiretable, 1, -1 do
-                    local v = tripwiretable[i]
-                    if not v or not v.Parent then
-                        table.remove(tripwiretable, i)
-                    else
-                        if not v.Main:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 50, 0, 50)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v.Main
+                xpcall(function()
+                    for i = #tripwiretable, 1, -1 do
+                        local v = tripwiretable[i]
+                        if not v or not v.Parent then
+                            table.remove(tripwiretable, i)
+                        else
+                            if not v.Main:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v.Main
 
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 0.25, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(0, 1, 1)
-                            label.TextScaled = true
-                            label.Text = "Tripwire"
-                            label.Parent = billboard
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(0, 1, 1)
+                                label.TextScaled = true
+                                label.Text = "Tripwire"
+                                label.Parent = billboard
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Tripwire ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif tripwires == false then
                 break
             end
@@ -772,30 +950,35 @@ ESPSection:NewToggle("Landmine ESP", "See All Landmines", function(state)
         landmines = true
         while task.wait(0.1) do
             if landmines then
-                for i = #landminetable, 1, -1 do
-                    local v = landminetable[i]
-                    if not v or not v.Parent then
-                        table.remove(landminetable, i)
-                    else
-                        if not v.Main:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 50, 0, 50)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v.Main
+                xpcall(function()
+                    for i = #landminetable, 1, -1 do
+                        local v = landminetable[i]
+                        if not v or not v.Parent then
+                            table.remove(landminetable, i)
+                        else
+                            if not v.Main:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v.Main
 
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 0.25, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(0, 1, 1)
-                            label.TextScaled = true
-                            label.Text = "Landmine"
-                            label.Parent = billboard
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(0, 1, 1)
+                                label.TextScaled = true
+                                label.Text = "Landmine"
+                                label.Parent = billboard
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Landmine ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif landmines == false then
                 break
             end
@@ -818,14 +1001,14 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
                     table.insert(nodetable, v)
                 end
             end
         end
         nodeconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
                     table.insert(nodetable, v)
                 end
             end
@@ -833,96 +1016,14 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
         nodes = true
         while task.wait(0.1) do
             if nodes then
-                local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                for i = #nodetable, 1, -1 do
-                    local v = nodetable[i]
-                    if not v or not v.Parent then
-                        table.remove(nodetable, i)
-                    else
-                        local distance = (hrp.Position - v.Position).Magnitude
-                        local rounded = math.round(distance)
-                        if not v:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 100, 0, 25)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v
-
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 1, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(1, 0, 0)
-                            label.TextScaled = true
-                            label.Text = v.Name .. "[" .. rounded .. "]"
-                            label.Parent = billboard
-                        elseif v:FindFirstChild("ESPBillboard") then
-                            v.ESPBillboard.TextLabel.Text = v.Name .. "[" .. rounded .. "]"
-                        end
-                    end
-                end
-            elseif nodes == false then
-                break
-            end
-        end
-    else
-        nodes = false
-        nodeconnect:Disconnect()
-        nodetable = {}
-        for _, v in pairs(game.workspace:GetChildren()) do
-            if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                    if v:FindFirstChild("ESPBillboard") then
-                        v.ESPBillboard:Destroy()
-                    end
-                end
-            end
-        end
-    end
-end)
-
-ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
-    if state then
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
-                    table.insert(entitytable, v)
-                end
-            end
-        end
-        for _, v in pairs(game.workspace.GameplayFolder.Monsters:GetDescendants()) do
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
-                    table.insert(entitytable, v)
-                end
-            end
-        end
-        entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
-                    table.insert(entitytable, v)
-                end
-            end
-        end)
-        entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
-                    table.insert(entitytable, v)
-                end
-            end
-        end)
-        entities = true
-        while task.wait(0.1) do
-            if entities then
-                local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                for i = #entitytable, 1, -1 do
-                    local v = entitytable[i]
-                    if not v or not v.Parent then
-                        table.remove(entitytable, i)
-                    else
-                        if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" then
-                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                xpcall(function()
+                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    for i = #nodetable, 1, -1 do
+                        local v = nodetable[i]
+                        if not v or not v.Parent then
+                            table.remove(nodetable, i)
+                        else
+                            local distance = (hrp.Position - v.Position).Magnitude
                             local rounded = math.round(distance)
                             if not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
@@ -943,75 +1044,261 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
                             elseif v:FindFirstChild("ESPBillboard") then
                                 v.ESPBillboard.TextLabel.Text = v.Name .. "[" .. rounded .. "]"
                             end
-                        elseif v.Name == "BiggerStatue" then
-                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
-                            local rounded = math.round(distance)
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 100, 0, 25)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                        end
+                    end
+                end, function(err)
+                    warn("Node Monster ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif nodes == false then
+                break
+            end
+        end
+    else
+        nodes = false
+        nodeconnect:Disconnect()
+        nodetable = {}
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v:IsA("Part") then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                    if v:FindFirstChild("ESPBillboard") then
+                        v.ESPBillboard:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 1, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(1, 0, 0)
-                                label.TextScaled = true
-                                label.Text = "Candlebrute" .. "[" .. rounded .. "]"
-                                label.Parent = billboard
-                            elseif v:FindFirstChild("ESPBillboard") then
-                                v.ESPBillboard.TextLabel.Text = "Candlebrute" .. "[" .. rounded .. "]"
-                            end
-                        elseif v.Name == "Statue" then
-                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
-                            local rounded = math.round(distance)
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 100, 0, 25)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end
+        for _, v in pairs(game.workspace.GameplayFolder.Monsters:GetDescendants()) do
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end
+        for _, v in pairs(game.workspace.Camera:GetDescendants()) do
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end
+        entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end)
+        entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end)
+        entities3connect = game.workspace.Camera.DescendantAdded:Connect(function(v)
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end)
+        entities4connect = game.workspace.ChildAdded:Connect(function(v)
+            if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    table.insert(entitytable, v)
+                end
+            end
+        end)
+        entities = true
+        while task.wait(0.1) do
+            if entities then
+                xpcall(function()
+                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    for i = #entitytable, 1, -1 do
+                        local v = entitytable[i]
+                        if not v or not v.Parent then
+                            table.remove(entitytable, i)
+                        else
+                            if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 1, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(1, 0, 0)
-                                label.TextScaled = true
-                                label.Text = "Candlebearer" .. "[" .. rounded .. "]"
-                                label.Parent = billboard
-                            elseif v:FindFirstChild("ESPBillboard") then
-                                v.ESPBillboard.TextLabel.Text = "Candlebearer" .. "[" .. rounded .. "]"
-                            end
-                        elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or (v.Name == "DiVineRoot" and v:FindFirstChild("DwellerModel")) then
-                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
-                            local rounded = math.round(distance)
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 100, 0, 25)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = v.Name .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = v.Name .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "BiggerStatue" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 1, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(1, 0, 0)
-                                label.TextScaled = true
-                                label.Text = "WallDweller" .. "[" .. rounded .. "]"
-                                label.Parent = billboard
-                            elseif v:FindFirstChild("ESPBillboard") then
-                                v.ESPBillboard.TextLabel.Text = "WallDweller" .. "[" .. rounded .. "]"
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Candlebrute" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "Candlebrute" .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "Statue" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
+
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Candlebearer" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "Candlebearer" .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "DwellerModel" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
+
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "WallDweller" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "WallDweller" .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "SkinlessCorpse" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
+
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Skinless" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "Skinless" .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "Coagulate" then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
+
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Coagulate" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "Coagulate" .. "[" .. rounded .. "]"
+                                end
+                            elseif v.Name == "TreeBody" then
+                                local distance = (hrp.Position - v.Position).Magnitude
+                                local rounded = math.round(distance)
+                                if not v:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 100, 0, 25)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v
+
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 1, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(1, 0, 0)
+                                    label.TextScaled = true
+                                    label.Text = "Eden Tree" .. "[" .. rounded .. "]"
+                                    label.Parent = billboard
+                                elseif v:FindFirstChild("ESPBillboard") then
+                                    v.ESPBillboard.TextLabel.Text = "Eden Tree" .. "[" .. rounded .. "]"
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Entity ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif entities == false then
                 break
             end
@@ -1020,10 +1307,12 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities = false
         entitiesconnect:Disconnect()
         entities2connect:Disconnect()
+        entities3connect:Disconnect()
+        entities4connect:Disconnect()
         entitytable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "MeatWallDweller" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "RottenWallDweller" or v.Name == "Statue" or v.Name == "WallDweller" or v.Name == "DiVineRoot" then
+            if v and v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "DwellerModel" or v.Name == "Coagulate" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -1031,8 +1320,26 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
             end
         end
         for _, v in pairs(game.workspace.GameplayFolder.Monsters:GetDescendants()) do
-            if v and v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "MeatWallDweller" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "RottenWallDweller" or v.Name == "Statue" or v.Name == "WallDweller" or v.Name == "DiVineRoot" then
+            if v and v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "DwellerModel" or v.Name == "Coagulate" then
+                    if v:FindFirstChild("ESPBillboard") then
+                        v.ESPBillboard:Destroy()
+                    end
+                end
+            end
+        end
+        for _, v in pairs(game.workspace.Camera:GetDescendants()) do
+            if v and v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "DwellerModel" or v.Name == "Coagulate" then
+                    if v:FindFirstChild("ESPBillboard") then
+                        v.ESPBillboard:Destroy()
+                    end
+                end
+            end
+        end
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "DwellerModel" or v.Name == "Coagulate" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -1061,32 +1368,37 @@ ESPSection:NewToggle("Generator ESP", "See All Generators", function(state)
         generators = true
         while task.wait(0.1) do
             if generators then
-                for i = #generatortable, 1, -1 do
-                    local v = generatortable[i]
-                    if not v or not v.Parent then
-                        table.remove(generatortable, i)
-                    else
-                        if v.Fixed.Value ~= 100 and not v.Model:FindFirstChild("ESPBillboard") then
-                            local billboard = Instance.new("BillboardGui")
-                            billboard.Name = "ESPBillboard"
-                            billboard.Size = UDim2.new(0, 50, 0, 50)
-                            billboard.StudsOffset = Vector3.new(0, 0, 0)
-                            billboard.AlwaysOnTop = true
-                            billboard.Parent = v.Model
+                xpcall(function()
+                    for i = #generatortable, 1, -1 do
+                        local v = generatortable[i]
+                        if not v or not v.Parent then
+                            table.remove(generatortable, i)
+                        else
+                            if v.Fixed.Value ~= 100 and not v.Model:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v.Model
 
-                            local label = Instance.new("TextLabel")
-                            label.Size = UDim2.new(1, 0, 0.25, 0)
-                            label.Position = UDim2.new(0, 0, 0, 0)
-                            label.BackgroundTransparency = 1
-                            label.TextColor3 = Color3.new(0, 0, 1)
-                            label.TextScaled = true
-                            label.Text = "Generator"
-                            label.Parent = billboard
-                        elseif v.Fixed.Value == 100 and v.Model:FindFirstChild("ESPBillboard") then
-                            v.Model.ESPBillboard:Destroy()
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(0, 0, 1)
+                                label.TextScaled = true
+                                label.Text = "Generator"
+                                label.Parent = billboard
+                            elseif v.Fixed.Value == 100 and v.Model:FindFirstChild("ESPBillboard") then
+                                v.Model.ESPBillboard:Destroy()
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Generator ESP Error")
+                    warn(debug.traceback(err))
+                end)
             elseif generators == false then
                 break
             end
@@ -1123,19 +1435,24 @@ AuraSection:NewToggle("Grab All Assets Near You", "Grabs All Close Assets", func
         assetaura = true
         while task.wait(0.1) do
             if assetaura then
-                for i = #assetauratable, 1, -1 do
-                    local v = assetauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(assetauratable, i)
-                    else
-                        if v:FindFirstChild("ProxyPart") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                xpcall(function()
+                    for i = #assetauratable, 1, -1 do
+                        local v = assetauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(assetauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Grab All Assets Error")
+                    warn(debug.traceback(err))
+                end)
             elseif assetaura == false then
                 break
             end
@@ -1162,19 +1479,24 @@ AuraSection:NewToggle("Grab All Keycards Near You", "Grabs All Close Keycards", 
         keycardaura = true
         while task.wait(0.1) do
             if keycardaura then
-                for i = #keycardauratable, 1, -1 do
-                    local v = keycardauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(keycardauratable, i)
-                    else
-                        if v:FindFirstChild("ProxyPart") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                xpcall(function()
+                    for i = #keycardauratable, 1, -1 do
+                        local v = keycardauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(keycardauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Grab All Keycards Error")
+                    warn(debug.traceback(err))
+                end)
             elseif keycardaura == false then
                 break
             end
@@ -1205,19 +1527,24 @@ AuraSection:NewToggle("Grab All Items Near You", "Grabs All Close Items", functi
         itemaura = true
         while task.wait(0.1) do
             if itemaura then
-                for i = #itemauratable, 1, -1 do
-                    local v = itemauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(itemauratable, i)
-                    else
-                        if v:FindFirstChild("ProxyPart") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                xpcall(function()
+                    for i = #itemauratable, 1, -1 do
+                        local v = itemauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(itemauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Grab All Items Error")
+                    warn(debug.traceback(err))
+                end)
             elseif itemaura == false then
                 break
             end
@@ -1244,19 +1571,24 @@ AuraSection:NewToggle("Grab All NeoStyks Near You", "Grabs All Close NeoStyks", 
         neostykaura = true
         while task.wait(0.1) do
             if neostykaura then
-                for i = #neostykauratable, 1, -1 do
-                    local v = neostykauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(neostykauratable, i)
-                    else
-                        if v:FindFirstChild("ProxyPart") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                xpcall(function()
+                    for i = #neostykauratable, 1, -1 do
+                        local v = neostykauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(neostykauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Grab All NeoStyks Error")
+                    warn(debug.traceback(err))
+                end)
             elseif neostykaura == false then
                 break
             end
@@ -1265,6 +1597,50 @@ AuraSection:NewToggle("Grab All NeoStyks Near You", "Grabs All Close NeoStyks", 
         neostykaura = false
         neostykauraconnect:Disconnect()
         neostykauratable = {}
+    end
+end)
+
+AuraSection:NewToggle("Grab All Batteries Near You", "Grabs All Close Batteries", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "battery") then
+                table.insert(batteryauratable, v)
+            end
+        end
+        batteryauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and string.find(string.lower(v.Name), "battery") then
+                table.insert(batteryauratable, v)
+            end
+        end)
+        batteryaura = true
+        while task.wait(0.1) do
+            if batteryaura then
+                xpcall(function()
+                    for i = #batteryauratable, 1, -1 do
+                        local v = batteryauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(batteryauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab All NeoStyks Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif batteryaura == false then
+                break
+            end
+        end
+    else
+        batteryaura = false
+        batteryauraconnect:Disconnect()
+        batteryauratable = {}
     end
 end)
 
@@ -1283,19 +1659,24 @@ AuraSection:NewToggle("Disarm Nearby Tripwires", "Disarms Them When Close", func
         tripwireaura = true
         while task.wait(0.1) do
             if tripwireaura then
-                for i = #tripwireauratable, 1, -1 do
-                    local v = tripwireauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(tripwireauratable, i)
-                    else
-                        if v:FindFirstChild("ProxyPart") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                xpcall(function()
+                    for i = #tripwireauratable, 1, -1 do
+                        local v = tripwireauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(tripwireauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Disarm Near Tripwires Error")
+                    warn(debug.traceback(err))
+                end)
             elseif tripwireaura == false then
                 break
             end
@@ -1322,19 +1703,24 @@ AuraSection:NewToggle("Disarm Nearby Landmines", "Diarms Them When Close", funct
         landmineaura = true
         while task.wait(0.1) do
             if landmineaura then
-                for i = #landmineauratable, 1, -1 do
-                    local v = landmineauratable[i]
-                    if not v or not v.Parent then
-                        table.remove(landmineauratable, i)
-                    else
-                        if v:FindFirstChild("ProximityPrompt") then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude
-                            if distance <= 15 then
-                                fireproximityprompt(v.ProximityPrompt)
+                xpcall(function()
+                    for i = #landmineauratable, 1, -1 do
+                        local v = landmineauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(landmineauratable, i)
+                        else
+                            if v:FindFirstChild("ProximityPrompt") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProximityPrompt)
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Disarm Near Landmines Error")
+                    warn(debug.traceback(err))
+                end)
             elseif landmineaura == false then
                 break
             end
@@ -1393,14 +1779,19 @@ OtherSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
         end)
         while task.wait(0.1) do
             if insta then
-                for i = #prompts, 1, -1 do
-                    local v = prompts[i]
-                    if not v or not v.Parent then
-                        table.remove(prompts, i)
-                    else
-                        v.HoldDuration = 0
+                xpcall(function()
+                    for i = #prompts, 1, -1 do
+                        local v = prompts[i]
+                        if not v or not v.Parent then
+                            table.remove(prompts, i)
+                        else
+                            v.HoldDuration = 0
+                        end
                     end
-                end
+                end, function(err)
+                    warn("Insta Interact Error")
+                    warn(debug.traceback(err))
+                end)
             elseif insta == false then
                 break
             end
@@ -1456,7 +1847,7 @@ OtherSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster
     if state then
         anglerconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
                     if notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
@@ -1475,7 +1866,7 @@ OtherSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", functio
     if state then
         anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
                 end
             end
@@ -1488,8 +1879,8 @@ end)
 OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", function(state)
     if state then
         entityconnect = game.workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "MeatWallDweller" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
+            if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Coagulate" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
                     if notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
@@ -1510,8 +1901,22 @@ OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", fu
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
-                elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
+                elseif v.Name == "DwellerModel" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "WallDweller" .. " Has Spawned", Duration = 4,})
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
+                    end
+                elseif v.Name == "SkinlessCorpse" then
+                    game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Skinless" .. " Has Spawned", Duration = 4,})
+                    if notif then
+                        if game.SoundService:FindFirstChild("CustomNotifSound") then
+                            game.SoundService.CustomNotifSound:Play()
+                        end
+                    end
+                elseif v.Name == "TreeBody" then
+                    game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Eden Tree" .. " Has Spawned", Duration = 4,})
                     if notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
@@ -1528,8 +1933,8 @@ end)
 OtherSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state)
     if state then
         entitynotifconnect = game.workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("Model") then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "MeatWallDweller" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
+            if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Coagulate" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
                 elseif v.Name == "BiggerState" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync("Candlebrute Has Spawned")
@@ -1537,6 +1942,10 @@ OtherSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync("Candlebearer Has Spawned")
                 elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync("WallDweller Has Spawned")
+                elseif v.Name == "SkinlessCorpse" then
+                    game.TextChatService.TextChannels.RBXGeneral:SendAsync("Skinless Has Spawned")
+                elseif v.Name == "TreeBody" then
+                    game.TextChatService.TextChannels.RBXGeneral:SendAsync("Eden Tree Has Spawned")
                 end
             end
         end)
@@ -1560,15 +1969,20 @@ OtherSection:NewToggle("No Locker Claustrophobia", "Prevents You From Getting Ki
         antifear = true
         while task.wait(0.1) do
             if antifear then
-                for i = #antifeartable, 1, -1 do
-                    local v = antifeartable[i]
-                    if not v or not v.Parent then
-                        table.remove(antifeartable, i)
-                    else
-                        v:SetAttribute("ClaustrophobiaStartTime", 9999)
-                        v:SetAttribute("ClaustrophobiaKickOutTime", 9999)
+                xpcall(function()
+                    for i = #antifeartable, 1, -1 do
+                        local v = antifeartable[i]
+                        if not v or not v.Parent then
+                            table.remove(antifeartable, i)
+                        else
+                            v:SetAttribute("ClaustrophobiaStartTime", 9999)
+                            v:SetAttribute("ClaustrophobiaKickOutTime", 9999)
+                        end
                     end
-                end
+                end, function(err)
+                    warn("No Claustrophobia Error")
+                    warn(debug.traceback(err))
+                end)
             elseif antifear == false then
                 break
             end
@@ -1601,18 +2015,23 @@ OtherSection:NewToggle("Make Subspace Tripmines Visible", "Makes All Subspaces V
         visiblesubspace = true
         while task.wait(0.1) do
             if visiblesubspace then
-                for i = #antifeartable, 1, -1 do
-                    local v = antifeartable[i]
-                    if not v or not v.Parent then
-                        table.remove(antifeartable, i)
-                    else
-                        for _, v2 in pairs(v:GetChildren()) do
-                            if v2:IsA("MeshPart") then
-                                v2.Transparency = 0
+                xpcall(function()
+                    for i = #antifeartable, 1, -1 do
+                        local v = antifeartable[i]
+                        if not v or not v.Parent then
+                            table.remove(antifeartable, i)
+                        else
+                            for _, v2 in pairs(v:GetChildren()) do
+                                if v2:IsA("MeshPart") then
+                                    v2.Transparency = 0
+                                end
                             end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Visible Subspace Error")
+                    warn(debug.traceback(err))
+                end)
             elseif visiblesubspace == false then
                 break
             end
@@ -1633,8 +2052,45 @@ OtherSection:NewToggle("Make Subspace Tripmines Visible", "Makes All Subspaces V
     end
 end)
 
-OtherSection:NewButton("Remove Imaginary Friends", "Remove Those Annoying People", function()
-    game.workspace.FriendPart:Destroy()
+OtherSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v:IsA("Part") and v.Name == "FriendPart" then
+                table.insert(imaginetable, v)
+            end
+        end
+        imagineconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v:IsA("Part") and v.Name == "FriendPart" then
+                table.insert(imaginetable, v)
+            end
+        end)
+        imagine = true
+        while task.wait(0.1) do
+            if imagine then
+                xpcall(function()
+                    for i = #imaginetable, 1, -1 do
+                        local v = imaginetable[i]
+                        if not v or not v.Parent then
+                            table.remove(imaginetable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Imagine Friend Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif imagine == false then
+                break
+            end
+        end
+    else
+        imagine = false
+        imagineconnect:Disconnect()
+        imaginetable = {}
+    end
 end)
 
 OtherSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", function(state)
@@ -1652,17 +2108,22 @@ OtherSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", f
         triggerlandmine = true
         while task.wait(0.1) do
             if triggerlandmine then
-                for i = #triggerlandminetable, 1, -1 do
-                    local v = triggerlandminetable[i]
-                    if not v or not v.Parent then
-                        table.remove(triggerlandminetable, i)
-                    else
-                        if v:FindFirstChild("TouchInterest") then
-                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
-                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+                xpcall(function()
+                    for i = #triggerlandminetable, 1, -1 do
+                        local v = triggerlandminetable[i]
+                        if not v or not v.Parent then
+                            table.remove(triggerlandminetable, i)
+                        else
+                            if v:FindFirstChild("TouchInterest") then
+                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+                            end
                         end
                     end
-                end
+                end, function(err)
+                    warn("Trigger Landmine Error")
+                    warn(debug.traceback(err))
+                end)
             elseif triggerlandmine == false then
                 break
             end
@@ -1671,6 +2132,130 @@ OtherSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", f
         triggerlandmine = false
         triggerlandmineconnect:Disconnect()
         triggerlandminetable = {}
+    end
+end)
+
+OtherSection:NewToggle("Bruteforce Keypad 0000-9999 Method", "Attempt To Bruteforce A Keypad", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "CurrentCode"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local text = Instance.new("TextLabel")
+        text.Name = "Code"
+        text.BackgroundColor3 = Color3.new(0, 0, 0)
+        text.TextColor3 = Color3.new(1, 0, 0)
+        text.Text = "----"
+        text.Size = UDim2.new(0, 200, 0, 50)
+        text.Position = UDim2.new(0.45, 0, -0.05, 0)
+        text.TextScaled = true
+        text.Parent = gui
+        local currentCode = 0
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
+                table.insert(keypadtable, v)
+            end
+        end
+        keypad = true
+        while task.wait(1.06) do
+            if keypad then
+                xpcall(function()
+                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    local str = string.format("%04d", currentCode)
+                    for _, pad in ipairs(keypadtable) do
+                        local distance = (pad:GetPivot().Position - hrp.Position).Magnitude
+                        if distance <= 10 then
+                            for i = 1, #str do
+                                local num = tonumber(str:sub(i, i))
+                                local button = pad:FindFirstChild("Keypad"..num)
+                                if button then
+                                    local cd = button:FindFirstChildOfClass("ClickDetector")
+                                    if cd then
+                                        text.Text = str
+                                        fireclickdetector(cd)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    currentCode += 1
+                    if currentCode > 9999 then
+                        currentCode = 0
+                    end
+
+                end, function(err)
+                    warn("Bruteforce Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif keypad == false then
+                break
+            end
+        end
+    else
+        keypad = false
+        keypadtable = {}
+        game.Players.LocalPlayer.PlayerGui.CurrentCode:Destroy()
+    end
+end)
+
+OtherSection:NewToggle("Bruteforce Keypad Randomized Method", "Attempt To Bruteforce A Keypad", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "CurrentCode"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local text = Instance.new("TextLabel")
+        text.Name = "Code"
+        text.BackgroundColor3 = Color3.new(0, 0, 0)
+        text.TextColor3 = Color3.new(1, 0, 0)
+        text.Text = "----"
+        text.Size = UDim2.new(0, 200, 0, 50)
+        text.Position = UDim2.new(0.45, 0, -0.05, 0)
+        text.TextScaled = true
+        text.Parent = gui
+        local currentCode = 0
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
+                table.insert(keypad2table, v)
+            end
+        end
+        keypad2 = true
+        while task.wait(1.06) do
+            if keypad2 then
+                xpcall(function()
+                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    local str
+                    repeat
+                        str = string.format("%04d", math.random(0, 9999))
+                    until not usedcodes[str]
+                    usedcodes[str] = true
+                    for _, pad in ipairs(keypad2table) do
+                        local distance = (pad:GetPivot().Position - hrp.Position).Magnitude
+                        if distance <= 10 then
+                            for i = 1, #str do
+                                local num = tonumber(str:sub(i, i))
+                                local button = pad:FindFirstChild("Keypad"..num)
+
+                                if button then
+                                    local cd = button:FindFirstChildOfClass("ClickDetector")
+                                    if cd then
+                                        text.Text = str
+                                        fireclickdetector(cd)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Bruteforce Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif keypad2 == false then
+                break
+            end
+        end
+    else
+        keypad2 = false
+        keypad2table = {}
+        game.Players.LocalPlayer.PlayerGui.CurrentCode:Destroy()
     end
 end)
 
