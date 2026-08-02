@@ -1103,6 +1103,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(0.2)
                     table.insert(entitytable, v)
                 end
             end
@@ -1110,6 +1111,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(0.2)
                     table.insert(entitytable, v)
                 end
             end
@@ -1117,6 +1119,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities3connect = game.workspace.Camera.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(0.2)
                     table.insert(entitytable, v)
                 end
             end
@@ -1124,6 +1127,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities4connect = game.workspace.ChildAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(0.2)
                     table.insert(entitytable, v)
                 end
             end
