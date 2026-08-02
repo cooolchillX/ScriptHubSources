@@ -97,6 +97,7 @@ local keypad = false
 local keypad2table = {}
 local keypad2 = false
 local usedcodes = {}
+local entities5connect
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -590,14 +591,14 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
         items = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
                     table.insert(itemtable, v)
                 end
             end
         end
         itemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
                     table.insert(itemtable, v)
                 end
             end
@@ -610,7 +611,7 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
                         if not v or not v.Parent then
                             table.remove(itemtable, i)
                         else
-                            if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" then
+                            if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" then
                                 if not v:FindFirstChild("ESPBillboard") then
                                     local billboard = Instance.new("BillboardGui")
                                     billboard.Name = "ESPBillboard"
@@ -681,7 +682,7 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
         itemtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -1074,52 +1075,55 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     table.insert(entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace.GameplayFolder.Monsters:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     table.insert(entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace.Camera:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     table.insert(entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
                     table.insert(entitytable, v)
                 end
             end
         end
         entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
-                    task.wait(0.2)
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(1)
+                    print("connect1 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
         end)
         entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
-                    task.wait(0.2)
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(1)
+                    print("connect2 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
         end)
         entities3connect = game.workspace.Camera.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
-                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
-                    task.wait(0.2)
+                if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
+                    task.wait(1)
+                    print("connect3 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
             end
@@ -1127,9 +1131,17 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         entities4connect = game.workspace.ChildAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "DwellerModel" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" then
-                    task.wait(0.2)
+                    task.wait(1)
+                    print("connect4 Added entity:", v.Name, v:GetFullName())
                     table.insert(entitytable, v)
                 end
+            end
+        end)
+        entities5connect = game.Workspace.DescendantAdded:Connect(function(v)
+            if v.Name == "DwellerModel" and v:IsA("Model") then
+                task.wait(0.5)
+                print("connect5 Added entity:", v.Name, v:GetFullName())
+                table.insert(entitytable, v)
             end
         end)
         entities = true
@@ -1140,6 +1152,7 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
                     for i = #entitytable, 1, -1 do
                         local v = entitytable[i]
                         if not v or not v.Parent then
+                            print("Removed entity:", v.Name)
                             table.remove(entitytable, i)
                         else
                             if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" then
@@ -1523,7 +1536,7 @@ AuraSection:NewToggle("Grab All Items Near You", "Grabs All Close Items", functi
         end
         itemauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
                     table.insert(itemauratable, v)
                 end
             end
@@ -1905,7 +1918,7 @@ OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", fu
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
-                elseif v.Name == "DwellerModel" then
+                elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "WallDweller" .. " Has Spawned", Duration = 4,})
                     if notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
