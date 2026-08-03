@@ -98,6 +98,17 @@ local keypad2table = {}
 local keypad2 = false
 local usedcodes = {}
 local entities5connect
+local ammotable = {}
+local ammo = false
+local ammoconnect
+local ammo2connect
+local ammoauratable = {}
+local ammoaura = false
+local ammoauraconnect
+local ammoaura2connect
+local zombietable = {}
+local zombie = false
+local zombieconnect
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -2267,6 +2278,201 @@ OtherSection:NewToggle("Bruteforce Keypad Randomized Method", "Attempt To Brutef
         keypad2 = false
         keypad2table = {}
         game.Players.LocalPlayer.PlayerGui.CurrentCode:Destroy()
+    end
+end)
+
+local Heart = Window:NewTab("Operation Heartburn")
+local HeartSection = Heart:NewSection("Options For This Gamemode")
+
+HeartSection:NewToggle("Ammo ESP", "See All Ammo", function(state)
+    if state then
+        ammo = true
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammotable, v)
+            end
+        end
+        for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammotable, v)
+            end
+        end
+        ammoconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammotable, v)
+            end
+        end)
+        ammo2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammotable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if ammo then
+                xpcall(function()
+                    for i = #ammotable, 1, -1 do
+                        local v = ammotable[i]
+                        if not v or not v.Parent then
+                            table.remove(ammotable, i)
+                        else
+                            if not v:FindFirstChild("ESPHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "ESPHighlight"
+                                highlight.FillColor = assetscolor
+                                highlight.OutlineTransparency = 1
+                                highlight.Parent = v
+                            elseif v:FindFirstChild("ESPHighlight") then
+                                v.ESPHighlight.FillColor = assetscolor
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Ammo ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif ammo == false then
+                break
+            end
+        end
+    else
+        ammo = false
+        ammoconnect:Disconnect()
+        ammo2connect:Disconnect()
+        ammotable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                if v:FindFirstChild("ESPHighlight") then
+                    v.ESPHighlight:Destroy()
+                end
+            end
+        end
+        for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                if v:FindFirstChild("ESPHighlight") then
+                    v.ESPHighlight:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+HeartSection:NewToggle("Grab All Ammo Near You", "Grabs All Close Ammo", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammoauratable, v)
+            end
+        end
+        for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammoauratable, v)
+            end
+        end
+        ammoauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammoauratable, v)
+            end
+        end)
+        ammoaura2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
+            if v and string.find(string.lower(v.Name), "shell") then
+                table.insert(ammoauratable, v)
+            end
+        end)
+        ammoaura = true
+        while task.wait(0.1) do
+            if ammoaura then
+                xpcall(function()
+                    for i = #ammoauratable, 1, -1 do
+                        local v = ammoauratable[i]
+                        if not v or not v.Parent then
+                            table.remove(ammoauratable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
+                                if distance <= 15 then
+                                    fireproximityprompt(v.ProxyPart.ProximityPrompt)
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab All Ammo Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif ammoaura == false then
+                break
+            end
+        end
+    else
+        ammoaura = false
+        ammoauraconnect:Disconnect()
+        ammoaura2connect:Disconnect()
+        ammoauratable = {}
+    end
+end)
+
+HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
+    if state then
+        zombie = true
+        for _, v in pairs(game.workspace.ReplicatedAI:GetDescendants()) do
+            if v and v.Name == "ZombieModel" then
+                table.insert(zombietable, v)
+            end
+        end
+        zombieconnect = game.workspace.ReplicatedAI.DescendantAdded:Connect(function(v)
+            if v and v.Name == "ZombieModel" then
+                table.insert(zombietable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if zombie then
+                xpcall(function()
+                    for i = #zombietable, 1, -1 do
+                        local v = zombietable[i]
+                        if not v or not v.Parent then
+                            table.remove(zombietable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
+
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 0.25, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(1, 0, 0)
+                                label.TextScaled = true
+                                label.Text = "Zombie"
+                                label.Parent = billboard
+                            end
+                            if v:IsDescendantOf(game.workspace.GameplayFolder.Debris) and v:FindFirstChild("ESPBillboard") then
+                                v.ESPBillboard:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Zombie ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif zombie == false then
+                break
+            end
+        end
+    else
+        zombie = false
+        zombieconnect:Disconnect()
+        zombietable = {}
+        for _, v in pairs(game.workspace.ReplicatedAI:GetDescendants()) do
+            if v and v.Name == "ZombieModel" then
+                if v:FindFirstChild("ESPBillboard") then
+                    v.ESPBillboard:Destroy()
+                end
+            end
+        end
     end
 end)
 
