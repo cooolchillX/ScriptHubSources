@@ -239,12 +239,12 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
     if state then
         assets = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "currency") then
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 table.insert(assettable, v)
             end
         end
         assetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "currency") then
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 table.insert(assettable, v)
             end
         end)
@@ -280,7 +280,7 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
         assetconnect:Disconnect()
         assettable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "currency") then
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 if v:FindFirstChild("ESPHighlight") then
                     v.ESPHighlight:Destroy()
                 end
@@ -1446,12 +1446,12 @@ local AuraSection = Aura:NewSection("Grab Things Close To You")
 AuraSection:NewToggle("Grab All Assets Near You", "Grabs All Close Assets", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "currency") then
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 table.insert(assetauratable, v)
             end
         end
         assetauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "currency") then
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 table.insert(assetauratable, v)
             end
         end)
@@ -1844,6 +1844,7 @@ OtherSection:NewDropdown("Choose A Sound", "Choose The Notification Sound You Wa
     end
     if game.SoundService:FindFirstChild("CustomNotifSound") then
         game.SoundService.CustomNotifSound.SoundId = notifid
+        game.SoundService.CustomNotifSound:Play()
     end
 end)
 
