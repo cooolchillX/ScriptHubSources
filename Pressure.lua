@@ -109,6 +109,7 @@ local ammoaura2connect
 local zombietable = {}
 local zombie = false
 local zombieconnect
+local zombiecolor = Color3.fromRGB(255, 0, 0)
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -2288,22 +2289,22 @@ HeartSection:NewToggle("Ammo ESP", "See All Ammo", function(state)
     if state then
         ammo = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammotable, v)
             end
         end
         for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammotable, v)
             end
         end
         ammoconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammotable, v)
             end
         end)
         ammo2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammotable, v)
             end
         end)
@@ -2340,14 +2341,14 @@ HeartSection:NewToggle("Ammo ESP", "See All Ammo", function(state)
         ammo2connect:Disconnect()
         ammotable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 if v:FindFirstChild("ESPHighlight") then
                     v.ESPHighlight:Destroy()
                 end
             end
         end
         for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 if v:FindFirstChild("ESPHighlight") then
                     v.ESPHighlight:Destroy()
                 end
@@ -2359,22 +2360,22 @@ end)
 HeartSection:NewToggle("Grab All Ammo Near You", "Grabs All Close Ammo", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammoauratable, v)
             end
         end
         for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammoauratable, v)
             end
         end
         ammoauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammoauratable, v)
             end
         end)
         ammoaura2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
-            if v and string.find(string.lower(v.Name), "shell") then
+            if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 table.insert(ammoauratable, v)
             end
         end)
@@ -2389,7 +2390,7 @@ HeartSection:NewToggle("Grab All Ammo Near You", "Grabs All Close Ammo", functio
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
-                                if distance <= 15 then
+                                if distance <= 5 then
                                     fireproximityprompt(v.ProxyPart.ProximityPrompt)
                                 end
                             end
@@ -2432,25 +2433,17 @@ HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
                         if not v or not v.Parent then
                             table.remove(zombietable, i)
                         else
-                            if not v:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v
-
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(1, 0, 0)
-                                label.TextScaled = true
-                                label.Text = "Zombie"
-                                label.Parent = billboard
+                            if not v:FindFirstChild("ESPHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "ESPHighlight"
+                                highlight.FillColor = zombiecolor
+                                highlight.OutlineTransparency = 1
+                                highlight.Parent = v
+                            elseif v:FindFirstChild("ESPHighlight") then
+                                v.ESPHighlight.FillColor = zombiecolor
                             end
-                            if v:IsDescendantOf(game.workspace.GameplayFolder.Debris) and v:FindFirstChild("ESPBillboard") then
-                                v.ESPBillboard:Destroy()
+                            if v:IsDescendantOf(game.workspace.GameplayFolder.Debris) and v:FindFirstChild("ESPHighlight") then
+                                v.ESPHighlight:Destroy()
                             end
                         end
                     end
@@ -2468,12 +2461,16 @@ HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
         zombietable = {}
         for _, v in pairs(game.workspace.ReplicatedAI:GetDescendants()) do
             if v and v.Name == "ZombieModel" then
-                if v:FindFirstChild("ESPBillboard") then
-                    v.ESPBillboard:Destroy()
+                if v:FindFirstChild("ESPHighlight") then
+                    v.ESPHighlight:Destroy()
                 end
             end
         end
     end
+end)
+
+HeartSection:NewColorPicker("Zombie ESP Color", "Change Its Color", Color3.fromRGB(255,0,0), function(color)
+    zombiecolor = color
 end)
 
 local UI = Window:NewTab("UI Toggle")
