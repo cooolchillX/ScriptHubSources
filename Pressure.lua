@@ -3,6 +3,7 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
 local risky = false
 local tpdistance = 100
+local avoidconnect
 local assettable = {}
 local assets = false
 local assetconnect
@@ -238,12 +239,11 @@ MainSection:NewSlider("Teleport Distance", "How Close Before It Telports", 500, 
     tpdistance = s
 end)
 
-MainSection:NewButton("Avoid Active Angler", "Avoids Active Node Monsters", function()
+MainSection:NewButton("Manual Avoid Active Angler", "Avoids Active Node Monsters", function()
     local cando = false
     local something = false
     local name = ""
-    local oldpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-    local old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    local old = nil
     for _, v in pairs(game.workspace:GetChildren()) do
         if v and v:IsA("Part") then
             if v.Name == "A200" or v.Name == "Harbinger" or v.Name == "WitchingHour" then
@@ -275,18 +275,22 @@ MainSection:NewButton("Avoid Active Angler", "Avoids Active Node Monsters", func
         end
     end
     if cando then
+        local target = game.workspace:FindFirstChild(name)
         local doonce = false
         while task.wait(0.05) do
             if not doonce then
-                local distance = (oldpos - game.workspace[name].Position).Magnitude
-                if distance <= tpdistance then
-                    doonce = true
-                    game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting To Spot", Duration = 4,})
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                if target and target.Parent then
+                    local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.workspace[name].Position).Magnitude
+                    if distance <= tpdistance then
+                        doonce = true
+                        old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting To Spot", Duration = 4,})
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                    end
                 end
             end
             if doonce then
-                if game.workspace:FindFirstChild(name) then
+                if target and target.Parent then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
                     game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
                 else
@@ -296,6 +300,70 @@ MainSection:NewButton("Avoid Active Angler", "Avoids Active Node Monsters", func
         end
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
         game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting Back", Duration = 4,})
+    end
+end)
+
+MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", function(state)
+    if state then
+        local cando = false
+        local something = false
+        local name = ""
+        local old = nil
+        avoidconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v:IsA("Part") then
+                if not risky then
+                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                        game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Enable Risky Avoiding For " .. v.Name, Duration = 4,})
+                        something = true
+                    end
+                else
+                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                        cando = true
+                        name = v.Name
+                        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
+                    end
+                end
+                if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Pipsqueak" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
+                    cando = true
+                    name = v.Name
+                    game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
+                end
+            end
+
+            if cando then
+                local target = game.workspace:FindFirstChild(name)
+                local doonce = false
+                while task.wait(0.05) do
+                    if not doonce then
+                        if target and target.Parent then
+                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - target.Position).Magnitude
+                            if distance <= tpdistance then
+                                doonce = true
+                                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                                game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting To Spot", Duration = 4,})
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                            end
+                        end
+                    end
+                    if doonce then
+                        if target and target.Parent then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                        else
+                            doonce = false
+                            name = ""
+                            something = false
+                            cando = false
+                            break
+                        end
+                    end
+                end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+                game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting Back", Duration = 4,})
+            end
+        end)
+    else
+        avoidconnect:Disconnect()
     end
 end)
 
