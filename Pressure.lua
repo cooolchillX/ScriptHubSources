@@ -4,6 +4,9 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 local risky = false
 local tpdistance = 100
 local avoidconnect
+local inputconnect
+local noclip = false
+local nocliptable = {}
 local assettable = {}
 local assets = false
 local assetconnect
@@ -104,6 +107,9 @@ local triggerlandmineconnect
 local waterpuddletable = {}
 local waterpuddle = false
 local waterpuddleconnect
+local walklandminetable = {}
+local walklandmines = false
+local walklandmineconnect
 local autogeneratortable = {}
 local autogenerator = false
 local autogeneratorconnect
@@ -230,7 +236,7 @@ game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure"
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Useful For Evading Anglers")
 
-MainSection:NewToggle("Allow Risky Avoiding", "Allows The Avoider To Teleport For Pandemonium And Pipsqueak", function(state)
+MainSection:NewToggle("Allow Risky Avoiding", "Allows Teleporting For Pandemonium And Pipsqueak", function(state)
     if state then
         risky = true
     else
@@ -378,6 +384,49 @@ MainSection:NewToggle("TP Walk", "Increase Movement Speed", function(state)
         startTPWalk()
     else
         stopTPWalk()
+    end
+end)
+
+MainSection:NewToggle("Infinite Jump", "Increase Velocity Every Jump", function(state)
+    if state then
+        inputconnect = game.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if gameProcessed then
+                return
+            end
+            if input.KeyCode == Enum.KeyCode.Space then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity + Vector3.new(0, 60, 0)
+            end
+        end)
+    else
+        inputconnect:Disconnect()
+    end
+end)
+
+MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
+    if state then
+        noclip = true
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("Part") or v:IsA("MeshPart") then
+                if v.CanCollide then
+                    table.insert(nocliptable, v)
+                end
+            end
+        end
+        while task.wait(0.1) do
+            if noclip then
+                for _, v in pairs(nocliptable) do
+                    v.CanCollide = false
+                end
+            elseif noclip == false then
+                break
+            end
+        end
+    else
+        noclip = false
+        for _, v in pairs(nocliptable) do
+            v.CanCollide = true
+        end
+        nocliptable = {}
     end
 end)
 
@@ -1080,22 +1129,26 @@ ESPSection:NewToggle("Tripwire ESP", "See All Tripwires", function(state)
                         if not v or not v.Parent then
                             table.remove(tripwiretable, i)
                         else
-                            if not v.Main:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v.Main
+                            if v:FindFirstChild("Main") then
+                                if not v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency ~= 1 then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v.Main
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Tripwire"
-                                label.Parent = billboard
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Tripwire"
+                                    label.Parent = billboard
+                                elseif v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency == 1 then
+                                    v.Main.ESPBillboard:Destroy()
+                                end
                             end
                         end
                     end
@@ -1142,22 +1195,26 @@ ESPSection:NewToggle("Landmine ESP", "See All Landmines", function(state)
                         if not v or not v.Parent then
                             table.remove(landminetable, i)
                         else
-                            if not v.Main:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v.Main
+                            if v:FindFirstChild("Main") then
+                                if not v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency ~= 1 then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v.Main
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 1, 1)
-                                label.TextScaled = true
-                                label.Text = "Landmine"
-                                label.Parent = billboard
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 1, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Landmine"
+                                    label.Parent = billboard
+                                elseif v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency == 1 then
+                                    v.Main.ESPBillboard:Destroy()
+                                end
                             end
                         end
                     end
@@ -2055,7 +2112,10 @@ end)
 
 VisualSection:NewButton("Remove Fog From Modifiers", "Removes The Restless Dreams Modifier Fog", function()
     local lighting = game:GetService("Lighting")
+    local atmosphere = lighting:FindFirstChildOfClass("Atmosphere")
+    lighting.FogStart = 0
     lighting.FogEnd = 100000
+    atmosphere.Density = 0
     game.Players.LocalPlayer.Character.HumanoidRootPart.FogParticle.PlayerFog:Destroy()
 end)
 
@@ -2486,6 +2546,50 @@ OtherSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slippi
                 if v:FindFirstChild("HitBox") then
                     v.HitBox.CanTouch = true
                 end
+            end
+        end
+    end
+end)
+
+OtherSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmines", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
+                table.insert(walklandminetable, v)
+            end
+        end
+        walklandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
+                table.insert(walklandminetable, v)
+            end
+        end)
+        walklandmines = true
+        while task.wait(0.1) do
+            if walklandmines then
+                xpcall(function()
+                    for i = #walklandminetable, 1, -1 do
+                        local v = walklandminetable[i]
+                        if not v or not v.Parent then
+                            table.remove(walklandminetable, i)
+                        else
+                            v.CanTouch = false
+                        end
+                    end
+                end, function(err)
+                    warn("Walk On Landmine Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif walklandmines == false then
+                break
+            end
+        end
+    else
+        walklandmines = false
+        walklandmineconnect:Disconnect()
+        walklandminetable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
+                v.CanTouch = true
             end
         end
     end
