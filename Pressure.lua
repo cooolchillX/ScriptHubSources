@@ -367,6 +367,10 @@ MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", func
     end
 end)
 
+MainSection:NewSlider("Set Speed", "Changed How Fast TP Walk Is", 5, 1, function(s) -- 5 (MaxValue) | 1 (MinValue)
+    speed = s
+end)
+
 MainSection:NewToggle("TP Walk", "Increase Movement Speed", function(state)
     if state then
         startTPWalk()
@@ -795,7 +799,7 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
                                     label.BackgroundTransparency = 1
                                     label.TextColor3 = Color3.new(0, 1, 0)
                                     label.TextScaled = true
-                                    label.Text = v:GetAttribute("DisplayName")
+                                    label.Text = tostring(v:GetAttribute("DisplayName"))
                                     label.Parent = billboard
                                 end
                             elseif v.Name == "Blacklight" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" then
