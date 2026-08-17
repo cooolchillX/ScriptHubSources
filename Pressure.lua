@@ -230,7 +230,7 @@ game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure"
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Useful For Evading Anglers")
 
-MainSection:NewToggle("Allow Risky Avoiding", "Allows The Avoider To Teleport For Pandemonium", function(state)
+MainSection:NewToggle("Allow Risky Avoiding", "Allows The Avoider To Teleport For Pandemonium And Pipsqueak", function(state)
     if state then
         risky = true
     else
@@ -259,13 +259,13 @@ MainSection:NewButton("Manual Avoid Active Angler", "Avoids Active Node Monsters
                     something = true
                 end
             else
-                if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
                     cando = true
                     name = v.Name
                     game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
                 end
             end
-            if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Pipsqueak" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
+            if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
                 cando = true
                 name = v.Name
                 game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
@@ -320,19 +320,18 @@ MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", func
                         something = true
                     end
                 else
-                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
                         cando = true
                         name = v.Name
                         game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
                     end
                 end
-                if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Pipsqueak" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
+                if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
                     cando = true
                     name = v.Name
                     game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
                 end
             end
-
             if cando then
                 local target = game.workspace:FindFirstChild(name)
                 local doonce = false
