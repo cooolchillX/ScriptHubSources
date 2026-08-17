@@ -51,6 +51,7 @@ local entitiesconnect
 local entities2connect
 local entities3connect
 local entities4connect
+local entities5connect
 local generatortable = {}
 local generators = false
 local generatorconnect
@@ -103,12 +104,14 @@ local triggerlandmineconnect
 local waterpuddletable = {}
 local waterpuddle = false
 local waterpuddleconnect
+local autogeneratortable = {}
+local autogenerator = false
+local autogeneratorconnect
 local keypadtable = {}
 local keypad = false
 local keypad2table = {}
 local keypad2 = false
 local usedcodes = {}
-local entities5connect
 local ammotable = {}
 local ammo = false
 local ammoconnect
@@ -2486,6 +2489,53 @@ OtherSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slippi
                 end
             end
         end
+    end
+end)
+
+OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
+                if v:FindFirstChild("RemoteEvent") then
+                    table.insert(autogeneratortable, v)
+                end
+            end
+        end
+        autogeneratorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
+                if v:FindFirstChild("RemoteEvent") then
+                    table.insert(autogeneratortable, v)
+                end
+            end
+        end)
+        autogenerator = true
+        while task.wait(0.1) do
+            if autogenerator then
+                xpcall(function()
+                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    for i = #autogeneratortable, 1, -1 do
+                        local v = autogeneratortable[i]
+                        if not v or not v.Parent then
+                            table.remove(autogeneratortable, i)
+                        else
+                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                            if v.Fixed.Value ~= 100 and distance <= 10 then
+                                v.RemoteEvent:FireServer(true)
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Auto Generator Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif autogenerator == false then
+                break
+            end
+        end
+    else
+        autogenerator = false
+        autogeneratorconnect:Disconnect()
+        autogeneratortable = {}
     end
 end)
 
