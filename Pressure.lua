@@ -138,6 +138,9 @@ local fansconnect
 local counter
 local countconnect
 local count = 0
+local tpassettable = {}
+local tpassets = false
+local tpassetconnect
 local keypadtable = {}
 local keypad = false
 local keypad2table = {}
@@ -3323,6 +3326,74 @@ OtherSection:NewToggle("Room Counter", "Counts The Rooms", function(state)
     else
         counter = false
         game.Players.LocalPlayer.PlayerGui.Counter:Destroy()
+    end
+end)
+
+OtherSection:NewToggle("TP To Assets", "Tp To All Assets", function(state)
+    if state then
+        tpassets = true
+        local once = false
+        local old = nil
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
+                table.insert(tpassettable, v)
+            end
+        end
+        tpassetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
+                table.insert(tpassettable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if not tpassets then
+                break
+            end
+            xpcall(function()
+                if #tpassettable > 0 and not once then
+                    local character = game.Players.LocalPlayer.Character
+                    local root = character and character:FindFirstChild("HumanoidRootPart")
+                    if root then
+                        old = root.CFrame
+                        once = true
+                    end
+                end
+                for i = #tpassettable, 1, -1 do
+                    local v = tpassettable[i]
+                    if not v or not v.Parent then
+                        table.remove(tpassettable, i)
+                    else
+                        local proxy = v:FindFirstChild("ProxyPart")
+                        if proxy then
+                            local prompt = proxy:FindFirstChildOfClass("ProximityPrompt")
+                            if prompt then
+                                local character = game.Players.LocalPlayer.Character
+                                local root = character and character:FindFirstChild("HumanoidRootPart")
+                                if root then
+                                    root.CFrame = proxy.CFrame
+                                    fireproximityprompt(prompt)
+                                end
+                            end
+                        end
+                    end
+                end
+                if #tpassettable == 0 and once then
+                    local character = game.Players.LocalPlayer.Character
+                    local root = character and character:FindFirstChild("HumanoidRootPart")
+                    if root and old then
+                        root.CFrame = old
+                    end
+                    old = nil
+                    once = false
+                end
+            end, function(err)
+                warn("Asset TP Error")
+                warn(debug.traceback(err))
+            end)
+        end
+    else
+        tpassets = false
+        tpassetconnect:Disconnect()
+        tpassettable = {}
     end
 end)
 
