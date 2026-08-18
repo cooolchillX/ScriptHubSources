@@ -156,9 +156,11 @@ local zombie = false
 local zombieconnect
 local zombiecolor = Color3.fromRGB(255, 0, 0)
 
-countconnect = game.workspace.GameplayFolder.Rooms.ChildAdded:Connect(function(v)
-    count = count + 1
-end)
+if game.workspace:FindFirstChild("GameplayFolder") then
+    countconnect = game.workspace.GameplayFolder.Rooms.ChildAdded:Connect(function(v)
+        count = count + 1
+    end)
+end
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -567,6 +569,25 @@ MainSection:NewToggle("Counter Entities Using Raycast", "Eyefest, Turret, Search
     end
 end)
 
+local ESPColor = Window:NewTab("ESP Colors")
+local ESPColorSection = ESPColor:NewSection("Change The Colors Of ESP")
+
+ESPColorSection:NewColorPicker("Asset ESP Color", "Change Its Color", Color3.fromRGB(255,255,0), function(color)
+    assetscolor = color
+end)
+
+ESPColorSection:NewColorPicker("Door ESP Color", "Change Its Color", Color3.fromRGB(0,255,255), function(color)
+    doorscolor = color
+end)
+
+ESPColorSection:NewColorPicker("Player ESP Color", "Change The ESP Color", Color3.fromRGB(0,255,0), function(color)
+    playerscolor = color
+end)
+
+ESPColorSection:NewColorPicker("Locker ESP Color", "Change Its Color", Color3.fromRGB(0,255,0), function(color)
+    lockerscolor = color
+end)
+
 local ESP = Window:NewTab("ESP")
 local ESPSection = ESP:NewSection("See Things Behind Walls")
 
@@ -622,10 +643,6 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
             end
         end
     end
-end)
-
-ESPSection:NewColorPicker("Asset ESP Color", "Change Its Color", Color3.fromRGB(255,255,0), function(color)
-    assetscolor = color
 end)
 
 ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
@@ -696,10 +713,6 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
     end
 end)
 
-ESPSection:NewColorPicker("Door ESP Color", "Change Its Color", Color3.fromRGB(0,255,255), function(color)
-    doorscolor = color
-end)
-
 ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
     if state then
         for _, v in pairs(game.Players:GetPlayers()) do
@@ -753,10 +766,6 @@ ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
             end
         end
     end
-end)
-
-ESPSection:NewColorPicker("Player ESP Color", "Change The ESP Color", Color3.fromRGB(0,255,0), function(color)
-    playerscolor = color
 end)
 
 ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
@@ -1115,10 +1124,6 @@ ESPSection:NewToggle("Locker ESP", "See All Lockers", function(state)
             end
         end
     end
-end)
-
-ESPSection:NewColorPicker("Locker ESP Color", "Change Its Color", Color3.fromRGB(0,255,0), function(color)
-    lockerscolor = color
 end)
 
 ESPSection:NewToggle("NeoStyk ESP", "See All NeoStyks", function(state)
@@ -2610,49 +2615,10 @@ VisualSection:NewToggle("See Through Held Item", "Makes Ur Held Item See Through
     end
 end)
 
-local Other = Window:NewTab("Others")
-local OtherSection = Other:NewSection("Extra Things")
+local Notif = Window:NewTab("Notification")
+local NotifSection = Notif:NewSection("Notify For Specific Things")
 
-OtherSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
-    if state then
-        insta = true
-        for _, v in pairs(game.workspace:GetDescendants()) do
-            if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
-            end
-        end
-        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
-            end
-        end)
-        while task.wait(0.1) do
-            if insta then
-                xpcall(function()
-                    for i = #prompts, 1, -1 do
-                        local v = prompts[i]
-                        if not v or not v.Parent then
-                            table.remove(prompts, i)
-                        else
-                            v.HoldDuration = 0
-                        end
-                    end
-                end, function(err)
-                    warn("Insta Interact Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif insta == false then
-                break
-            end
-        end
-    else
-        insta = false
-        instaconnection:Disconnect()
-        prompts = {}
-    end
-end)
-
-OtherSection:NewDropdown("Choose A Sound", "Choose The Notification Sound You Want", {"Windows 10", "Default Ding", "Steam", "Default Low", "XBOX", "GTA5", "Discord"}, function(currentOption)
+NotifSection:NewDropdown("Choose A Sound", "Choose The Notification Sound You Want", {"Windows 10", "Default Ding", "Steam", "Default Low", "XBOX", "GTA5", "Discord"}, function(currentOption)
     if currentOption == "Windows 10" then
         notifid = "rbxassetid://2389339814"
     elseif currentOption == "Default Ding" then
@@ -2675,7 +2641,7 @@ OtherSection:NewDropdown("Choose A Sound", "Choose The Notification Sound You Wa
 end)
 
 
-OtherSection:NewToggle("Notification Sound", "Sounds For Node Monster And Entity", function(state)
+NotifSection:NewToggle("Notification Sound", "Sounds For Node Monster And Entity", function(state)
     if state then
         notif = true
         if not game.SoundService:FindFirstChild("CustomNotifSound") then
@@ -2693,7 +2659,7 @@ OtherSection:NewToggle("Notification Sound", "Sounds For Node Monster And Entity
     end
 end)
 
-OtherSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster Spawns", function(state)
+NotifSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster Spawns", function(state)
     if state then
         anglerconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
@@ -2712,21 +2678,7 @@ OtherSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster
     end
 end)
 
-OtherSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", function(state)
-    if state then
-        anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
-            if v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                    game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
-                end
-            end
-        end)
-    else
-        anglernotifconnect:Disconnect()
-    end
-end)
-
-OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", function(state)
+NotifSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", function(state)
     if state then
         entityconnect = game.workspace.DescendantAdded:Connect(function(v)
             if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
@@ -2787,7 +2739,21 @@ OtherSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", fu
     end
 end)
 
-OtherSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state)
+NotifSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", function(state)
+    if state then
+        anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v:IsA("Part") then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                    game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
+                end
+            end
+        end)
+    else
+        anglernotifconnect:Disconnect()
+    end
+end)
+
+NotifSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state)
     if state then
         entitynotifconnect = game.workspace.DescendantAdded:Connect(function(v)
             if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
@@ -2810,6 +2776,48 @@ OtherSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state
         end)
     else
         entitynotifconnect:Disconnect()
+    end
+end)
+
+local Other = Window:NewTab("Others")
+local OtherSection = Other:NewSection("Extra Things")
+
+OtherSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
+    if state then
+        insta = true
+        for _, v in pairs(game.workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
+            end
+        end
+        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if insta then
+                xpcall(function()
+                    for i = #prompts, 1, -1 do
+                        local v = prompts[i]
+                        if not v or not v.Parent then
+                            table.remove(prompts, i)
+                        else
+                            v.HoldDuration = 0
+                        end
+                    end
+                end, function(err)
+                    warn("Insta Interact Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif insta == false then
+                break
+            end
+        end
+    else
+        insta = false
+        instaconnection:Disconnect()
+        prompts = {}
     end
 end)
 
