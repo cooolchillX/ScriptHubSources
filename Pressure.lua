@@ -135,6 +135,9 @@ local autogeneratorconnect
 local fanstable = {}
 local fans = false
 local fansconnect
+local counter
+local countconnect
+local count = 0
 local keypadtable = {}
 local keypad = false
 local keypad2table = {}
@@ -152,6 +155,10 @@ local zombietable = {}
 local zombie = false
 local zombieconnect
 local zombiecolor = Color3.fromRGB(255, 0, 0)
+
+countconnect = game.workspace.GameplayFolder.Rooms.ChildAdded:Connect(function(v)
+    count = count + 1
+end)
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -2344,7 +2351,7 @@ GrabSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", func
         grabitemconnect:Disconnect()
         grabitemtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+            if v and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
                 if v:FindFirstChild("ProxyPart") then
                     v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
                     v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
@@ -3283,6 +3290,32 @@ OtherSection:NewButton("Complete Seachlights Ending After Cannons", "Completes T
         end
     end
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.GameplayFolder.Rooms.SearchlightsEnding.Interactables.LargeRoundDoor:GetPivot()
+end)
+
+OtherSection:NewToggle("Room Counter", "Counts The Rooms", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "Counter"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local label = Instance.new("TextLabel")
+        label.Name = "Text"
+        label.Text = "Total Rooms: " .. tostring(count)
+        label.TextScaled = true
+        label.Position = UDim2.new(0, 0, 0, 50)
+        label.Size = UDim2.new(0, 200, 0, 50)
+        label.Parent = gui
+        counter = true
+        while task.wait(0.05) do
+            if counter then
+                label.Text = "Total Rooms: " .. tostring(count)
+            elseif counter == false then
+                break
+            end
+        end
+    else
+        counter = false
+        game.Players.LocalPlayer.PlayerGui.Counter:Destroy()
+    end
 end)
 
 OtherSection:NewToggle("Bruteforce Keypad 0000-9999 Method", "Attempt To Bruteforce A Keypad", function(state)
