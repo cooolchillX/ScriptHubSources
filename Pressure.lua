@@ -521,7 +521,7 @@ MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
     end
 end)
 
-MainSection:NewToggle("Counter Entities Using Raycast", "Eyefestation, Turrets, Searchlights, Pipsqueak and Pande", function(state)
+MainSection:NewToggle("Counter Entities Using Raycast", "Eyefest, Turret, Searchlight, Pip, Pande, Skinless, Eden", function(state)
     if state then
         local Players = game:GetService("Players")
         local player = Players.LocalPlayer
