@@ -82,7 +82,26 @@ local tripwireauraconnect
 local landmineauratable = {}
 local landmineaura = false
 local landmineauraconnect
+local grabassettable = {}
+local grabasset = false
+local grabassetconnect
+local grabkeycardtable = {}
+local grabkeycard = false
+local grabkeycardconnect
+local grabitemtable = {}
+local grabitem = false
+local grabitemconnect
+local grabneostyktable = {}
+local grabneostyk = false
+local grabneostykconnect
+local grabbatterytable = {}
+local grabbattery = false
+local grabbatteryconnect
+local disabledrawertable = {}
+local disabledrawer = false
+local disabledrawerconnect
 local freezefov = false
+local seethrough = false
 local prompts = {}
 local insta = false
 local instaconnection
@@ -113,6 +132,9 @@ local walklandmineconnect
 local autogeneratortable = {}
 local autogenerator = false
 local autogeneratorconnect
+local fanstable = {}
+local fans = false
+local fansconnect
 local keypadtable = {}
 local keypad = false
 local keypad2table = {}
@@ -139,6 +161,7 @@ local camera = workspace.CurrentCamera
 local speed = 1
 local moveDir = Vector3.zero
 local connection
+local connection2
 local keys = {
     W = false,
     A = false,
@@ -231,6 +254,36 @@ local function stopTPWalk()
     resetKeys()
 end
 
+local function startTPWalk2()
+    if connection2 then return end
+
+    connection2 = RunService.Heartbeat:Connect(function()
+        local char = player.Character
+        if not char then return end
+
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        if moveDir.Magnitude > 0 then
+            local camCF = camera.CFrame
+            local direction = camCF:VectorToWorldSpace(moveDir)
+            direction = Vector3.new(direction.X, direction.Y, direction.Z)
+
+            if direction.Magnitude > 0 then
+                direction = direction.Unit
+                hrp.CFrame = hrp.CFrame + (direction * speed * 0.1)
+            end
+        end
+    end)
+end
+local function stopTPWalk2()
+    if connection2 then
+        connection2:Disconnect()
+        connection2 = nil
+    end
+    resetKeys()
+end
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure", Duration = 4,})
 
 local Main = Window:NewTab("Main")
@@ -314,28 +367,39 @@ end)
 
 MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", function(state)
     if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "Avoider"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local label = Instance.new("TextLabel")
+        label.Name = "Text"
+        label.Text = "Status: Waiting"
+        label.TextScaled = true
+        label.Position = UDim2.new(0, 0, 0, 0)
+        label.Size = UDim2.new(0, 200, 0, 50)
+        label.Parent = gui
         local cando = false
-        local something = false
         local name = ""
         local old = nil
+        local finished = false
         avoidconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") then
                 if not risky then
                     if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                        game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Enable Risky Avoiding For " .. v.Name, Duration = 4,})
-                        something = true
+                        label.Text = "Status: Risky Is False For " .. v.Name
+                        task.wait(1)
+                        label.Text = "Status: Waiting"
                     end
                 else
                     if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
                         cando = true
                         name = v.Name
-                        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
+                        label.Text = "Status: Detected " .. v.Name
                     end
                 end
                 if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
                     cando = true
                     name = v.Name
-                    game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
+                    label.Text = "Status: Detected " .. v.Name
                 end
             end
             if cando then
@@ -348,30 +412,49 @@ MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", func
                             if distance <= tpdistance then
                                 doonce = true
                                 old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                                game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting To Spot", Duration = 4,})
+                                label.Text = "Status: Teleporting"
                                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
                             end
+                        else
+                            doonce = false
+                            name = ""
+                            cando = false
+                            label.Text = "Status: Waiting"
+                            break
                         end
                     end
                     if doonce then
                         if target and target.Parent then
                             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
                             game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                            local distance = (old.Position - target.Position).Magnitude
+                            if distance > tpdistance then
+                                doonce = false
+                                label.Text = "Status: Detected " .. name
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+                            end
                         else
                             doonce = false
                             name = ""
-                            something = false
                             cando = false
+                            finished = true
                             break
                         end
                     end
                 end
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
-                game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting Back", Duration = 4,})
+                if finished then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+                    label.Text = "Status: Returning Back"
+                    task.wait(1)
+                    label.Text = "Status: Waiting"
+                    finished = false
+                    old = nil
+                end
             end
         end)
     else
         avoidconnect:Disconnect()
+        game.Players.LocalPlayer.PlayerGui.Avoider:Destroy()
     end
 end)
 
@@ -384,6 +467,14 @@ MainSection:NewToggle("TP Walk", "Increase Movement Speed", function(state)
         startTPWalk()
     else
         stopTPWalk()
+    end
+end)
+
+MainSection:NewToggle("TP Walk With Better Swimming", "Increase Movement Speed", function(state)
+    if state then
+        startTPWalk2()
+    else
+        stopTPWalk2()
     end
 end)
 
@@ -406,7 +497,7 @@ MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
     if state then
         noclip = true
         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-            if v:IsA("Part") or v:IsA("MeshPart") then
+            if v and (v:IsA("Part") or v:IsA("MeshPart")) then
                 if v.CanCollide then
                     table.insert(nocliptable, v)
                 end
@@ -427,6 +518,45 @@ MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
             v.CanCollide = true
         end
         nocliptable = {}
+    end
+end)
+
+MainSection:NewToggle("Counter Entities Using Raycast", "Eyefestation, Turrets, Searchlights, Pipsqueak and Pande", function(state)
+    if state then
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+        local function createWall(name, size, offset)
+            local character = player.Character
+            local hrp = character:WaitForChild("HumanoidRootPart")
+            local wall = Instance.new("Part")
+            wall.Name = name
+            wall.Size = size
+            wall.CFrame = hrp.CFrame * CFrame.new(offset)
+            wall.Anchored = false
+            wall.CanCollide = false
+            wall.Material = "ForceField"
+            wall.Transparency = 0
+            wall.Massless = true
+            wall.Parent = game.workspace
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = hrp
+            weld.Part1 = wall
+            weld.Parent = wall
+            return wall
+        end
+        local character = player.Character
+        createWall("PlayerBoxFront", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, -4))
+        createWall("PlayerBoxBack", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, 4))
+        createWall("PlayerBoxLeft", Vector3.new(1, 10.2, 8.2), Vector3.new(-4, 0, 0))
+        createWall("PlayerBoxRight", Vector3.new(1, 10.2, 8.2), Vector3.new(4, 0, 0))
+        createWall("PlayerBoxTop", Vector3.new(8.2, 1, 8.2), Vector3.new(0, 5, 0))
+        createWall("PlayerBoxBottom", Vector3.new(8.2, 1, 8.2), Vector3.new(0, -5, 0))
+    else
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v.Name == "PlayerBoxFront" or v.Name == "PlayerBoxBack" or v.Name == "PlayerBoxLeft" or v.Name == "PlayerBoxRight" or v.Name == "PlayerBoxTop" or v.Name == "PlayerBoxBottom" then
+                v:Destroy()
+            end
+        end
     end
 end)
 
@@ -1628,16 +1758,12 @@ ESPSection:NewToggle("Generator ESP", "See All Generators", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                if v:FindFirstChild("Fixed") then
-                    table.insert(generatortable, v)
-                end
+                table.insert(generatortable, v)
             end
         end
         generatorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                if v:FindFirstChild("Fixed") then
-                    table.insert(generatortable, v)
-                end
+                table.insert(generatortable, v)
             end
         end)
         generators = true
@@ -1649,24 +1775,26 @@ ESPSection:NewToggle("Generator ESP", "See All Generators", function(state)
                         if not v or not v.Parent then
                             table.remove(generatortable, i)
                         else
-                            if v.Fixed.Value ~= 100 and not v.Model:FindFirstChild("ESPBillboard") then
-                                local billboard = Instance.new("BillboardGui")
-                                billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                billboard.AlwaysOnTop = true
-                                billboard.Parent = v.Model
+                            if v:FindFirstChild("Fixed") then
+                                if v.Fixed.Value ~= 100 and not v.Model:FindFirstChild("ESPBillboard") then
+                                    local billboard = Instance.new("BillboardGui")
+                                    billboard.Name = "ESPBillboard"
+                                    billboard.Size = UDim2.new(0, 50, 0, 50)
+                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                    billboard.AlwaysOnTop = true
+                                    billboard.Parent = v.Model
 
-                                local label = Instance.new("TextLabel")
-                                label.Size = UDim2.new(1, 0, 0.25, 0)
-                                label.Position = UDim2.new(0, 0, 0, 0)
-                                label.BackgroundTransparency = 1
-                                label.TextColor3 = Color3.new(0, 0, 1)
-                                label.TextScaled = true
-                                label.Text = "Generator"
-                                label.Parent = billboard
-                            elseif v.Fixed.Value == 100 and v.Model:FindFirstChild("ESPBillboard") then
-                                v.Model.ESPBillboard:Destroy()
+                                    local label = Instance.new("TextLabel")
+                                    label.Size = UDim2.new(1, 0, 0.25, 0)
+                                    label.Position = UDim2.new(0, 0, 0, 0)
+                                    label.BackgroundTransparency = 1
+                                    label.TextColor3 = Color3.new(0, 0, 1)
+                                    label.TextScaled = true
+                                    label.Text = "Generator"
+                                    label.Parent = billboard
+                                elseif v.Fixed.Value == 100 and v.Model:FindFirstChild("ESPBillboard") then
+                                    v.Model.ESPBillboard:Destroy()
+                                end
                             end
                         end
                     end
@@ -1849,7 +1977,7 @@ AuraSection:NewToggle("Grab All Items Near You", "Grabs All Close Items", functi
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
                     table.insert(itemauratable, v)
                 end
             end
@@ -2069,6 +2197,311 @@ AuraSection:NewToggle("Disarm Nearby Landmines", "Diarms Them When Close", funct
     end
 end)
 
+local Grab = Window:NewTab("Easy Grabbing")
+local GrabSection = Grab:NewSection("Make Things Accessible Through Walls")
+
+GrabSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
+                table.insert(grabassettable, v)
+            end
+        end
+        grabassetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
+                table.insert(grabassettable, v)
+            end
+        end)
+        grabasset = true
+        while task.wait(0.1) do
+            if grabasset then
+                xpcall(function()
+                    for i = #grabassettable, 1, -1 do
+                        local v = grabassettable[i]
+                        if not v or not v.Parent then
+                            table.remove(grabassettable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
+                                v.ProxyPart.ProximityPrompt.MaxActivationDistance = 15
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab Assets Through Walls Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif grabasset == false then
+                break
+            end
+        end
+    else
+        grabasset = false
+        grabassetconnect:Disconnect()
+        grabassettable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
+                if v:FindFirstChild("ProxyPart") then
+                    v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
+                    v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
+                end
+            end
+        end
+    end
+end)
+
+GrabSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+                table.insert(grabkeycardtable, v)
+            end
+        end
+        grabkeycardconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+                table.insert(grabkeycardtable, v)
+            end
+        end)
+        grabkeycard = true
+        while task.wait(0.1) do
+            if grabkeycard then
+                xpcall(function()
+                    for i = #grabkeycardtable, 1, -1 do
+                        local v = grabkeycardtable[i]
+                        if not v or not v.Parent then
+                            table.remove(grabkeycardtable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
+                                v.ProxyPart.ProximityPrompt.MaxActivationDistance = 15
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab Keycards Through Walls Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif grabkeycard == false then
+                break
+            end
+        end
+    else
+        grabkeycard = false
+        grabkeycardconnect:Disconnect()
+        grabkeycardtable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+                if v:FindFirstChild("ProxyPart") then
+                    v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
+                    v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
+                end
+            end
+        end
+    end
+end)
+
+GrabSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                    table.insert(grabitemtable, v)
+                end
+            end
+        end
+        grabitemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                    table.insert(grabitemtable, v)
+                end
+            end
+        end)
+        grabitem = true
+        while task.wait(0.1) do
+            if grabitem then
+                xpcall(function()
+                    for i = #grabitemtable, 1, -1 do
+                        local v = grabitemtable[i]
+                        if not v or not v.Parent then
+                            table.remove(grabitemtable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
+                                v.ProxyPart.ProximityPrompt.MaxActivationDistance = 15
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab Items Through Walls Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif grabitem == false then
+                break
+            end
+        end
+    else
+        grabitem = false
+        grabitemconnect:Disconnect()
+        grabitemtable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
+                if v:FindFirstChild("ProxyPart") then
+                    v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
+                    v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
+                end
+            end
+        end
+    end
+end)
+
+GrabSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "neostyk")) then
+                table.insert(grabneostyktable, v)
+            end
+        end
+        grabneostykconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "neostyk")) then
+                table.insert(grabneostyktable, v)
+            end
+        end)
+        grabneostyk = true
+        while task.wait(0.1) do
+            if grabneostyk then
+                xpcall(function()
+                    for i = #grabneostyktable, 1, -1 do
+                        local v = grabneostyktable[i]
+                        if not v or not v.Parent then
+                            table.remove(grabneostyktable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
+                                v.ProxyPart.ProximityPrompt.MaxActivationDistance = 15
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab Neostyks Through Walls Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif grabneostyk == false then
+                break
+            end
+        end
+    else
+        grabneostyk = false
+        grabneostykconnect:Disconnect()
+        grabneostyktable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "neostyk")) then
+                if v:FindFirstChild("ProxyPart") then
+                    v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
+                    v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
+                end
+            end
+        end
+    end
+end)
+
+GrabSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batteries", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "battery")) then
+                table.insert(grabbatterytable, v)
+            end
+        end
+        grabbatteryconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "battery")) then
+                table.insert(grabbatterytable, v)
+            end
+        end)
+        grabbattery = true
+        while task.wait(0.1) do
+            if grabbattery then
+                xpcall(function()
+                    for i = #grabbatterytable, 1, -1 do
+                        local v = grabbatterytable[i]
+                        if not v or not v.Parent then
+                            table.remove(grabbatterytable, i)
+                        else
+                            if v:FindFirstChild("ProxyPart") then
+                                v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
+                                v.ProxyPart.ProximityPrompt.MaxActivationDistance = 15
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Grab Batteries Through Walls Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif grabbattery == false then
+                break
+            end
+        end
+    else
+        grabbattery = false
+        grabbatteryconnect:Disconnect()
+        grabbatterytable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "battery")) then
+                if v:FindFirstChild("ProxyPart") then
+                    v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
+                    v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
+                end
+            end
+        end
+    end
+end)
+
+GrabSection:NewToggle("Disable All Drawer And Item Locker Prompts", "Helps You Not Click The Wrong Prompt", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v.Name == "HighLight" or v.Name == "Door") then
+                table.insert(disabledrawertable, v)
+            end
+        end
+        disabledrawerconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (v.Name == "HighLight" or v.Name == "Door") then
+                table.insert(disabledrawertable, v)
+            end
+        end)
+        disabledrawer = true
+        while task.wait(0.1) do
+            if disabledrawer then
+                xpcall(function()
+                    for i = #disabledrawertable, 1, -1 do
+                        local v = disabledrawertable[i]
+                        if not v or not v.Parent then
+                            table.remove(disabledrawertable, i)
+                        else
+                            if (v.Parent.Name == "Drawer" and v.Parent:IsA("Folder")) or v.Parent.Name == "ItemLocker" then
+                                v.ProximityPrompt.Enabled = false
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Disable Drawer Prompts Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif disabledrawer == false then
+                break
+            end
+        end
+    else
+        disabledrawer = false
+        disabledrawerconnect:Disconnect()
+        disabledrawertable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (v.Name == "HighLight" or v.Name == "Door") then
+                if v:FindFirstChild("ProximityPrompt") then
+                    v.ProximityPrompt.Enabled = true
+                end
+            end
+        end
+    end
+end)
+
 local Visual = Window:NewTab("Visual")
 local VisualSection = Visual:NewSection("Change How You See Stuff")
 
@@ -2080,7 +2513,7 @@ VisualSection:NewToggle("Freeze Current Fov", "Keeps Your Fov The Same", functio
     if state then
         freezefov = true
         local fov = game.workspace.Camera.FieldOfView
-        while task.wait(0.1) do
+        while task.wait(0.05) do
             if freezefov then
                 if game.workspace:FindFirstChild("Camera") then
                     game.workspace.Camera.FieldOfView = fov
@@ -2116,7 +2549,58 @@ VisualSection:NewButton("Remove Fog From Modifiers", "Removes The Restless Dream
     lighting.FogStart = 0
     lighting.FogEnd = 100000
     atmosphere.Density = 0
-    game.Players.LocalPlayer.Character.HumanoidRootPart.FogParticle.PlayerFog:Destroy()
+    if game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("FogParticle") then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.FogParticle.PlayerFog:Destroy()
+    end
+end)
+
+VisualSection:NewToggle("See Through View Model", "Makes Ur Body See Through", function(state)
+    if state then
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v and (v:IsA("Part") or v:IsA("MeshPart")) then
+                v.Material = "ForceField"
+                v.Color = Color3.new(1, 1, 1)
+            end
+        end
+    else
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v and (v:IsA("Part") or v:IsA("MeshPart")) then
+                v.Material = "Plastic"
+            end
+        end
+    end
+end)
+
+VisualSection:NewToggle("See Through Held Item", "Makes Ur Held Item See Through", function(state)
+    if state then
+        seethrough = true
+        while task.wait(0.1) do
+            if seethrough then
+                for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v and v:IsA("Model") and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
+                        for _, v2 in pairs(v:GetDescendants()) do
+                            if v2:IsA("Part") or v2:IsA("MeshPart") then
+                                v2.Material = "ForceField"
+                            end
+                        end
+                    end
+                end
+            elseif seethrough == false then
+                break
+            end
+        end
+    else
+        seethrough = false
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v and v:IsA("Model") and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2:IsA("Part") or v2:IsA("MeshPart") then
+                        v2.Material = "Plastic"
+                    end
+                end
+            end
+        end
+    end
 end)
 
 local Other = Window:NewTab("Others")
@@ -2599,16 +3083,12 @@ OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", fun
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                if v:FindFirstChild("RemoteEvent") then
-                    table.insert(autogeneratortable, v)
-                end
+                table.insert(autogeneratortable, v)
             end
         end
         autogeneratorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                if v:FindFirstChild("RemoteEvent") then
-                    table.insert(autogeneratortable, v)
-                end
+                table.insert(autogeneratortable, v)
             end
         end)
         autogenerator = true
@@ -2621,9 +3101,11 @@ OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", fun
                         if not v or not v.Parent then
                             table.remove(autogeneratortable, i)
                         else
-                            local distance = (hrp.Position - v:GetPivot().Position).Magnitude
-                            if v.Fixed.Value ~= 100 and distance <= 10 then
-                                v.RemoteEvent:FireServer(true)
+                            if v:FindFirstChild("RemoteEvent") then
+                                local distance = (hrp.Position - v:GetPivot().Position).Magnitude
+                                if v.Fixed.Value ~= 100 and distance <= 10 then
+                                    v.RemoteEvent:FireServer(true)
+                                end
                             end
                         end
                     end
@@ -2640,6 +3122,167 @@ OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", fun
         autogeneratorconnect:Disconnect()
         autogeneratortable = {}
     end
+end)
+
+OtherSection:NewToggle("Remove Abomination Fans", "Deletes All During Chase", function(state)
+    if state then
+        fans = true
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
+                table.insert(fanstable, v)
+            end
+        end
+        fansconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
+                table.insert(fanstable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if fans then
+                xpcall(function()
+                    for i = #fanstable, 1, -1 do
+                        local v = fanstable[i]
+                        if not v or not v.Parent then
+                            table.remove(fanstable, i)
+                        else
+                            v:Destroy()
+                        end
+                    end
+                end, function(err)
+                    warn("Delete Fans Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif fans == false then
+                break
+            end
+        end
+    else
+        fans = false
+        fansconnect:Disconnect()
+        fanstable = {}
+    end
+end)
+
+OtherSection:NewButton("Input Code From Password", "Instantly Input The Code From The Paper", function()
+    local keypad = nil
+    local code = nil
+    if game.workspace:FindFirstChild("PasswordPaper") then
+        code = game.workspace.PasswordPaper.Code.SurfaceGui.TextLabel.Text
+    end
+    for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+        if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
+            local distance = (game.workspace.PasswordPaper:GetPivot().Position - v:GetPivot().Position).Magnitude
+            if distance <= 5 then
+                keypad = v
+            end
+        end
+    end
+    local str = string.format("%04d", code)
+    for i = 1, #str do
+        local num = tonumber(str:sub(i, i))
+        local button = keypad:FindFirstChild("Keypad"..num)
+        if button then
+            local cd = button:FindFirstChildOfClass("ClickDetector")
+            if cd then
+                fireclickdetector(cd)
+            end
+        end
+    end
+end)
+
+OtherSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Turrets", function()
+    local cando = false
+    local something = false
+    local object = nil
+    local old = nil
+    for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+        if v and v:IsA("Model") and v.Name == "TurretControls" then
+            if v:FindFirstChild("Colored") then
+                if v.Colored.Color == Color3.fromRGB(255, 98, 20) then
+                    something = true
+                elseif v.Colored.Color == Color3.fromRGB(0, 167, 97) then
+                    game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected Control Box", Duration = 4,})
+                    cando = true
+                    object = v
+                end
+            end
+        end
+    end
+    if not cando then
+        if something then
+            game.StarterGui:SetCore("SendNotification", {Title = "Error", Text = "Control Already Deactivated", Duration = 4,})
+        end
+    end
+    if cando then
+        old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        local doonce = false
+        while task.wait(0.05) do
+            if object.Colored.Color == Color3.fromRGB(0, 167, 97) then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = object:GetPivot()
+                fireproximityprompt(object.Highlight.ProximityPrompt)
+            elseif object.Colored.Color == Color3.fromRGB(255, 98, 20) then
+                break
+            end
+        end
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting Back", Duration = 4,})
+    end
+end)
+
+OtherSection:NewButton("Complete Seachlights Ending After Cannons", "Completes The Lever Part Of Seachlights", function()
+    local lever2 = nil
+    local lever3 = nil
+    local lever4 = nil
+    local lever5 = nil
+    local done = ""
+    for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+        if v.Parent.Name == "Triggers" then
+            if v.Name == "Lever2" then
+                lever2 = v
+            elseif v.Name == "Lever3" then
+                lever3 = v
+            elseif v.Name == "Lever4" then
+                lever4 = v
+            elseif v.Name == "Lever5" then
+                lever5 = v
+            end
+        end
+    end
+    while task.wait(0.05) do
+        if done == "" then
+            if lever2.Highlight:FindFirstChild("ProximityPrompt") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lever2:GetPivot()
+                fireproximityprompt(lever2.Highlight.ProximityPrompt)
+            else
+                done = "2"
+            end
+        elseif done == "2" then
+            if lever3.Highlight:FindFirstChild("ProximityPrompt") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lever3:GetPivot()
+                fireproximityprompt(lever3.Highlight.ProximityPrompt)
+            else
+                done = "3"
+            end
+        elseif done == "3" then
+            if lever4.Highlight:FindFirstChild("ProximityPrompt") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lever4:GetPivot()
+                fireproximityprompt(lever4.Highlight.ProximityPrompt)
+            else
+                done = "4"
+            end
+        elseif done == "4" then
+            if lever5.Highlight:FindFirstChild("ProximityPrompt") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lever5:GetPivot()
+                fireproximityprompt(lever5.Highlight.ProximityPrompt)
+            else
+                done = "5"
+            end
+        elseif done == "5" then
+            game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Finished Final Part", Duration = 4,})
+            break
+        end
+    end
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.GameplayFolder.Rooms.SearchlightsEnding.Interactables.LargeRoundDoor:GetPivot()
 end)
 
 OtherSection:NewToggle("Bruteforce Keypad 0000-9999 Method", "Attempt To Bruteforce A Keypad", function(state)
