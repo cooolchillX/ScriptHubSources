@@ -1,24 +1,21 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
-local risky = false
-local tpdistance = 100
-local avoidconnect
 local inputconnect
 local noclip = false
 local nocliptable = {}
+local prompts = {}
+local insta = false
+local instaconnection
 local assettable = {}
 local assets = false
 local assetconnect
-local assetscolor = Color3.fromRGB(255, 255, 0)
 local doortable = {}
 local doors = false
 local doorconnect
-local doorscolor = Color3.fromRGB(0, 255, 255)
 local playerstable = {}
 local players = false
 local playersconnect
-local playerscolor = Color3.fromRGB(0, 255, 0)
 local keycardtable = {}
 local keycards = false
 local keycardconnect
@@ -38,7 +35,6 @@ local fakedoorconnect
 local lockertable = {}
 local lockers = false
 local lockerconnect
-local lockerscolor = Color3.fromRGB(0, 255, 0)
 local tripwiretable = {}
 local tripwires = false
 local tripwireconnect
@@ -102,47 +98,56 @@ local disabledrawer = false
 local disabledrawerconnect
 local freezefov = false
 local seethrough = false
-local prompts = {}
-local insta = false
-local instaconnection
 local notifid = nil
 local notif = false
 local anglerconnect
 local anglernotifconnect
 local entityconnect
 local entitynotifconnect
-local antifeartable = {}
-local antifear = false
-local antifearconnect
-local visiblesubspacetable = {}
-local visiblesubspace = false
-local visiblesubspaceconnect
+local risky = false
+local tpdistance = 100
+local avoidconnect
 local imaginetable = {}
 local imagine = false
 local imagineconnect
-local triggerlandminetable = {}
-local triggerlandmine = false
-local triggerlandmineconnect
+local eyefestationtable = {}
+local eyefestation = false
+local eyefestationconnect
+local pandemoniumtable = {}
+local pandemonium = false
+local pandemoniumconnect
+local pipsqueaktable = {}
+local pipsqueak = false
+local pipsqueakconnect
+local harbingertable = {}
+local harbinger = false
+local harbingerconnect
+local witchtable = {}
+local witch = false
+local witchconnect
+local popuptable = {}
+local popup = false
+local popupconnect
 local waterpuddletable = {}
 local waterpuddle = false
 local waterpuddleconnect
+local antifeartable = {}
+local antifear = false
+local antifearconnect
+local triggerlandminetable = {}
+local triggerlandmine = false
+local triggerlandmineconnect
 local walklandminetable = {}
 local walklandmines = false
 local walklandmineconnect
-local autogeneratortable = {}
-local autogenerator = false
-local autogeneratorconnect
 local fanstable = {}
 local fans = false
 local fansconnect
-local counter
-local countconnect
-local count = 0
+local counter = false
 local keypadtable = {}
-local keypad = false
-local keypad2table = {}
-local keypad2 = false
-local usedcodes = {}
+local autogeneratortable = {}
+local autogenerator = false
+local autogeneratorconnect
 local ammotable = {}
 local ammo = false
 local ammoconnect
@@ -155,12 +160,6 @@ local zombietable = {}
 local zombie = false
 local zombieconnect
 local zombiecolor = Color3.fromRGB(255, 0, 0)
-
-if game.workspace:FindFirstChild("GameplayFolder") then
-    countconnect = game.workspace.GameplayFolder.Rooms.ChildAdded:Connect(function(v)
-        count = count + 1
-    end)
-end
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -298,175 +297,6 @@ game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure"
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Useful For Evading Anglers")
 
-MainSection:NewToggle("Allow Risky Avoiding", "Allows Teleporting For Pandemonium And Pipsqueak", function(state)
-    if state then
-        risky = true
-    else
-        risky = false
-    end
-end)
-
-MainSection:NewSlider("Teleport Distance", "How Close Before It Telports", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
-    tpdistance = s
-end)
-
-MainSection:NewButton("Manual Avoid Active Angler", "Avoids Active Node Monsters", function()
-    local cando = false
-    local something = false
-    local name = ""
-    local old = nil
-    for _, v in pairs(game.workspace:GetChildren()) do
-        if v and v:IsA("Part") then
-            if v.Name == "A200" or v.Name == "Harbinger" or v.Name == "WitchingHour" then
-                game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "You Can't Avoid " .. v.Name .. " Dummy", Duration = 4,})
-                something = true
-            end
-            if not risky then
-                if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                    game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Enable Risky Avoiding For " .. v.Name, Duration = 4,})
-                    something = true
-                end
-            else
-                if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
-                    cando = true
-                    name = v.Name
-                    game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
-                end
-            end
-            if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
-                cando = true
-                name = v.Name
-                game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Detected " .. v.Name, Duration = 4,})
-            end
-        end
-    end
-    if not cando then
-        if not something then
-            game.StarterGui:SetCore("SendNotification", {Title = "Error", Text = "No Node Detected", Duration = 4,})
-        end
-    end
-    if cando then
-        local target = game.workspace:FindFirstChild(name)
-        local doonce = false
-        while task.wait(0.05) do
-            if not doonce then
-                if target and target.Parent then
-                    local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.workspace[name].Position).Magnitude
-                    if distance <= tpdistance then
-                        doonce = true
-                        old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting To Spot", Duration = 4,})
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
-                    end
-                end
-            end
-            if doonce then
-                if target and target.Parent then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-                else
-                    break
-                end
-            end
-        end
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
-        game.StarterGui:SetCore("SendNotification", {Title = "Notification", Text = "Teleporting Back", Duration = 4,})
-    end
-end)
-
-MainSection:NewToggle("Avoid Active Angler", "Avoids Active Node Monsters", function(state)
-    if state then
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "Avoider"
-        gui.Parent = game.Players.LocalPlayer.PlayerGui
-        local label = Instance.new("TextLabel")
-        label.Name = "Text"
-        label.Text = "Status: Waiting"
-        label.TextScaled = true
-        label.Position = UDim2.new(0, 0, 0, 0)
-        label.Size = UDim2.new(0, 200, 0, 50)
-        label.Parent = gui
-        local cando = false
-        local name = ""
-        local old = nil
-        local finished = false
-        avoidconnect = game.workspace.ChildAdded:Connect(function(v)
-            if v and v:IsA("Part") then
-                if not risky then
-                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                        label.Text = "Status: Risky Is False For " .. v.Name
-                        task.wait(1)
-                        label.Text = "Status: Waiting"
-                    end
-                else
-                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
-                        cando = true
-                        name = v.Name
-                        label.Text = "Status: Detected " .. v.Name
-                    end
-                end
-                if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
-                    cando = true
-                    name = v.Name
-                    label.Text = "Status: Detected " .. v.Name
-                end
-            end
-            if cando then
-                local target = game.workspace:FindFirstChild(name)
-                local doonce = false
-                while task.wait(0.05) do
-                    if not doonce then
-                        if target and target.Parent then
-                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - target.Position).Magnitude
-                            if distance <= tpdistance then
-                                doonce = true
-                                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                                label.Text = "Status: Teleporting"
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
-                            end
-                        else
-                            doonce = false
-                            name = ""
-                            cando = false
-                            label.Text = "Status: Waiting"
-                            break
-                        end
-                    end
-                    if doonce then
-                        if target and target.Parent then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-                            local distance = (old.Position - target.Position).Magnitude
-                            if distance > tpdistance then
-                                doonce = false
-                                label.Text = "Status: Detected " .. name
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
-                            end
-                        else
-                            doonce = false
-                            name = ""
-                            cando = false
-                            finished = true
-                            break
-                        end
-                    end
-                end
-                if finished then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
-                    label.Text = "Status: Returning Back"
-                    task.wait(1)
-                    label.Text = "Status: Waiting"
-                    finished = false
-                    old = nil
-                end
-            end
-        end)
-    else
-        avoidconnect:Disconnect()
-        game.Players.LocalPlayer.PlayerGui.Avoider:Destroy()
-    end
-end)
-
 MainSection:NewSlider("Set Speed", "Changed How Fast TP Walk Is", 5, 1, function(s) -- 5 (MaxValue) | 1 (MinValue)
     speed = s
 end)
@@ -530,62 +360,43 @@ MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
     end
 end)
 
-MainSection:NewToggle("Counter Entities Using Raycast", "Eyefest, Turret, Searchlight, Pip, Pande, Skinless, Eden", function(state)
+MainSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
     if state then
-        local Players = game:GetService("Players")
-        local player = Players.LocalPlayer
-        local function createWall(name, size, offset)
-            local character = player.Character
-            local hrp = character:WaitForChild("HumanoidRootPart")
-            local wall = Instance.new("Part")
-            wall.Name = name
-            wall.Size = size
-            wall.CFrame = hrp.CFrame * CFrame.new(offset)
-            wall.Anchored = false
-            wall.CanCollide = false
-            wall.Material = "ForceField"
-            wall.Transparency = 0
-            wall.Massless = true
-            wall.Parent = game.workspace
-            local weld = Instance.new("WeldConstraint")
-            weld.Part0 = hrp
-            weld.Part1 = wall
-            weld.Parent = wall
-            return wall
-        end
-        local character = player.Character
-        createWall("PlayerBoxFront", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, -4))
-        createWall("PlayerBoxBack", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, 4))
-        createWall("PlayerBoxLeft", Vector3.new(1, 10.2, 8.2), Vector3.new(-4, 0, 0))
-        createWall("PlayerBoxRight", Vector3.new(1, 10.2, 8.2), Vector3.new(4, 0, 0))
-        createWall("PlayerBoxTop", Vector3.new(8.2, 1, 8.2), Vector3.new(0, 5, 0))
-        createWall("PlayerBoxBottom", Vector3.new(8.2, 1, 8.2), Vector3.new(0, -5, 0))
-    else
-        for _, v in pairs(game.workspace:GetChildren()) do
-            if v.Name == "PlayerBoxFront" or v.Name == "PlayerBoxBack" or v.Name == "PlayerBoxLeft" or v.Name == "PlayerBoxRight" or v.Name == "PlayerBoxTop" or v.Name == "PlayerBoxBottom" then
-                v:Destroy()
+        insta = true
+        for _, v in pairs(game.workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
             end
         end
+        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if insta then
+                xpcall(function()
+                    for i = #prompts, 1, -1 do
+                        local v = prompts[i]
+                        if not v or not v.Parent then
+                            table.remove(prompts, i)
+                        else
+                            v.HoldDuration = 0
+                        end
+                    end
+                end, function(err)
+                    warn("Insta Interact Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif insta == false then
+                break
+            end
+        end
+    else
+        insta = false
+        instaconnection:Disconnect()
+        prompts = {}
     end
-end)
-
-local ESPColor = Window:NewTab("ESP Colors")
-local ESPColorSection = ESPColor:NewSection("Change The Colors Of ESP")
-
-ESPColorSection:NewColorPicker("Asset ESP Color", "Change Its Color", Color3.fromRGB(255,255,0), function(color)
-    assetscolor = color
-end)
-
-ESPColorSection:NewColorPicker("Door ESP Color", "Change Its Color", Color3.fromRGB(0,255,255), function(color)
-    doorscolor = color
-end)
-
-ESPColorSection:NewColorPicker("Player ESP Color", "Change The ESP Color", Color3.fromRGB(0,255,0), function(color)
-    playerscolor = color
-end)
-
-ESPColorSection:NewColorPicker("Locker ESP Color", "Change Its Color", Color3.fromRGB(0,255,0), function(color)
-    lockerscolor = color
 end)
 
 local ESP = Window:NewTab("ESP")
@@ -612,14 +423,14 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
                         if not v or not v.Parent then
                             table.remove(assettable, i)
                         else
-                            if not v:FindFirstChild("ESPHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "ESPHighlight"
-                                highlight.FillColor = assetscolor
-                                highlight.OutlineTransparency = 1
-                                highlight.Parent = v
-                            elseif v:FindFirstChild("ESPHighlight") then
-                                v.ESPHighlight.FillColor = assetscolor
+                            if v:FindFirstChild("ProxyPart") then
+                                if not v:FindFirstChild("ESPHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "ESPHighlight"
+                                    highlight.FillColor = Color3.new(1, 1, 0)
+                                    highlight.OutlineTransparency = 1
+                                    highlight.Parent = v
+                                end
                             end
                         end
                     end
@@ -649,12 +460,12 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
     if state then
         doors = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v.Name == "NormalDoor" and v:IsA("Model") then
+            if v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor") then
                 table.insert(doortable, v)
             end
         end
         doorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v.Name == "NormalDoor" and v:IsA("Model") then
+            if  v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor") then
                 table.insert(doortable, v)
             end
         end)
@@ -666,23 +477,150 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
                         if not v or not v.Parent then
                             table.remove(doortable, i)
                         else
-                            if v:FindFirstChild("OpenValue") then
-                                if not v.OpenValue.Value then
-                                    if v:FindFirstChild("Door") then
-                                        if not v.Door:FindFirstChild("ESPHighlight") then
-                                            local highlight = Instance.new("Highlight")
-                                            highlight.Name = "ESPHighlight"
-                                            highlight.FillColor = doorscolor
-                                            highlight.OutlineTransparency = 1
-                                            highlight.Parent = v.Door
-                                        elseif v.Door:FindFirstChild("ESPHighlight") then
-                                            v.Door.ESPHighlight.FillColor = doorscolor
+                            if v.Parent.Name == "DoubleDoor" then
+                                table.remove(doortable, i)
+                            end
+                            if v.Name == "DoubleDoor" then
+                                if v:GetAttribute("ProgressDoor") then
+                                    for _, door in pairs(v:GetChildren()) do
+                                        if door and door:FindFirstChild("OpenValue") then
+                                            if not door.OpenValue.Value then
+                                                if door:FindFirstChild("Door") then
+                                                    if door:GetAttribute("Locked") then
+                                                        if not door.Door:FindFirstChild("ESPHighlight") then
+                                                            local highlight = Instance.new("Highlight")
+                                                            highlight.Name = "ESPHighlight"
+                                                            highlight.FillColor = Color3.fromRGB(100, 0, 100)
+                                                            highlight.OutlineTransparency = 1
+                                                            highlight.Parent = door.Door
+
+                                                            local billboard = Instance.new("BillboardGui")
+                                                            billboard.Name = "ESPBillboard"
+                                                            billboard.Size = UDim2.new(0, 150, 0, 50)
+                                                            billboard.StudsOffset = Vector3.new(0, 5, 0)
+                                                            billboard.AlwaysOnTop = true
+                                                            billboard.Parent = door.Door
+
+                                                            local label = Instance.new("TextLabel")
+                                                            label.Size = UDim2.new(1, 0, 1, 0)
+                                                            label.Position = UDim2.new(0, 0, 0, 0)
+                                                            label.BackgroundTransparency = 1
+                                                            label.TextColor3 = Color3.new(1, 0, 1)
+                                                            label.Text = tostring(v.Enter.Value)
+                                                            label.Parent = billboard
+
+                                                            local label = Instance.new("TextLabel")
+                                                            label.Size = UDim2.new(1, 0, 1, 0)
+                                                            label.Position = UDim2.new(0, 0, 0, 25)
+                                                            label.BackgroundTransparency = 1
+                                                            label.TextColor3 = Color3.new(1, 0, 1)
+                                                            label.Text = "Locked"
+                                                            label.Parent = billboard
+                                                        end
+                                                    else
+                                                        if not door.Door:FindFirstChild("ESPHighlight") then
+                                                            local highlight = Instance.new("Highlight")
+                                                            highlight.Name = "ESPHighlight"
+                                                            highlight.FillColor = Color3.fromRGB(0, 0, 100)
+                                                            highlight.OutlineTransparency = 1
+                                                            highlight.Parent = door.Door
+
+                                                            local billboard = Instance.new("BillboardGui")
+                                                            billboard.Name = "ESPBillboard"
+                                                            billboard.Size = UDim2.new(0, 150, 0, 50)
+                                                            billboard.StudsOffset = Vector3.new(0, 5, 0)
+                                                            billboard.AlwaysOnTop = true
+                                                            billboard.Parent = door.Door
+
+                                                            local label = Instance.new("TextLabel")
+                                                            label.Size = UDim2.new(1, 0, 1, 0)
+                                                            label.Position = UDim2.new(0, 0, 0, 0)
+                                                            label.BackgroundTransparency = 1
+                                                            label.TextColor3 = Color3.new(0, 0, 1)
+                                                            label.Text = tostring(v.Enter.Value)
+                                                            label.Parent = billboard
+                                                        end
+                                                    end
+                                                end
+                                            else
+                                                if door:FindFirstChild("Door") then
+                                                    if door.Door:FindFirstChild("ESPHighlight") then
+                                                        door.Door.ESPHighlight:Destroy()
+                                                        door.Door.ESPBillboard:Destroy()
+                                                    end
+                                                end
+                                            end
                                         end
                                     end
-                                elseif v.OpenValue.Value then
-                                    if v:FindFirstChild("Door") then
-                                        if v.Door:FindFirstChild("ESPHighlight") then
-                                            v.Door.ESPHighlight:Destroy()
+                                end
+                            elseif v.Name == "NormalDoor" then
+                                if v:GetAttribute("ProgressDoor") then
+                                    if v and v:FindFirstChild("OpenValue") then
+                                        if not v.OpenValue.Value then
+                                            if v:FindFirstChild("Door") then
+                                                if v:GetAttribute("Locked") then
+                                                    if not v.Door:FindFirstChild("ESPHighlight") then
+                                                        local highlight = Instance.new("Highlight")
+                                                        highlight.Name = "ESPHighlight"
+                                                        highlight.FillColor = Color3.fromRGB(100, 0, 100)
+                                                        highlight.OutlineTransparency = 1
+                                                        highlight.Parent = v.Door
+
+                                                        local billboard = Instance.new("BillboardGui")
+                                                        billboard.Name = "ESPBillboard"
+                                                        billboard.Size = UDim2.new(0, 150, 0, 50)
+                                                        billboard.StudsOffset = Vector3.new(0, 5, 0)
+                                                        billboard.AlwaysOnTop = true
+                                                        billboard.Parent = v.Door
+
+                                                        local label = Instance.new("TextLabel")
+                                                        label.Size = UDim2.new(1, 0, 1, 0)
+                                                        label.Position = UDim2.new(0, 0, 0, 0)
+                                                        label.BackgroundTransparency = 1
+                                                        label.TextColor3 = Color3.new(1, 0, 1)
+                                                        label.Text = tostring(v.Enter.Value)
+                                                        label.Parent = billboard
+
+                                                        local label = Instance.new("TextLabel")
+                                                        label.Size = UDim2.new(1, 0, 1, 0)
+                                                        label.Position = UDim2.new(0, 0, 0, 25)
+                                                        label.BackgroundTransparency = 1
+                                                        label.TextColor3 = Color3.new(1, 0, 1)
+                                                        label.Text = "Locked"
+                                                        label.Parent = billboard
+                                                    end
+                                                else
+                                                    if not v.Door:FindFirstChild("ESPHighlight") then
+                                                        local highlight = Instance.new("Highlight")
+                                                        highlight.Name = "ESPHighlight"
+                                                        highlight.FillColor = Color3.fromRGB(0, 0, 100)
+                                                        highlight.OutlineTransparency = 1
+                                                        highlight.Parent = v.Door
+
+                                                        local billboard = Instance.new("BillboardGui")
+                                                        billboard.Name = "ESPBillboard"
+                                                        billboard.Size = UDim2.new(0, 150, 0, 50)
+                                                        billboard.StudsOffset = Vector3.new(0, 5, 0)
+                                                        billboard.AlwaysOnTop = true
+                                                        billboard.Parent = v.Door
+
+                                                        local label = Instance.new("TextLabel")
+                                                        label.Size = UDim2.new(1, 0, 1, 0)
+                                                        label.Position = UDim2.new(0, 0, 0, 0)
+                                                        label.BackgroundTransparency = 1
+                                                        label.TextColor3 = Color3.new(0, 0, 1)
+                                                        label.Text = tostring(v.Enter.Value)
+                                                        label.Parent = billboard
+                                                    end
+                                                end
+                                            end
+                                        else
+                                            if v:FindFirstChild("Door") then
+                                                if v.Door:FindFirstChild("ESPHighlight") then
+                                                    v.Door.ESPHighlight:Destroy()
+                                                    v.Door.ESPBillboard:Destroy()
+                                                end
+                                            end
                                         end
                                     end
                                 end
@@ -702,10 +640,11 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
         doorconnect:Disconnect()
         doortable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v.Name == "NormalDoor" and v:IsA("Model") then
+            if v:IsA("Model") and v.Name == "NormalDoor" then
                 if v:FindFirstChild("Door") then
                     if v.Door:FindFirstChild("ESPHighlight") then
                         v.Door.ESPHighlight:Destroy()
+                        v.Door.ESPBillboard:Destroy()
                     end
                 end
             end
@@ -736,10 +675,8 @@ ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
                                     if not character:FindFirstChild("ESPHighlight") then
                                         local highlight = Instance.new("Highlight")
                                         highlight.Name = "ESPHighlight"
-                                        highlight.FillColor = playerscolor
+                                        highlight.FillColor = Color3.new(0, 1, 0)
                                         highlight.Parent = character
-                                    elseif character:FindFirstChild("ESPHighlight") then
-                                        character.ESPHighlight.FillColor = playerscolor
                                     end
                                 end
                             end
@@ -983,21 +920,23 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
                         else
                             if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" then
                                 if not v:FindFirstChild("ESPBillboard") then
-                                    local billboard = Instance.new("BillboardGui")
-                                    billboard.Name = "ESPBillboard"
-                                    billboard.Size = UDim2.new(0, 50, 0, 50)
-                                    billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                    billboard.AlwaysOnTop = true
-                                    billboard.Parent = v
+                                    if tostring(v:GetAttribute("DisplayName")) ~= "nil" then
+                                        local billboard = Instance.new("BillboardGui")
+                                        billboard.Name = "ESPBillboard"
+                                        billboard.Size = UDim2.new(0, 50, 0, 50)
+                                        billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                        billboard.AlwaysOnTop = true
+                                        billboard.Parent = v
 
-                                    local label = Instance.new("TextLabel")
-                                    label.Size = UDim2.new(1, 0, 0.25, 0)
-                                    label.Position = UDim2.new(0, 0, 0, 0)
-                                    label.BackgroundTransparency = 1
-                                    label.TextColor3 = Color3.new(0, 1, 0)
-                                    label.TextScaled = true
-                                    label.Text = tostring(v:GetAttribute("DisplayName"))
-                                    label.Parent = billboard
+                                        local label = Instance.new("TextLabel")
+                                        label.Size = UDim2.new(1, 0, 0.25, 0)
+                                        label.Position = UDim2.new(0, 0, 0, 0)
+                                        label.BackgroundTransparency = 1
+                                        label.TextColor3 = Color3.new(0, 1, 0)
+                                        label.TextScaled = true
+                                        label.Text = tostring(v:GetAttribute("DisplayName"))
+                                        label.Parent = billboard
+                                    end
                                 end
                             elseif v.Name == "Blacklight" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" then
                                 if not v:FindFirstChild("ESPBillboard") then
@@ -1096,11 +1035,9 @@ ESPSection:NewToggle("Locker ESP", "See All Lockers", function(state)
                             if not v:FindFirstChild("ESPHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "ESPHighlight"
-                                highlight.FillColor = lockerscolor
+                                highlight.FillColor = Color3.fromRGB(0, 100, 0)
                                 highlight.OutlineTransparency = 1
                                 highlight.Parent = v
-                            elseif v:FindFirstChild("ESPHighlight") then
-                                v.ESPHighlight.FillColor = lockerscolor
                             end
                         end
                     end
@@ -1386,14 +1323,14 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     table.insert(nodetable, v)
                 end
             end
         end
         nodeconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     table.insert(nodetable, v)
                 end
             end
@@ -1445,7 +1382,7 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
         nodetable = {}
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -2209,10 +2146,7 @@ AuraSection:NewToggle("Disarm Nearby Landmines", "Diarms Them When Close", funct
     end
 end)
 
-local Grab = Window:NewTab("Easy Grabbing")
-local GrabSection = Grab:NewSection("Make Things Accessible Through Walls")
-
-GrabSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", function(state)
+AuraSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
@@ -2262,7 +2196,7 @@ GrabSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", fu
     end
 end)
 
-GrabSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards", function(state)
+AuraSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
@@ -2312,7 +2246,7 @@ GrabSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards"
     end
 end)
 
-GrabSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", function(state)
+AuraSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
@@ -2366,7 +2300,7 @@ GrabSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", func
     end
 end)
 
-GrabSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks", function(state)
+AuraSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "neostyk")) then
@@ -2416,7 +2350,7 @@ GrabSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks"
     end
 end)
 
-GrabSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batteries", function(state)
+AuraSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batteries", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "battery")) then
@@ -2466,7 +2400,7 @@ GrabSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batterie
     end
 end)
 
-GrabSection:NewToggle("Disable All Drawer And Item Locker Prompts", "Helps You Not Click The Wrong Prompt", function(state)
+AuraSection:NewToggle("Disable All Drawer And Item Locker Prompts", "Helps You Not Click The Wrong Prompt", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "HighLight" or v.Name == "Door") then
@@ -2663,7 +2597,7 @@ NotifSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster
     if state then
         anglerconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
                     if notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
@@ -2743,7 +2677,7 @@ NotifSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", functio
     if state then
         anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
-                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
                 end
             end
@@ -2779,147 +2713,154 @@ NotifSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state
     end
 end)
 
-local Other = Window:NewTab("Others")
-local OtherSection = Other:NewSection("Extra Things")
+local Anti = Window:NewTab("Anti")
+local AntiSection = Anti:NewSection("Prevent Things")
 
-OtherSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
+AntiSection:NewToggle("Allow Risky Avoiding", "Allows Teleporting For Pandemonium And Pipsqueak", function(state)
     if state then
-        insta = true
-        for _, v in pairs(game.workspace:GetDescendants()) do
-            if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
-            end
-        end
-        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
-            end
-        end)
-        while task.wait(0.1) do
-            if insta then
-                xpcall(function()
-                    for i = #prompts, 1, -1 do
-                        local v = prompts[i]
-                        if not v or not v.Parent then
-                            table.remove(prompts, i)
-                        else
-                            v.HoldDuration = 0
-                        end
-                    end
-                end, function(err)
-                    warn("Insta Interact Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif insta == false then
-                break
-            end
-        end
+        risky = true
     else
-        insta = false
-        instaconnection:Disconnect()
-        prompts = {}
+        risky = false
     end
 end)
 
-OtherSection:NewToggle("No Locker Claustrophobia", "Prevents You From Getting Kicked Out", function(state)
-    if state then
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(antifeartable, v)
-            end
-        end
-        antifearconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(antifeartable, v)
-            end
-        end)
-        antifear = true
-        while task.wait(0.1) do
-            if antifear then
-                xpcall(function()
-                    for i = #antifeartable, 1, -1 do
-                        local v = antifeartable[i]
-                        if not v or not v.Parent then
-                            table.remove(antifeartable, i)
-                        else
-                            v:SetAttribute("ClaustrophobiaStartTime", 9999)
-                            v:SetAttribute("ClaustrophobiaKickOutTime", 9999)
-                        end
-                    end
-                end, function(err)
-                    warn("No Claustrophobia Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif antifear == false then
-                break
-            end
-        end
-    else
-        antifear = false
-        antifearconnect:Disconnect()
-        antifeartable = {}
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") and v.Name == "Locker" then
-                v:SetAttribute("ClaustrophobiaStartTime", 9)
-                v:SetAttribute("ClaustrophobiaKickOutTime", 10)
-            end
-        end
-    end
+AntiSection:NewSlider("Teleport Distance", "How Close Before It Telports", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
+    tpdistance = s
 end)
 
-OtherSection:NewToggle("Make Subspace Tripmines Visible", "Makes All Subspaces Visible", function(state)
+AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", function(state)
     if state then
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") and v.Name == "Landmine" then
-                table.insert(visiblesubspacetable, v)
-            end
-        end
-        visiblesubspaceconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") and v.Name == "Landmine" then
-                table.insert(visiblesubspacetable, v)
-            end
-        end)
-        visiblesubspace = true
-        while task.wait(0.1) do
-            if visiblesubspace then
-                xpcall(function()
-                    for i = #antifeartable, 1, -1 do
-                        local v = antifeartable[i]
-                        if not v or not v.Parent then
-                            table.remove(antifeartable, i)
-                        else
-                            for _, v2 in pairs(v:GetChildren()) do
-                                if v2:IsA("MeshPart") then
-                                    v2.Transparency = 0
-                                end
-                            end
-                        end
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "Avoider"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local label = Instance.new("TextLabel")
+        label.Name = "Text"
+        label.Text = "Status: Waiting"
+        label.TextScaled = true
+        label.Position = UDim2.new(0, 0, 0, 0)
+        label.Size = UDim2.new(0, 200, 0, 50)
+        label.Parent = gui
+        local cando = false
+        local name = ""
+        local old = nil
+        local finished = false
+        avoidconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v:IsA("Part") then
+                if not risky then
+                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                        label.Text = "Status: Risky Is False For " .. v.Name
+                        task.wait(1)
+                        label.Text = "Status: Waiting"
                     end
-                end, function(err)
-                    warn("Visible Subspace Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif visiblesubspace == false then
-                break
-            end
-        end
-    else
-        visiblesubspace = false
-        visiblesubspaceconnect:Disconnect()
-        visiblesubspacetable = {}
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Model") and v.Name == "Landmine" then
-                for _, v2 in pairs(v:GetChildren()) do
-                    if v2:IsA("MeshPart") then
-                        v2.Transparency = 0.97
+                else
+                    if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Pipsqueak" then
+                        cando = true
+                        name = v.Name
+                        label.Text = "Status: Detected " .. v.Name
                     end
                 end
+                if v.Name == "A60" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" then
+                    cando = true
+                    name = v.Name
+                    label.Text = "Status: Detected " .. v.Name
+                end
+            end
+            if cando then
+                local target = game.workspace:FindFirstChild(name)
+                local doonce = false
+                while task.wait(0.05) do
+                    if not doonce then
+                        if target and target.Parent then
+                            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - target.Position).Magnitude
+                            if distance <= tpdistance then
+                                doonce = true
+                                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                                label.Text = "Status: Teleporting"
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                            end
+                        else
+                            doonce = false
+                            name = ""
+                            cando = false
+                            label.Text = "Status: Waiting"
+                            break
+                        end
+                    end
+                    if doonce then
+                        if target and target.Parent then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                            local distance = (old.Position - target.Position).Magnitude
+                            if distance > tpdistance then
+                                doonce = false
+                                label.Text = "Status: Detected " .. name
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+                            end
+                        else
+                            doonce = false
+                            name = ""
+                            cando = false
+                            finished = true
+                            break
+                        end
+                    end
+                end
+                if finished then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+                    label.Text = "Status: Returning Back"
+                    task.wait(1)
+                    label.Text = "Status: Waiting"
+                    finished = false
+                    old = nil
+                end
+            end
+        end)
+    else
+        avoidconnect:Disconnect()
+        game.Players.LocalPlayer.PlayerGui.Avoider:Destroy()
+    end
+end)
+
+AntiSection:NewToggle("Counter Entities Using Raycast", "Eyefest, Turret, Searchlight, Pip, Pande, Skinless, Eden", function(state)
+    if state then
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+        local function createWall(name, size, offset)
+            local character = player.Character
+            local hrp = character:WaitForChild("HumanoidRootPart")
+            local wall = Instance.new("Part")
+            wall.Name = name
+            wall.Size = size
+            wall.CFrame = hrp.CFrame * CFrame.new(offset)
+            wall.Anchored = false
+            wall.CanCollide = false
+            wall.Material = "ForceField"
+            wall.Transparency = 0
+            wall.Massless = true
+            wall.Parent = game.workspace
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = hrp
+            weld.Part1 = wall
+            weld.Parent = wall
+            return wall
+        end
+        local character = player.Character
+        createWall("PlayerBoxFront", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, -4))
+        createWall("PlayerBoxBack", Vector3.new(8.2, 10.2, 1), Vector3.new(0, 0, 4))
+        createWall("PlayerBoxLeft", Vector3.new(1, 10.2, 8.2), Vector3.new(-4, 0, 0))
+        createWall("PlayerBoxRight", Vector3.new(1, 10.2, 8.2), Vector3.new(4, 0, 0))
+        createWall("PlayerBoxTop", Vector3.new(8.2, 1, 8.2), Vector3.new(0, 5, 0))
+        createWall("PlayerBoxBottom", Vector3.new(8.2, 1, 8.2), Vector3.new(0, -5, 0))
+    else
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v.Name == "PlayerBoxFront" or v.Name == "PlayerBoxBack" or v.Name == "PlayerBoxLeft" or v.Name == "PlayerBoxRight" or v.Name == "PlayerBoxTop" or v.Name == "PlayerBoxBottom" then
+                v:Destroy()
             end
         end
     end
 end)
 
-OtherSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People", function(state)
+AntiSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People", function(state)
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") and v.Name == "FriendPart" then
@@ -2960,49 +2901,251 @@ OtherSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People
     end
 end)
 
-OtherSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", function(state)
+AntiSection:NewToggle("Anti Eyefestation", "Stops Eyefestation From Making You Look", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(triggerlandminetable, v)
+            if v and v:IsA("Model") and v.Name == "Eyefestation" then
+                table.insert(eyefestationtable, v)
             end
         end
-        triggerlandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(triggerlandminetable, v)
+        eyefestationconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") and v.Name == "Eyefestation" then
+                table.insert(eyefestationtable, v)
             end
         end)
-        triggerlandmine = true
+        eyefestation = true
         while task.wait(0.1) do
-            if triggerlandmine then
+            if eyefestation then
                 xpcall(function()
-                    for i = #triggerlandminetable, 1, -1 do
-                        local v = triggerlandminetable[i]
+                    for i = #eyefestationtable, 1, -1 do
+                        local v = eyefestationtable[i]
                         if not v or not v.Parent then
-                            table.remove(triggerlandminetable, i)
+                            table.remove(eyefestationtable, i)
                         else
-                            if v:FindFirstChild("TouchInterest") then
-                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
-                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+                            if v then
+                                v.Active.Value = false
                             end
                         end
                     end
                 end, function(err)
-                    warn("Trigger Landmine Error")
+                    warn("Anti Eyefestation Error")
                     warn(debug.traceback(err))
                 end)
-            elseif triggerlandmine == false then
+            elseif eyefestation == false then
                 break
             end
         end
     else
-        triggerlandmine = false
-        triggerlandmineconnect:Disconnect()
-        triggerlandminetable = {}
+        eyefestation = false
+        eyefestationconnect:Disconnect()
+        eyefestationtable = {}
     end
 end)
 
-OtherSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slipping On Water Puddles", function(state)
+AntiSection:NewToggle("Anti Pandemonium", "Removes Pandemonium", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                table.insert(pandemoniumtable, v)
+            end
+        end
+        pandemoniumconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
+                table.insert(pandemoniumtable, v)
+            end
+        end)
+        pandemonium = true
+        while task.wait(0.1) do
+            if pandemonium then
+                xpcall(function()
+                    for i = #pandemoniumtable, 1, -1 do
+                        local v = pandemoniumtable[i]
+                        if not v or not v.Parent then
+                            table.remove(pandemoniumtable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Pandemonium Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif pandemonium == false then
+                break
+            end
+        end
+    else
+        pandemonium = false
+        pandemoniumconnect:Disconnect()
+        pandemoniumtable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Pipsqueak", "Removes Pipsqueak", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v.Name == "Pipsqueak" then
+                table.insert(pipsqueaktable, v)
+            end
+        end
+        pipsqueakconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v.Name == "Pipsqueak" then
+                table.insert(pipsqueaktable, v)
+            end
+        end)
+        pipsqueak = true
+        while task.wait(0.1) do
+            if pipsqueak then
+                xpcall(function()
+                    for i = #pipsqueaktable, 1, -1 do
+                        local v = pipsqueaktable[i]
+                        if not v or not v.Parent then
+                            table.remove(pipsqueaktable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Pipsqueak Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif pipsqueak == false then
+                break
+            end
+        end
+    else
+        pipsqueak = false
+        pipsqueakconnect:Disconnect()
+        pipsqueaktable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Harbinger", "Removes Harbinger", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v.Name == "Harbinger" then
+                table.insert(harbingertable, v)
+            end
+        end
+        harbingerconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v.Name == "Harbinger" then
+                table.insert(harbingertable, v)
+            end
+        end)
+        harbinger = true
+        while task.wait(0.1) do
+            if harbinger then
+                xpcall(function()
+                    for i = #harbingertable, 1, -1 do
+                        local v = harbingertable[i]
+                        if not v or not v.Parent then
+                            table.remove(harbingertable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Harbinger Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif harbinger == false then
+                break
+            end
+        end
+    else
+        harbinger = false
+        harbingerconnect:Disconnect()
+        harbingertable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Witching Hour", "Removes Witching Hour", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v.Name == "WitchingHour" then
+                table.insert(witchtable, v)
+            end
+        end
+        witchconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v.Name == "WitchingHour" then
+                table.insert(witchtable, v)
+            end
+        end)
+        witch = true
+        while task.wait(0.1) do
+            if witch then
+                xpcall(function()
+                    for i = #witchtable, 1, -1 do
+                        local v = witchtable[i]
+                        if not v or not v.Parent then
+                            table.remove(witchtable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Witching Hour Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif witch == false then
+                break
+            end
+        end
+    else
+        witch = false
+        witchconnect:Disconnect()
+        witchtable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Popups", "Remove Painters Popups", function(state)
+    if state then
+        for _, v in pairs(game.Players.LocalPlayer.PlayerGui.Main.Popups:GetChildren()) do
+            if v and v:IsA("Frame") and v.Name == "Popup" then
+                table.insert(popuptable, v)
+            end
+        end
+        popupconnect = game.Players.LocalPlayer.PlayerGui.Main.Popups.ChildAdded:Connect(function(v)
+            if v and v:IsA("Frame") and v.Name == "Popup" then
+                table.insert(popuptable, v)
+            end
+        end)
+        popup = true
+        while task.wait(0.1) do
+            if popup then
+                xpcall(function()
+                    for i = #popuptable, 1, -1 do
+                        local v = popuptable[i]
+                        if not v or not v.Parent then
+                            table.remove(popuptable, i)
+                        else
+                            v:Destroy()
+                        end
+                    end
+                end, function(err)
+                    warn("Popup Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif popup == false then
+                break
+            end
+        end
+    else
+        popup = false
+        popupconnect:Disconnect()
+        popuptable = {}
+    end
+end)
+
+AntiSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slipping On Water Puddles", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
@@ -3050,7 +3193,98 @@ OtherSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slippi
     end
 end)
 
-OtherSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmines", function(state)
+AntiSection:NewToggle("No Locker Claustrophobia", "Prevents You From Getting Kicked Out", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and v.Name == "Locker" then
+                table.insert(antifeartable, v)
+            end
+        end
+        antifearconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") and v.Name == "Locker" then
+                table.insert(antifeartable, v)
+            end
+        end)
+        antifear = true
+        while task.wait(0.1) do
+            if antifear then
+                xpcall(function()
+                    for i = #antifeartable, 1, -1 do
+                        local v = antifeartable[i]
+                        if not v or not v.Parent then
+                            table.remove(antifeartable, i)
+                        else
+                            v:SetAttribute("ClaustrophobiaStartTime", 9999)
+                            v:SetAttribute("ClaustrophobiaKickOutTime", 9999)
+                        end
+                    end
+                end, function(err)
+                    warn("No Claustrophobia Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif antifear == false then
+                break
+            end
+        end
+    else
+        antifear = false
+        antifearconnect:Disconnect()
+        antifeartable = {}
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and v.Name == "Locker" then
+                v:SetAttribute("ClaustrophobiaStartTime", 9)
+                v:SetAttribute("ClaustrophobiaKickOutTime", 10)
+            end
+        end
+    end
+end)
+
+local Fun = Window:NewTab("Fun")
+local FunSection = Fun:NewSection("Fun Stuff To Entertain")
+
+FunSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
+                table.insert(triggerlandminetable, v)
+            end
+        end
+        triggerlandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
+                table.insert(triggerlandminetable, v)
+            end
+        end)
+        triggerlandmine = true
+        while task.wait(0.1) do
+            if triggerlandmine then
+                xpcall(function()
+                    for i = #triggerlandminetable, 1, -1 do
+                        local v = triggerlandminetable[i]
+                        if not v or not v.Parent then
+                            table.remove(triggerlandminetable, i)
+                        else
+                            if v:FindFirstChild("TouchInterest") then
+                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+                                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Trigger Landmine Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif triggerlandmine == false then
+                break
+            end
+        end
+    else
+        triggerlandmine = false
+        triggerlandmineconnect:Disconnect()
+        triggerlandminetable = {}
+    end
+end)
+
+FunSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmines", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
@@ -3094,7 +3328,97 @@ OtherSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmi
     end
 end)
 
-OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", function(state)
+FunSection:NewToggle("Remove Abomination Fans", "Deletes All During Chase", function(state)
+    if state then
+        fans = true
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
+                table.insert(fanstable, v)
+            end
+        end
+        fansconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
+                table.insert(fanstable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if fans then
+                xpcall(function()
+                    for i = #fanstable, 1, -1 do
+                        local v = fanstable[i]
+                        if not v or not v.Parent then
+                            table.remove(fanstable, i)
+                        else
+                            v:Destroy()
+                        end
+                    end
+                end, function(err)
+                    warn("Delete Fans Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif fans == false then
+                break
+            end
+        end
+    else
+        fans = false
+        fansconnect:Disconnect()
+        fanstable = {}
+    end
+end)
+
+FunSection:NewToggle("Room Counter", "Tells You What Room Ur On", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "Counter"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local label = Instance.new("TextLabel")
+        label.Name = "Text"
+        label.Text = "Room: " .. tostring(game.Players.LocalPlayer.PlayerFolder.DoorsOpened.Value)
+        label.TextScaled = true
+        label.Position = UDim2.new(0, 0, 0, 50)
+        label.Size = UDim2.new(0, 200, 0, 50)
+        label.Parent = gui
+        counter = true
+        while task.wait(0.05) do
+            if counter then
+                label.Text = "Room: " .. tostring(game.Players.LocalPlayer.PlayerFolder.DoorsOpened.Value)
+            elseif counter == false then
+                break
+            end
+        end
+    else
+        counter = false
+        game.Players.LocalPlayer.PlayerGui.Counter:Destroy()
+    end
+end)
+
+FunSection:NewButton("Bruteforce Door", "Can Cause Ping Spikes, Must Be Touching Door", function()
+    for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+        if v:IsA("RemoteFunction") and v.Parent.Name == "Main" then
+            table.insert(keypadtable, v)
+        end
+    end
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    for _, v in ipairs(keypadtable) do
+        local distance = (v.Parent.Position - hrp.Position).Magnitude
+        if distance <= 10 then
+            local remote = v
+            for i = 0, 9999 do
+                task.spawn(function()
+                    local code = string.format("%04d", i)
+                    remote:InvokeServer(code)
+                end)
+            end
+        end
+    end
+    keypadtable = {}
+end)
+
+local Complete = Window:NewTab("Completion")
+local CompleteSection = Complete:NewSection("Finish Specific Tasks Quickly")
+
+CompleteSection:NewToggle("Generator Auto Complete", "Completes The Generator", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
@@ -3139,73 +3463,7 @@ OtherSection:NewToggle("Generator Auto Complete", "Completes The Generator", fun
     end
 end)
 
-OtherSection:NewToggle("Remove Abomination Fans", "Deletes All During Chase", function(state)
-    if state then
-        fans = true
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
-                table.insert(fanstable, v)
-            end
-        end
-        fansconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
-                table.insert(fanstable, v)
-            end
-        end)
-        while task.wait(0.1) do
-            if fans then
-                xpcall(function()
-                    for i = #fanstable, 1, -1 do
-                        local v = fanstable[i]
-                        if not v or not v.Parent then
-                            table.remove(fanstable, i)
-                        else
-                            v:Destroy()
-                        end
-                    end
-                end, function(err)
-                    warn("Delete Fans Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif fans == false then
-                break
-            end
-        end
-    else
-        fans = false
-        fansconnect:Disconnect()
-        fanstable = {}
-    end
-end)
-
-OtherSection:NewButton("Input Code From Password", "Instantly Input The Code From The Paper", function()
-    local keypad = nil
-    local code = nil
-    if game.workspace:FindFirstChild("PasswordPaper") then
-        code = game.workspace.PasswordPaper.Code.SurfaceGui.TextLabel.Text
-    end
-    for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-        if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
-            local distance = (game.workspace.PasswordPaper:GetPivot().Position - v:GetPivot().Position).Magnitude
-            if distance <= 5 then
-                keypad = v
-            end
-        end
-    end
-    local str = string.format("%04d", code)
-    for i = 1, #str do
-        local num = tonumber(str:sub(i, i))
-        local button = keypad:FindFirstChild("Keypad"..num)
-        if button then
-            local cd = button:FindFirstChildOfClass("ClickDetector")
-            if cd then
-                fireclickdetector(cd)
-            end
-        end
-    end
-end)
-
-OtherSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Turrets", function()
+CompleteSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Turrets", function()
     local cando = false
     local something = false
     local object = nil
@@ -3244,7 +3502,7 @@ OtherSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Tu
     end
 end)
 
-OtherSection:NewButton("Complete Seachlights Ending After Cannons", "Completes The Lever Part Of Seachlights", function()
+CompleteSection:NewButton("Complete Seachlights Ending After Cannons", "Completes The Lever Part Of Seachlights", function()
     local lever2 = nil
     local lever3 = nil
     local lever4 = nil
@@ -3298,156 +3556,6 @@ OtherSection:NewButton("Complete Seachlights Ending After Cannons", "Completes T
         end
     end
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.GameplayFolder.Rooms.SearchlightsEnding.Interactables.LargeRoundDoor:GetPivot()
-end)
-
-OtherSection:NewToggle("Room Counter", "Counts The Rooms", function(state)
-    if state then
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "Counter"
-        gui.Parent = game.Players.LocalPlayer.PlayerGui
-        local label = Instance.new("TextLabel")
-        label.Name = "Text"
-        label.Text = "Total Rooms: " .. tostring(count)
-        label.TextScaled = true
-        label.Position = UDim2.new(0, 0, 0, 50)
-        label.Size = UDim2.new(0, 200, 0, 50)
-        label.Parent = gui
-        counter = true
-        while task.wait(0.05) do
-            if counter then
-                label.Text = "Total Rooms: " .. tostring(count)
-            elseif counter == false then
-                break
-            end
-        end
-    else
-        counter = false
-        game.Players.LocalPlayer.PlayerGui.Counter:Destroy()
-    end
-end)
-
-OtherSection:NewToggle("Bruteforce Keypad 0000-9999 Method", "Attempt To Bruteforce A Keypad", function(state)
-    if state then
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "CurrentCode"
-        gui.Parent = game.Players.LocalPlayer.PlayerGui
-        local text = Instance.new("TextLabel")
-        text.Name = "Code"
-        text.BackgroundColor3 = Color3.new(0, 0, 0)
-        text.TextColor3 = Color3.new(1, 0, 0)
-        text.Text = "----"
-        text.Size = UDim2.new(0, 200, 0, 50)
-        text.Position = UDim2.new(0.45, 0, -0.05, 0)
-        text.TextScaled = true
-        text.Parent = gui
-        local currentCode = 0
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
-                table.insert(keypadtable, v)
-            end
-        end
-        keypad = true
-        while task.wait(1.06) do
-            if keypad then
-                xpcall(function()
-                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    local str = string.format("%04d", currentCode)
-                    for _, pad in ipairs(keypadtable) do
-                        local distance = (pad:GetPivot().Position - hrp.Position).Magnitude
-                        if distance <= 10 then
-                            for i = 1, #str do
-                                local num = tonumber(str:sub(i, i))
-                                local button = pad:FindFirstChild("Keypad"..num)
-                                if button then
-                                    local cd = button:FindFirstChildOfClass("ClickDetector")
-                                    if cd then
-                                        text.Text = str
-                                        fireclickdetector(cd)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    currentCode += 1
-                    if currentCode > 9999 then
-                        currentCode = 0
-                    end
-
-                end, function(err)
-                    warn("Bruteforce Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif keypad == false then
-                break
-            end
-        end
-    else
-        keypad = false
-        keypadtable = {}
-        game.Players.LocalPlayer.PlayerGui.CurrentCode:Destroy()
-    end
-end)
-
-OtherSection:NewToggle("Bruteforce Keypad Randomized Method", "Attempt To Bruteforce A Keypad", function(state)
-    if state then
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "CurrentCode"
-        gui.Parent = game.Players.LocalPlayer.PlayerGui
-        local text = Instance.new("TextLabel")
-        text.Name = "Code"
-        text.BackgroundColor3 = Color3.new(0, 0, 0)
-        text.TextColor3 = Color3.new(1, 0, 0)
-        text.Text = "----"
-        text.Size = UDim2.new(0, 200, 0, 50)
-        text.Position = UDim2.new(0.45, 0, -0.05, 0)
-        text.TextScaled = true
-        text.Parent = gui
-        local currentCode = 0
-        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v:IsA("Model") and v:FindFirstChild("Keypad0") and v:FindFirstChild("Keypad1") and v:FindFirstChild("Keypad2") and v:FindFirstChild("Keypad3") and v:FindFirstChild("Keypad4") and v:FindFirstChild("Keypad5") and v:FindFirstChild("Keypad6") and v:FindFirstChild("Keypad7") and v:FindFirstChild("Keypad8") and v:FindFirstChild("Keypad9") then
-                table.insert(keypad2table, v)
-            end
-        end
-        keypad2 = true
-        while task.wait(1.06) do
-            if keypad2 then
-                xpcall(function()
-                    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    local str
-                    repeat
-                        str = string.format("%04d", math.random(0, 9999))
-                    until not usedcodes[str]
-                    usedcodes[str] = true
-                    for _, pad in ipairs(keypad2table) do
-                        local distance = (pad:GetPivot().Position - hrp.Position).Magnitude
-                        if distance <= 10 then
-                            for i = 1, #str do
-                                local num = tonumber(str:sub(i, i))
-                                local button = pad:FindFirstChild("Keypad"..num)
-
-                                if button then
-                                    local cd = button:FindFirstChildOfClass("ClickDetector")
-                                    if cd then
-                                        text.Text = str
-                                        fireclickdetector(cd)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end, function(err)
-                    warn("Bruteforce Error")
-                    warn(debug.traceback(err))
-                end)
-            elseif keypad2 == false then
-                break
-            end
-        end
-    else
-        keypad2 = false
-        keypad2table = {}
-        game.Players.LocalPlayer.PlayerGui.CurrentCode:Destroy()
-    end
 end)
 
 local Heart = Window:NewTab("Operation Heartburn")
