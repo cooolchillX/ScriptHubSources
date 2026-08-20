@@ -1,6 +1,7 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local flyconnect
 local inputconnect
 local noclip = false
 local nocliptable = {}
@@ -159,7 +160,6 @@ local ammoaura2connect
 local zombietable = {}
 local zombie = false
 local zombieconnect
-local zombiecolor = Color3.fromRGB(255, 0, 0)
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -170,6 +170,7 @@ local speed = 1
 local moveDir = Vector3.zero
 local connection
 local connection2
+local connection3
 local keys = {
     W = false,
     A = false,
@@ -292,6 +293,36 @@ local function stopTPWalk2()
     resetKeys()
 end
 
+local function startTPWalk3()
+    if connection3 then return end
+
+    connection3 = RunService.Heartbeat:Connect(function()
+        local char = player.Character
+        if not char then return end
+
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        if moveDir.Magnitude > 0 then
+            local camCF = camera.CFrame
+            local direction = camCF:VectorToWorldSpace(moveDir)
+            direction = Vector3.new(direction.X, direction.Y, direction.Z)
+
+            if direction.Magnitude > 0 then
+                direction = direction.Unit
+                hrp.CFrame = hrp.CFrame + (direction * speed * 0.1)
+            end
+        end
+    end)
+end
+local function stopTPWalk3()
+    if connection3 then
+        connection3:Disconnect()
+        connection3 = nil
+    end
+    resetKeys()
+end
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure", Duration = 4,})
 
 local Main = Window:NewTab("Main")
@@ -314,6 +345,23 @@ MainSection:NewToggle("TP Walk With Better Swimming", "Increase Movement Speed",
         startTPWalk2()
     else
         stopTPWalk2()
+    end
+end)
+
+MainSection:NewToggle("Fly", "Fly In The Air", function(state)
+    if state then
+        startTPWalk3()
+        local RunService = game:GetService("RunService")
+        local root = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+        flyconnect = RunService.Heartbeat:Connect(function()
+            local velocity = root.AssemblyLinearVelocity
+            root.AssemblyLinearVelocity = Vector3.zero
+            game.workspace.Gravity = 0
+        end)
+    else
+        stopTPWalk3()
+        flyconnect:Disconnect()
+        game.workspace.Gravity = 196.2
     end
 end)
 
@@ -2476,12 +2524,14 @@ end)
 VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
     if state then
         local lighting = game:GetService("Lighting")
+        lighting.ClockTime = 14
         lighting.GlobalShadows = false
         lighting.Ambient = Color3.fromRGB(255, 255, 255)
         lighting.Brightness = 5
         lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
     else
         local lighting = game:GetService("Lighting")
+        lighting.ClockTime = 0
         lighting.GlobalShadows = true
         lighting.Ambient = Color3.fromRGB(128, 128, 128)
         lighting.Brightness = 1
@@ -3712,11 +3762,9 @@ HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
                             if not v:FindFirstChild("ESPHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "ESPHighlight"
-                                highlight.FillColor = zombiecolor
+                                highlight.FillColor = Color3.fromRGB(100, 0, 0)
                                 highlight.OutlineTransparency = 1
                                 highlight.Parent = v
-                            elseif v:FindFirstChild("ESPHighlight") then
-                                v.ESPHighlight.FillColor = zombiecolor
                             end
                             if v:IsDescendantOf(game.workspace.GameplayFolder.Debris) and v:FindFirstChild("ESPHighlight") then
                                 v.ESPHighlight:Destroy()
@@ -3743,10 +3791,6 @@ HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
             end
         end
     end
-end)
-
-HeartSection:NewColorPicker("Zombie ESP Color", "Change Its Color", Color3.fromRGB(255,0,0), function(color)
-    zombiecolor = color
 end)
 
 local UI = Window:NewTab("UI Toggle")
