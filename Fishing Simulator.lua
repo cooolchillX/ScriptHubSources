@@ -1,9 +1,18 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local seacreaturetable = {}
+local seacreature = false
+local seacreatureconnect
+local fish = ""
+local size = 1
+local mutation = "commonglow"
+local auto = false
+local autocatch = false
+local hitbox = false
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Fishing Simulator", Duration = 4,})
 
---MAIN
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Usual Stuff")
 
@@ -19,23 +28,173 @@ MainSection:NewButton("Infinite Yield", "Load It", function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
---FISH
+local MainSection = Main:NewSection("Experimental Features")
+
+MainSection:NewTextBox("Desired Fish", "No Spaces And All Lowercase", function(txt)
+	fish = txt
+end)
+
+MainSection:NewDropdown("Desired Size", "Wanted Size", {"Baby", "Small", "Normal", "Large", "Huge"}, function(currentOption)
+    if currentOption == "Baby" then
+        size = 1
+    elseif currentOption == "Small" then
+        size = 2
+    elseif currentOption == "Normal" then
+        size = 3
+    elseif currentOption == "Large" then
+        size = 4
+    elseif currentOption == "Huge" then
+        size = 5
+    end
+end)
+
+MainSection:NewDropdown("Desired Mutation", "Wanted Mutation", {"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic"}, function(currentOption)
+    if currentOption == "Common" then
+        mutation = "commonglow"
+    elseif currentOption == "Uncommon" then
+        mutation = "uncommonglow"
+    elseif currentOption == "Rare" then
+        mutation = "rareglow"
+    elseif currentOption == "Epic" then
+        mutation = "epicglow"
+    elseif currentOption == "Legendary" then
+        mutation = "legendaryglow"
+    elseif currentOption == "Mythic" then
+        mutation = "mythicglow"
+    end
+end)
+
+
+MainSection:NewToggle("Auto Catch After 2sec", "Faster Catch For Catch Wanted Fish", function(state)
+    if state then
+        autocatch = true
+    else
+        autocatch = false
+    end
+end)
+
+MainSection:NewButton("Catch Wanted Fish", "Helps A Lot With Hard Quests", function()
+    local hooked
+    local count = 0
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("ObjectValue") then
+            hooked = v
+        end
+    end
+    auto = true
+    local stopped = false
+    local hookevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting
+    local catchevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught
+    while auto and not stopped do
+        task.wait(0.15)
+        local currentFish = tostring(hooked.Value)
+        if currentFish == fish then
+            game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 0)
+            game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, false, game, 0)
+            stopped = true
+            game.StarterGui:SetCore("SendNotification", {Title = currentFish .. " Hooked", Text = "Atempt Number: " .. tostring(count), Duration = 4,})
+            if autocatch then
+                task.wait(2)
+                catchevent:FireServer()
+            end
+            break
+        end
+        if not stopped and tostring(hooked.Value) ~= fish then
+            task.spawn(function()
+                count = count + 1
+                hookevent:InvokeServer()
+            end)
+        end
+    end
+end)
+
+MainSection:NewButton("Catch Wanted Fish With Specific Size", "Helps A Lot With Hard Quests", function()
+    local hooked
+    local count = 0
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("ObjectValue") then
+            hooked = v
+        end
+    end
+    auto = true
+    local stopped = false
+    local hookevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting
+    local catchevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught
+    while auto and not stopped do
+        task.wait(0.15)
+        local currentFish = tostring(hooked.Value)
+        if currentFish == fish then
+            if hooked.Value:GetAttribute("size") == size then
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                stopped = true
+                game.StarterGui:SetCore("SendNotification", {Title = currentFish .. " Hooked " .. tostring(hooked.Value:GetAttribute("size")), Text = "Atempt Number: " .. tostring(count), Duration = 4,})
+                if autocatch then
+                    task.wait(2)
+                    catchevent:FireServer()
+                end
+                break
+            end
+        end
+        if not stopped and tostring(hooked.Value) ~= fish then
+            task.spawn(function()
+                count = count + 1
+                hookevent:InvokeServer()
+            end)
+        end
+    end
+end)
+
+MainSection:NewButton("Catch Wanted Fish With Specific Mutation", "Helps A Lot With Hard Quests", function()
+    local hooked
+    local count = 0
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("ObjectValue") then
+            hooked = v
+        end
+    end
+    auto = true
+    local stopped = false
+    local hookevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting
+    local catchevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught
+    while auto and not stopped do
+        task.wait(0.15)
+        local currentFish = tostring(hooked.Value)
+        if currentFish == fish then
+            if hooked.Value:GetAttribute("mutation") == mutation then
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                stopped = true
+                game.StarterGui:SetCore("SendNotification", {Title = currentFish .. " Hooked " .. tostring(hooked.Value:GetAttribute("mutation")), Text = "Atempt Number: " .. tostring(count), Duration = 4,})
+                if autocatch then
+                    task.wait(2)
+                    catchevent:FireServer()
+                end
+                break
+            end
+        end
+        if not stopped and tostring(hooked.Value) ~= fish then
+            task.spawn(function()
+                count = count + 1
+                hookevent:InvokeServer()
+            end)
+        end
+    end
+end)
+
 local Fish = Window:NewTab("Fish Stuff")
 local FishSection = Fish:NewSection("Mainly Gotta Do With Fish")
 
 FishSection:NewButton("Instant Bite", "Fish Will Bite The Rod", function()
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("FishBiting"):InvokeServer()
+    game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting:InvokeServer()
 end)
 
 FishSection:NewButton("Catch Fish", "Catches The Fish", function()
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("FishCaught"):FireServer()
+    game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught:FireServer()
 end)
 
 FishSection:NewButton("Sell All Fish", "Sell All Your Fish", function()
-    local args = {
-	"SellEverything"
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("processGameItemSold"):InvokeServer(unpack(args))
+    game:GetService("ReplicatedStorage").Shared.DataStreams.processGameItemSold:InvokeServer("SellEverything")
 end)
 
 FishSection:NewButton("Delete Water (Loops So Only Click Once)", "Not Compatible With Walk On Water", function()
@@ -65,25 +224,21 @@ FishSection:NewToggle("Walk On Water (Jesus)", "Not Compatible With Delete Water
     end
 end)
 
-local Test = Window:NewTab("KeyBind")
-local TestSection = Test:NewSection("Test It")
+local Keybind = Window:NewTab("KeyBind")
+local KeybindSection = Keybind:NewSection("For Easier Usage")
 
-TestSection:NewKeybind("Instant Bite", "Bite Instantly", Enum.KeyCode.Z, function()
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("FishBiting"):InvokeServer()
+KeybindSection:NewKeybind("Instant Bite", "Bite Instantly", Enum.KeyCode.Z, function()
+    game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting:InvokeServer()
 end)
 
-TestSection:NewKeybind("Catch Fish", "Catch It", Enum.KeyCode.X, function()
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("FishCaught"):FireServer()
+KeybindSection:NewKeybind("Catch Fish", "Catch It", Enum.KeyCode.X, function()
+    game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught:FireServer()
 end)
 
-TestSection:NewKeybind("Sell All Fish", "Sell Items In Inventory", Enum.KeyCode.C, function()
-	local args = {
-	"SellEverything"
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("processGameItemSold"):InvokeServer(unpack(args))
+KeybindSection:NewKeybind("Sell All Fish", "Sell Items In Inventory", Enum.KeyCode.C, function()
+	game:GetService("ReplicatedStorage").Shared.DataStreams.processGameItemSold:InvokeServer("SellEverything")
 end)
 
---Teleports
 local TP = Window:NewTab("Teleport")
 local TPSection = TP:NewSection("Island Teleports")
 
@@ -117,73 +272,62 @@ TPSection:NewButton("Smuggler's Bay", "TP There", function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-233.537033, 49.8551636, -47.3619614, 0.0340561084, 5.96809926e-08, -0.999419928, -6.92355897e-08, 1, 5.73563703e-08, 0.999419928, 6.72420981e-08, 0.0340561084)
 end)
 
+TPSection:NewButton("Nidhogg's Reach", "TP There", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2290.01367, 49.4241562, -84.4888077, -0.806656003, 2.40556055e-08, 0.59102124, -1.07170761e-08, 1, -5.53289752e-08, -0.59102124, -5.09654683e-08, -0.806656003)
+end)
+
+TPSection:NewButton("Cyber City", "TP There", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(71.4431305, 43.619957, -2599.10864, -0.999874413, 5.42895862e-09, -0.0158462431, 4.29483649e-09, 1, 7.1604461e-08, 0.0158462431, 7.15274169e-08, -0.999874413)
+end)
+
+TPSection:NewButton("Sakura Cove", "TP There", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(266.763214, 50.0802841, 3026.25269, 0.999255359, -2.53539483e-08, 0.0385845117, 2.21274998e-08, 1, 8.40473646e-08, -0.0385845117, -8.3130999e-08, 0.999255359)
+end)
+
 local TPSection = TP:NewSection("Game Teleports")
 
 TPSection:NewButton("Port Jackson", "TP There", function()
-    local args = {
-	{
-		islandName = "PortJackson",
-		oceanNum = 1
-	}
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("TeleportRequestEvent"):FireServer(unpack(args))
+    game.ReplicatedStorage.Shared.DataStreams.TeleportRequestEvent:FireServer({islandName = "PortJackson", oceanNum = 1})
 end)
 
 TPSection:NewButton("Timeless Tides", "TP There", function()
-    local args = {
-	{
-		islandName = "SmugglersBay",
-		oceanNum = 2
-	}
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("DataStreams"):WaitForChild("TeleportRequestEvent"):FireServer(unpack(args))
+    game.ReplicatedStorage.Shared.DataStreams.TeleportRequestEvent:FireServer({islandName = "SmugglersBay", oceanNum = 2})
 end)
 
 local Grind = Window:NewTab("Grinding")
 local GrindSection = Grind:NewSection("Grinding For Gems")
 
 GrindSection:NewButton("TP To Shipwreck", "Grinding", function()
-    local cantp = true
-    if workspace:FindFirstChild("ShipModel1") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel1.HitBox.CFrame
-        cantp = false
-    elseif workspace:FindFirstChild("ShipModel2") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel2.HitBox.CFrame
-        cantp = false
-    elseif workspace:FindFirstChild("ShipModel3") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel3.HitBox.CFrame
-        cantp = false
-    elseif workspace:FindFirstChild("ShipModel4") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel4.HitBox.CFrame
-        cantp = false
-    elseif workspace:FindFirstChild("ShipModel5") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel5.HitBox.CFrame
-        cantp = false
-    elseif workspace:FindFirstChild("ShipModel6") and cantp then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.ShipModel6.HitBox.CFrame
-        cantp = false
+    for _, v in pairs(game.workspace:GetChildren()) do
+        if v.Name == "ShipModel1" or v.Name == "ShipModel2" or v.Name == "ShipModel3" or v.Name == "ShipModel4" or v.Name == "ShipModel5"  or v.Name == "ShipModel6" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HitBox.CFrame
+        end
     end
 end)
 
 GrindSection:NewButton("TP To Treasure Chests", "Grinding", function()
-    i = workspace.RandomChests
-    for _, v in pairs(i:GetChildren()) do
+    for _, v in pairs(game.workspace.RandomChests:GetChildren()) do
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
     end
 end)
 
 GrindSection:NewButton("TP To Container", "Grinding", function()
-    for _, v in pairs(game.Workspace:GetChildren()) do
-        if string.find(string.lower(v.Name), "abandonedcontainers") then
+    for _, v in pairs(game.workspace:GetChildren()) do
+        if v.Name == "AbandonedContainers1" or v.Name == "AbandonedContainers2" or v.Name == "AbandonedContainers3" then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Anchor.Part.CFrame
         end
     end
 end)
 
 GrindSection:NewButton("TP To Shark Loot", "Grinding", function()
+    local old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
     for _, v in pairs(game.Workspace.DroppedItems:GetChildren()) do
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:GetPivot()
+        if v:FindFirstChild("Ring") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:GetPivot()
+            task.wait(0.15)
+        end
     end
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
 end)
 
 local ESP = Window:NewTab("ESP")
@@ -191,55 +335,60 @@ local ESPSection = ESP:NewSection("ESP For Things")
 
 ESPSection:NewToggle("ESP Sea Creatures", "See Their Name", function(state)
     if state then
-        i = true
-        while wait(0.1) do
-            if i == true then
-                for _, v in pairs(workspace:GetChildren()) do
-                    if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
-                        if v:IsA("Model") then
-                            for _, v2 in pairs(v:GetChildren()) do
-                                if v2.Name == "Hitbox" then
-                                    if not v2:FindFirstChild("ESPBillboard") then
-                                        local billboard = Instance.new("BillboardGui")
-                                        billboard.Name = "ESPBillboard"
-                                        billboard.Size = UDim2.new(0, 50, 0, 50)
-                                        billboard.StudsOffset = Vector3.new(0, 0, 0)
-                                        billboard.AlwaysOnTop = true
-                                        billboard.Parent = v2
+        seacreature = true
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
+                table.insert(seacreaturetable, v)
+            end
+        end
+        seacreatureconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
+                table.insert(seacreaturetable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if seacreature then
+                xpcall(function()
+                    for i = #seacreaturetable, 1, -1 do
+                        local v = seacreaturetable[i]
+                        if not v or not v.Parent then
+                            table.remove(seacreaturetable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
 
-                                        local label = Instance.new("TextLabel")
-                                        label.Size = UDim2.new(1, 0, 0.25, 0)
-                                        label.Position = UDim2.new(0, 0, 0, 0)
-                                        label.BackgroundTransparency = 1
-                                        label.TextColor3 = Color3.new(0, 1, 0)
-                                        label.TextScaled = true
-                                        label.Text = v.Name
-                                        label.Parent = billboard
-                                    end
-                                    if v2:FindFirstChild("ESPBillboard") then
-                                        v2.ESPBillboard.TextLabel.Text = v.Name
-                                    end
-                                end
+                                local label = Instance.new("TextLabel")
+                                label.Size = UDim2.new(1, 0, 1, 0)
+                                label.Position = UDim2.new(0, 0, 0, 0)
+                                label.BackgroundTransparency = 1
+                                label.TextColor3 = Color3.new(1, 0, 0)
+                                label.TextScaled = true
+                                label.Text = v.Name
+                                label.Parent = billboard
                             end
                         end
                     end
-                end
-            elseif i == false then
+                end, function(err)
+                    warn("Sea Creature ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif seacreature == false then
                 break
             end
         end
     else
-        i = false
-        for _, v in pairs(workspace:GetChildren()) do
+        seacreature = false
+        seacreatureconnect:Disconnect()
+        seacreaturetable = {}
+        for _, v in pairs(game.workspace:GetChildren()) do
             if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
-                if v:IsA("Model") then
-                    for _, v2 in pairs(v:GetChildren()) do
-                        if v2.Name == "Hitbox" then
-                            if v2:FindFirstChild("ESPBillboard") then
-                                v2.ESPBillboard:Destroy()
-                            end
-                        end
-                    end
+                if v:FindFirstChild("ESPBillboard") then
+                    v.ESPBillboard:Destroy()
                 end
             end
         end
@@ -250,12 +399,28 @@ local Visual = Window:NewTab("Visuals")
 local VisualSection = Visual:NewSection("Change How Stuff Is Seen")
 
 VisualSection:NewButton("Remove Clouds", "Deletes All Clouds", function()
-    game.Workspace.Terrain.Clouds:Destroy()
+    game.workspace.Terrain.Clouds:Destroy()
 end)
 
 VisualSection:NewButton("Remove Underwater And Other Visuals", "Removes All Other Visuals", function()
     for _, v in pairs(game.Lighting:GetChildren()) do
         v:Destroy()
+    end
+end)
+
+VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
+    if state then
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = false
+        lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        lighting.Brightness = 5
+        lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+    else
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = true
+        lighting.Ambient = Color3.fromRGB(128, 128, 128)
+        lighting.Brightness = 1
+        lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
     end
 end)
 
