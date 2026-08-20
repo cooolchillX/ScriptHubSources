@@ -3158,13 +3158,13 @@ end)
 
 AntiSection:NewToggle("Anti Popups", "Remove Painters Popups", function(state)
     if state then
-        for _, v in pairs(game.Players.LocalPlayer.PlayerGui.Main.Popups:GetChildren()) do
-            if v and v:IsA("Frame") and v.Name == "Popup" then
+        for _, v in pairs(game.Players.LocalPlayer.PlayerGui.Main:GetChildren()) do
+            if v and v:IsA("Frame") and v.Name == "Popups" then
                 table.insert(popuptable, v)
             end
         end
-        popupconnect = game.Players.LocalPlayer.PlayerGui.Main.Popups.ChildAdded:Connect(function(v)
-            if v and v:IsA("Frame") and v.Name == "Popup" then
+        popupconnect = game.Players.LocalPlayer.PlayerGui.Main.ChildAdded:Connect(function(v)
+            if v and v:IsA("Frame") and v.Name == "Popups" then
                 table.insert(popuptable, v)
             end
         end)
