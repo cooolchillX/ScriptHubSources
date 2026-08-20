@@ -328,7 +328,7 @@ game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure"
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Useful For Evading Anglers")
 
-MainSection:NewSlider("Set Speed", "Changed How Fast TP Walk Is", 5, 1, function(s) -- 5 (MaxValue) | 1 (MinValue)
+MainSection:NewSlider("Set Speed", "Changed How Fast TP Walk Is", 10, 1, function(s) -- 10 (MaxValue) | 1 (MinValue)
     speed = s
 end)
 
