@@ -308,10 +308,10 @@ FishSection:NewButton("Sell All Fish", "Sell All Your Fish", function()
     game:GetService("ReplicatedStorage").Shared.DataStreams.processGameItemSold:InvokeServer("SellEverything")
 end)
 
-FishSection:NewButton("Delete Water (Loops So Only Click Once)", "Not Compatible With Walk On Water", function()
+FishSection:NewButton("Delete Water (Loops So Only Click Once)", "Remove All Terrain Water", function()
     for _, v in pairs(game.Workspace:GetChildren()) do
         if v.Name == "FlatPlane1" or v.Name == "FlatPlane2" or v.Name == "FlatPlane3" or v.Name == "FlatPlane4" then
-            v:Destroy()
+            v.Transparency = 0.5
         end
     end
     while wait(0.2) do
@@ -319,7 +319,7 @@ FishSection:NewButton("Delete Water (Loops So Only Click Once)", "Not Compatible
     end
 end)
 
-FishSection:NewToggle("Walk On Water (Jesus)", "Not Compatible With Delete Water", function(state)
+FishSection:NewToggle("Walk On Water (Jesus)", "Walk On The Water", function(state)
     if state then
         for _, v in pairs(game.Workspace:GetChildren()) do
             if v.Name == "FlatPlane1" or v.Name == "FlatPlane2" or v.Name == "FlatPlane3" or v.Name == "FlatPlane4" then
