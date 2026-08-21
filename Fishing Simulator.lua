@@ -9,7 +9,7 @@ local size = 1
 local mutation = "commonglow"
 local auto = false
 local autocatch = false
-local hitbox = false
+local status = false
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Fishing Simulator", Duration = 4,})
 
@@ -332,6 +332,77 @@ FishSection:NewToggle("Walk On Water (Jesus)", "Walk On The Water", function(sta
                 v.CanCollide = false
             end
         end
+    end
+end)
+
+FishSection:NewToggle("Fish Status", "Shows Stats Of Hooked Fish", function(state)
+    if state then
+        status = true
+        local sizename = ""
+        local hooked
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "FishStatus"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local namelabel = Instance.new("TextLabel")
+        namelabel.Name = "FishName"
+        namelabel.Text = "FishName: nil"
+        namelabel.TextScaled = true
+        namelabel.Position = UDim2.new(0, 0, 0, 0)
+        namelabel.Size = UDim2.new(0, 200, 0, 50)
+        namelabel.Parent = gui
+        local sizelabel = Instance.new("TextLabel")
+        sizelabel.Name = "FishSize"
+        sizelabel.Text = "FishSize: nil"
+        sizelabel.TextScaled = true
+        sizelabel.Position = UDim2.new(0, 0, 0, 50)
+        sizelabel.Size = UDim2.new(0, 200, 0, 50)
+        sizelabel.Parent = gui
+        local mutationlabel = Instance.new("TextLabel")
+        mutationlabel.Name = "FishMutation"
+        mutationlabel.Text = "FishMutation: nil"
+        mutationlabel.TextScaled = true
+        mutationlabel.Position = UDim2.new(0, 0, 0, 100)
+        mutationlabel.Size = UDim2.new(0, 200, 0, 50)
+        mutationlabel.Parent = gui
+        while task.wait(0.1) do
+            if status then
+                xpcall(function()
+                    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                        if v:IsA("ObjectValue") then
+                            hooked = v
+                        end
+                    end
+                    if hooked.Value then
+                        if hooked.Value:GetAttribute("size") == 1 then
+                            sizename = "Baby"
+                        elseif hooked.Value:GetAttribute("size") == 2 then
+                            sizename = "Small"
+                        elseif hooked.Value:GetAttribute("size") == 3 then
+                            sizename = "Regular"
+                        elseif hooked.Value:GetAttribute("size") == 4 then
+                            sizename = "Large"
+                        elseif hooked.Value:GetAttribute("size") == 5 then
+                            sizename = "Huge"
+                        end
+                        namelabel.Text = "FishName: " .. tostring(hooked.Value)
+                        sizelabel.Text = "FishSize: " .. sizename
+                        mutationlabel.Text = "FishMutation: " .. tostring(hooked.Value:GetAttribute("mutation"))
+                    elseif hooked.Value == nil then
+                        namelabel.Text = "FishName: nil"
+                        sizelabel.Text = "FishSize: nil"
+                        mutationlabel.Text = "FishMutation: nil"
+                    end
+                end, function(err)
+                    warn("Fish Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif status == false then
+                break
+            end
+        end
+    else
+        status = false
+        game.Players.LocalPlayer.PlayerGui.FishStatus:Destroy()
     end
 end)
 
