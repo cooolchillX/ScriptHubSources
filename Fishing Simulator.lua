@@ -256,6 +256,43 @@ MainSection:NewButton("Catch Any Fish With Specific Mutation", "Helps A Lot With
     end
 end)
 
+MainSection:NewButton("Catch Any Fish With A Mutation", "Helps A Lot With Hard Quests", function()
+    local hooked
+    local count = 0
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("ObjectValue") then
+            hooked = v
+        end
+    end
+    auto = true
+    local stopped = false
+    local hookevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishBiting
+    local catchevent = game:GetService("ReplicatedStorage").Shared.DataStreams.FishCaught
+    while auto and not stopped do
+        task.wait(0.15)
+        local currentFish = tostring(hooked.Value)
+        if hooked.Value then
+            if hooked.Value:GetAttribute("mutation") then
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                stopped = true
+                game.StarterGui:SetCore("SendNotification", {Title = currentFish .. " Hooked " .. tostring(hooked.Value:GetAttribute("mutation")), Text = "Atempt Number: " .. tostring(count), Duration = 4,})
+                if autocatch then
+                    task.wait(2)
+                    catchevent:FireServer()
+                end
+                break
+            end
+        end
+        if not stopped then
+            task.spawn(function()
+                count = count + 1
+                hookevent:InvokeServer()
+            end)
+        end
+    end
+end)
+
 local Fish = Window:NewTab("Fish Stuff")
 local FishSection = Fish:NewSection("Mainly Gotta Do With Fish")
 
