@@ -1,165 +1,240 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
-local flyconnect
-local inputconnect
-local noclip = false
-local nocliptable = {}
-local prompts = {}
-local insta = false
-local instaconnection
-local assettable = {}
-local assets = false
-local assetconnect
-local doortable = {}
-local doors = false
-local doorconnect
-local playerstable = {}
-local players = false
-local playersconnect
-local keycardtable = {}
-local keycards = false
-local keycardconnect
-local batteriestable = {}
-local batteries = false
-local batteriesconnect
-local itemtable = {}
-local items = false
-local itemconnect
-local item2connect
-local neostyktable = {}
-local neostyks = false
-local neostykconnect
-local fakedoortable = {}
-local fakedoors = false
-local fakedoorconnect
-local lockertable = {}
-local lockers = false
-local lockerconnect
-local tripwiretable = {}
-local tripwires = false
-local tripwireconnect
-local landminetable = {}
-local landmines = false
-local landmineconnect
-local nodetable = {}
-local nodes = false
-local nodeconnect
-local entitytable = {}
-local entities = false
-local entitiesconnect
-local entities2connect
-local entities3connect
-local entities4connect
-local entities5connect
-local generatortable = {}
-local generators = false
-local generatorconnect
-local waterpuddlestable = {}
-local waterpuddles = false
-local waterpuddlesconnect
-local assetauratable = {}
-local assetaura = false
-local assetauraconnect
-local keycardauratable = {}
-local keycardaura = false
-local keycardauraconnect
-local itemauratable = {}
-local itemaura = false
-local itemauraconnect
-local neostykauratable = {}
-local neostykaura = false
-local neostykauraconnect
-local batteryauratable = {}
-local batteryaura = false
-local batteryauraconnect
-local tripwireauratable = {}
-local tripwireaura = false
-local tripwireauraconnect
-local landmineauratable = {}
-local landmineaura = false
-local landmineauraconnect
-local grabassettable = {}
-local grabasset = false
-local grabassetconnect
-local grabkeycardtable = {}
-local grabkeycard = false
-local grabkeycardconnect
-local grabitemtable = {}
-local grabitem = false
-local grabitemconnect
-local grabneostyktable = {}
-local grabneostyk = false
-local grabneostykconnect
-local grabbatterytable = {}
-local grabbattery = false
-local grabbatteryconnect
-local disabledrawertable = {}
-local disabledrawer = false
-local disabledrawerconnect
-local freezefov = false
-local seethrough = false
-local notifid = nil
-local notif = false
-local anglerconnect
-local anglernotifconnect
-local entityconnect
-local entitynotifconnect
-local risky = false
-local tpdistance = 100
-local avoidconnect
-local imaginetable = {}
-local imagine = false
-local imagineconnect
-local eyefestationtable = {}
-local eyefestation = false
-local eyefestationconnect
-local pandemoniumtable = {}
-local pandemonium = false
-local pandemoniumconnect
-local pipsqueaktable = {}
-local pipsqueak = false
-local pipsqueakconnect
-local harbingertable = {}
-local harbinger = false
-local harbingerconnect
-local witchtable = {}
-local witch = false
-local witchconnect
-local popuptable = {}
-local popup = false
-local popupconnect
-local waterpuddletable = {}
-local waterpuddle = false
-local waterpuddleconnect
-local antifeartable = {}
-local antifear = false
-local antifearconnect
-local triggerlandminetable = {}
-local triggerlandmine = false
-local triggerlandmineconnect
-local walklandminetable = {}
-local walklandmines = false
-local walklandmineconnect
-local fanstable = {}
-local fans = false
-local fansconnect
-local counter = false
-local keypadtable = {}
-local autogeneratortable = {}
-local autogenerator = false
-local autogeneratorconnect
-local ammotable = {}
-local ammo = false
-local ammoconnect
-local ammo2connect
-local ammoauratable = {}
-local ammoaura = false
-local ammoauraconnect
-local ammoaura2connect
-local zombietable = {}
-local zombie = false
-local zombieconnect
+local features = {
+    -- fly
+    flyconnect = nil,
+    -- inf jump
+    inputconnect = nil,
+    -- noclip
+    noclip = false,
+    nocliptable = {},
+    -- instainteract
+    prompts = {},
+    insta = false,
+    instaconnection = nil,
+    -- assetesp
+    assettable = {},
+    assets = false,
+    assetconnect = nil,
+    -- doors
+    doortable = {},
+    doors = false,
+    doorconnect = nil,
+    -- playeresp
+    playerstable = {},
+    players = false,
+    playersconnect = nil,
+    -- keycardesp
+    keycardtable = {},
+    keycards = false,
+    keycardconnect = nil,
+    -- batteriesesp
+    batteriestable = {},
+    batteries = false,
+    batteriesconnect = nil,
+    -- itemesp
+    itemtable = {},
+    items = false,
+    itemconnect = nil,
+    item2connect = nil,
+    -- neostykesp
+    neostyktable = {},
+    neostyks = false,
+    neostykconnect = nil,
+    -- fakedooresp
+    fakedoortable = {},
+    fakedoors = false,
+    fakedoorconnect = nil,
+    -- lockersesp
+    lockertable = {},
+    lockers = false,
+    lockerconnect = nil,
+    -- tripwireesp
+    tripwiretable = {},
+    tripwires = false,
+    tripwireconnect = nil,
+    -- landmineesp
+    landminetable = {},
+    landmines = false,
+    landmineconnect = nil,
+    -- nodeesp
+    nodetable = {},
+    nodes = false,
+    nodeconnect = nil,
+    -- entityesp
+    entitytable = {},
+    entities = false,
+    entitiesconnect = nil,
+    entities2connect = nil,
+    entities3connect = nil,
+    entities4connect = nil,
+    entities5connect = nil,
+    -- generatoresp
+    generatortable = {},
+    generators = false,
+    generatorconnect = nil,
+    -- waterpuddleesp
+    waterpuddlestable = {},
+    waterpuddles = false,
+    waterpuddlesconnect = nil,
+    -- assetaura
+    assetauratable = {},
+    assetaura = false,
+    assetauraconnect = nil,
+    -- keycardaura
+    keycardauratable = {},
+    keycardaura = false,
+    keycardauraconnect = nil,
+    -- itemaura
+    itemauratable = {},
+    itemaura = false,
+    itemauraconnect = nil,
+    -- neostykaura
+    neostykauratable = {},
+    neostykaura = false,
+    neostykauraconnect = nil,
+    -- batteryaura
+    batteryauratable = {},
+    batteryaura = false,
+    batteryauraconnect = nil,
+    -- tripwireaura
+    tripwireauratable = {},
+    tripwireaura = false,
+    tripwireauraconnect = nil,
+    -- landmineaura
+    landmineauratable = {},
+    landmineaura = false,
+    landmineauraconnect = nil,
+    -- grabasset
+    grabassettable = {},
+    grabasset = false,
+    grabassetconnect = nil,
+    -- grabkeycard
+    grabkeycardtable = {},
+    grabkeycard = false,
+    grabkeycardconnect = nil,
+    -- grabitem
+    grabitemtable = {},
+    grabitem = false,
+    grabitemconnect = nil,
+    -- grabneostyk
+    grabneostyktable = {},
+    grabneostyk = false,
+    grabneostykconnect = nil,
+    -- grabbattery
+    grabbatterytable = {},
+    grabbattery = false,
+    grabbatteryconnect = nil,
+    -- disabledrawer
+    disabledrawertable = {},
+    disabledrawer = false,
+    disabledrawerconnect = nil,
+    -- visual
+    freezefov = false,
+    seethrough = false,
+    --notif
+    notifid = nil,
+    notif = false,
+    --anglernotif
+    anglerconnect = nil,
+    anglernotifconnect = nil,
+    --entitynotif
+    entityconnect = nil,
+    entitynotifconnect = nil,
+    --avoider
+    risky = false,
+    tpdistance = 100,
+    avoidconnect = nil,
+    -- imagine
+    imaginetable = {},
+    imagine = false,
+    imagineconnect = nil,
+    -- eyefestation
+    eyefestationtable = {},
+    eyefestation = false,
+    eyefestationconnect = nil,
+    -- pandemonium
+    pandemoniumtable = {},
+    pandemonium = false,
+    pandemoniumconnect = nil,
+    -- pipsqueak
+    pipsqueaktable = {},
+    pipsqueak = false,
+    pipsqueakconnect = nil,
+    -- harbinger
+    harbingertable = {},
+    harbinger = false,
+    harbingerconnect = nil,
+    -- witch
+    witchtable = {},
+    witch = false,
+    witchconnect = nil,
+    -- coagulate
+    coagulatetable = {},
+    coagulate = false,
+    coagulateconnect = nil,
+    -- skinless
+    skinlesstable = {},
+    skinless = false,
+    skinlessconnect = nil,
+    -- edentree
+    edentreetable = {},
+    edentree = false,
+    edentreeconnect = nil,
+    -- bobberfish
+    bobberfishtable = {},
+    bobberfish = false,
+    bobberfishconnect = nil,
+    --gom
+    gom = false,
+    -- popup
+    popuptable = {},
+    popup = false,
+    popupconnect = nil,
+    -- waterpuddle
+    waterpuddletable = {},
+    waterpuddle = false,
+    waterpuddleconnect = nil,
+    -- antifear
+    antifeartable = {},
+    antifear = false,
+    antifearconnect = nil,
+    -- triggerlandmine
+    triggerlandminetable = {},
+    triggerlandmine = false,
+    triggerlandmineconnect = nil,
+    -- walklandmines
+    walklandminetable = {},
+    walklandmines = false,
+    walklandmineconnect = nil,
+    -- fans
+    fanstable = {},
+    fans = false,
+    fansconnect = nil,
+    -- counter
+    counter = false,
+    -- keypad
+    keypadtable = {},
+    -- autogenerator
+    autogeneratortable = {},
+    autogenerator = false,
+    autogeneratorconnect = nil,
+    -- ammo
+    ammotable = {},
+    ammo = false,
+    ammoconnect = nil,
+    ammo2connect = nil,
+    -- ammoaura
+    ammoauratable = {},
+    ammoaura = false,
+    ammoauraconnect = nil,
+    ammoaura2connect = nil,
+    -- zombie
+    zombietable = {},
+    zombie = false,
+    zombieconnect = nil,
+}
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -353,21 +428,21 @@ MainSection:NewToggle("Fly", "Fly In The Air", function(state)
         startTPWalk3()
         local RunService = game:GetService("RunService")
         local root = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-        flyconnect = RunService.Heartbeat:Connect(function()
+        features.flyconnect = RunService.Heartbeat:Connect(function()
             local velocity = root.AssemblyLinearVelocity
             root.AssemblyLinearVelocity = Vector3.zero
             game.workspace.Gravity = 0
         end)
     else
         stopTPWalk3()
-        flyconnect:Disconnect()
+        features.flyconnect:Disconnect()
         game.workspace.Gravity = 196.2
     end
 end)
 
 MainSection:NewToggle("Infinite Jump", "Increase Velocity Every Jump", function(state)
     if state then
-        inputconnect = game.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        features.inputconnect = game.UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if gameProcessed then
                 return
             end
@@ -376,58 +451,58 @@ MainSection:NewToggle("Infinite Jump", "Increase Velocity Every Jump", function(
             end
         end)
     else
-        inputconnect:Disconnect()
+        features.inputconnect:Disconnect()
     end
 end)
 
 MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
     if state then
-        noclip = true
+        features.noclip = true
         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
             if v and (v:IsA("Part") or v:IsA("MeshPart")) then
                 if v.CanCollide then
-                    table.insert(nocliptable, v)
+                    table.insert(features.nocliptable, v)
                 end
             end
         end
         while task.wait(0.1) do
-            if noclip then
-                for _, v in pairs(nocliptable) do
+            if features.noclip then
+                for _, v in pairs(features.nocliptable) do
                     v.CanCollide = false
                 end
-            elseif noclip == false then
+            elseif features.noclip == false then
                 break
             end
         end
     else
-        noclip = false
-        for _, v in pairs(nocliptable) do
+        features.noclip = false
+        for _, v in pairs(features.nocliptable) do
             v.CanCollide = true
         end
-        nocliptable = {}
+        features.nocliptable = {}
     end
 end)
 
 MainSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
     if state then
-        insta = true
+        features.insta = true
         for _, v in pairs(game.workspace:GetDescendants()) do
             if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
+                table.insert(features.prompts, v)
             end
         end
-        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
+        features.instaconnection = game.workspace.DescendantAdded:Connect(function(v)
             if v:IsA("ProximityPrompt") then
-                table.insert(prompts, v)
+                table.insert(features.prompts, v)
             end
         end)
         while task.wait(0.1) do
-            if insta then
+            if features.insta then
                 xpcall(function()
-                    for i = #prompts, 1, -1 do
-                        local v = prompts[i]
+                    for i = #features.prompts, 1, -1 do
+                        local v = features.prompts[i]
                         if not v or not v.Parent then
-                            table.remove(prompts, i)
+                            table.remove(features.prompts, i)
                         else
                             v.HoldDuration = 0
                         end
@@ -436,14 +511,14 @@ MainSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
                     warn("Insta Interact Error")
                     warn(debug.traceback(err))
                 end)
-            elseif insta == false then
+            elseif features.insta == false then
                 break
             end
         end
     else
-        insta = false
-        instaconnection:Disconnect()
-        prompts = {}
+        features.insta = false
+        features.instaconnection:Disconnect()
+        features.prompts = {}
     end
 end)
 
@@ -452,24 +527,24 @@ local ESPSection = ESP:NewSection("See Things Behind Walls")
 
 ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
     if state then
-        assets = true
+        features.assets = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(assettable, v)
+                table.insert(features.assettable, v)
             end
         end
-        assetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.assetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(assettable, v)
+                table.insert(features.assettable, v)
             end
         end)
         while task.wait(0.1) do
-            if assets then
+            if features.assets then
                 xpcall(function()
-                    for i = #assettable, 1, -1 do
-                        local v = assettable[i]
+                    for i = #features.assettable, 1, -1 do
+                        local v = features.assettable[i]
                         if not v or not v.Parent then
-                            table.remove(assettable, i)
+                            table.remove(features.assettable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 if not v:FindFirstChild("ESPHighlight") then
@@ -486,14 +561,14 @@ ESPSection:NewToggle("Asset ESP", "See All Assets", function(state)
                     warn("Asset ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif assets == false then
+            elseif features.assets == false then
                 break
             end
         end
     else
-        assets = false
-        assetconnect:Disconnect()
-        assettable = {}
+        features.assets = false
+        features.assetconnect:Disconnect()
+        features.assettable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 if v:FindFirstChild("ESPHighlight") then
@@ -506,29 +581,29 @@ end)
 
 ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
     if state then
-        doors = true
+        features.doors = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor") then
-                table.insert(doortable, v)
+            if v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor" or v.Name == "DoubleDoorSewer") then
+                table.insert(features.doortable, v)
             end
         end
-        doorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
-            if  v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor") then
-                table.insert(doortable, v)
+        features.doorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if  v:IsA("Model") and (v.Name == "NormalDoor" or v.Name == "DoubleDoor" or v.Name == "DoubleDoorSewer") then
+                table.insert(features.doortable, v)
             end
         end)
         while task.wait(0.1) do
-            if doors then
+            if features.doors then
                 xpcall(function()
-                    for i = #doortable, 1, -1 do
-                        local v = doortable[i]
+                    for i = #features.doortable, 1, -1 do
+                        local v = features.doortable[i]
                         if not v or not v.Parent then
-                            table.remove(doortable, i)
+                            table.remove(features.doortable, i)
                         else
-                            if v.Parent.Name == "DoubleDoor" then
-                                table.remove(doortable, i)
+                            if v.Parent.Name == "DoubleDoor" or v.Parent.Name == "DoubleDoorSewer" then
+                                table.remove(features.doortable, i)
                             end
-                            if v.Name == "DoubleDoor" then
+                            if v.Name == "DoubleDoor" or v.Name == "DoubleDoorSewer" then
                                 if v:GetAttribute("ProgressDoor") then
                                     for _, door in pairs(v:GetChildren()) do
                                         if door and door:FindFirstChild("OpenValue") then
@@ -679,14 +754,14 @@ ESPSection:NewToggle("Door ESP", "See All Doors", function(state)
                     warn("Door ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif doors == false then
+            elseif features.doors == false then
                 break
             end
         end
     else
-        doors = false
-        doorconnect:Disconnect()
-        doortable = {}
+        features.doors = false
+        features.doorconnect:Disconnect()
+        features.doortable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v:IsA("Model") and v.Name == "NormalDoor" then
                 if v:FindFirstChild("Door") then
@@ -703,19 +778,19 @@ end)
 ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
     if state then
         for _, v in pairs(game.Players:GetPlayers()) do
-            table.insert(playerstable, v)
+            table.insert(features.playerstable, v)
         end
-        playersconnect = game.Players.PlayerAdded:Connect(function(v)
-            table.insert(playerstable, v)
+        features.playersconnect = game.Players.PlayerAdded:Connect(function(v)
+            table.insert(features.playerstable, v)
         end)
-        players = true
+        features.players = true
         while task.wait(0.1) do
-            if players then
+            if features.players then
                 xpcall(function()
-                    for i = #playerstable, 1, -1 do
-                        local v = playerstable[i]
+                    for i = #features.playerstable, 1, -1 do
+                        local v = features.playerstable[i]
                         if not v or not v.Parent then
-                            table.remove(playerstable, i)
+                            table.remove(features.playerstable, i)
                         else
                             if v ~= game.Players.LocalPlayer then
                                 local character = v.Character
@@ -734,14 +809,14 @@ ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
                     warn("Player ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif players == false then
+            elseif features.players == false then
                 break
             end
         end
     else
-        players = false
-        playersconnect:Disconnect()
-        playerstable = {}
+        features.players = false
+        features.playersconnect:Disconnect()
+        features.playerstable = {}
         for _, Players in pairs(game.Players:GetPlayers()) do
             if Players ~= game.Players.LocalPlayer then
                 local character = Players.Character
@@ -755,24 +830,24 @@ end)
 
 ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
     if state then
-        keycards = true
+        features.keycards = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(keycardtable, v)
+                table.insert(features.keycardtable, v)
             end
         end
-        keycardconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.keycardconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(keycardtable, v)
+                table.insert(features.keycardtable, v)
             end
         end)
         while task.wait(0.1) do
-            if keycards then
+            if features.keycards then
                 xpcall(function()
-                    for i = #keycardtable, 1, -1 do
-                        local v = keycardtable[i]
+                    for i = #features.keycardtable, 1, -1 do
+                        local v = features.keycardtable[i]
                         if not v or not v.Parent then
-                            table.remove(keycardtable, i)
+                            table.remove(features.keycardtable, i)
                         else
                             if not v:FindFirstChild("ESPBillboard") then
                                 if v.Name == "NormalKeyCard" then
@@ -847,14 +922,14 @@ ESPSection:NewToggle("Keycard ESP", "See All Keycards", function(state)
                     warn("Keycard ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif keycards == false then
+            elseif features.keycards == false then
                 break
             end
         end
     else
-        keycards = false
-        keycardconnect:Disconnect()
-        keycardtable = {}
+        features.keycards = false
+        features.keycardconnect:Disconnect()
+        features.keycardtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
                 if v:FindFirstChild("ESPBillboard") then
@@ -867,24 +942,24 @@ end)
 
 ESPSection:NewToggle("Battery ESP", "See All Batteries", function(state)
     if state then
-        batteries = true
+        features.batteries = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
-                table.insert(batteriestable, v)
+                table.insert(features.batteriestable, v)
             end
         end
-        batteriesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.batteriesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
-                table.insert(batteriestable, v)
+                table.insert(features.batteriestable, v)
             end
         end)
         while task.wait(0.1) do
-            if batteries then
+            if features.batteries then
                 xpcall(function()
-                    for i = #batteriestable, 1, -1 do
-                        local v = batteriestable[i]
+                    for i = #features.batteriestable, 1, -1 do
+                        local v = features.batteriestable[i]
                         if not v or not v.Parent then
-                            table.remove(batteriestable, i)
+                            table.remove(features.batteriestable, i)
                         else
                             if not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
@@ -909,14 +984,14 @@ ESPSection:NewToggle("Battery ESP", "See All Batteries", function(state)
                     warn("Battery ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif batteries == false then
+            elseif features.batteries == false then
                 break
             end
         end
     else
-        batteries = false
-        batteriesconnect:Disconnect()
-        batteriestable = {}
+        features.batteries = false
+        features.batteriesconnect:Disconnect()
+        features.batteriestable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "battery") then
                 if v:FindFirstChild("ESPBillboard") then
@@ -929,44 +1004,44 @@ end)
 
 ESPSection:NewToggle("Item ESP", "See All Items", function(state)
     if state then
-        items = true
+        features.items = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemtable, v)
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemtable, v)
                 end
             end
         end
-        itemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.itemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemtable, v)
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemtable, v)
                 end
             end
         end)
         for _, v in pairs(game.workspace.GameplayFolder.DroppedItems:GetChildren()) do
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemtable, v)
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemtable, v)
                 end
             end
         end
         item2connect = game.workspace.GameplayFolder.DroppedItems.ChildAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemtable, v)
+                if v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Lantern" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemtable, v)
                 end
             end
         end)
         while task.wait(0.1) do
-            if items then
+            if features.items then
                 xpcall(function()
-                    for i = #itemtable, 1, -1 do
-                        local v = itemtable[i]
+                    for i = #features.itemtable, 1, -1 do
+                        local v = features.itemtable[i]
                         if not v or not v.Parent then
-                            table.remove(itemtable, i)
+                            table.remove(features.itemtable, i)
                         else
-                            if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" then
+                            if v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
                                 if not v:FindFirstChild("ESPBillboard") then
                                     if tostring(v:GetAttribute("DisplayName")) ~= "nil" then
                                         local billboard = Instance.new("BillboardGui")
@@ -1029,18 +1104,18 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
                     warn("Item ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif items == false then
+            elseif features.items == false then
                 break
             end
         end
     else
-        items = false
-        itemconnect:Disconnect()
-        item2connect:Disconnect()
-        itemtable = {}
+        features.items = false
+        features.itemconnect:Disconnect()
+        features.item2connect:Disconnect()
+        features.itemtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -1049,7 +1124,7 @@ ESPSection:NewToggle("Item ESP", "See All Items", function(state)
         end
         for _, v in pairs(game.workspace.GameplayFolder.DroppedItems:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
@@ -1063,22 +1138,22 @@ ESPSection:NewToggle("Locker ESP", "See All Lockers", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(lockertable, v)
+                table.insert(features.lockertable, v)
             end
         end
-        lockerconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.lockerconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(lockertable, v)
+                table.insert(features.lockertable, v)
             end
         end)
-        lockers = true
+        features.lockers = true
         while task.wait(0.1) do
-            if lockers then
+            if features.lockers then
                 xpcall(function()
-                    for i = #lockertable, 1, -1 do
-                        local v = lockertable[i]
+                    for i = #features.lockertable, 1, -1 do
+                        local v = features.lockertable[i]
                         if not v or not v.Parent then
-                            table.remove(lockertable, i)
+                            table.remove(features.lockertable, i)
                         else
                             if not v:FindFirstChild("ESPHighlight") then
                                 local highlight = Instance.new("Highlight")
@@ -1093,14 +1168,14 @@ ESPSection:NewToggle("Locker ESP", "See All Lockers", function(state)
                     warn("Locker ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif lockers == false then
+            elseif features.lockers == false then
                 break
             end
         end
     else
-        lockers = false
-        lockerconnect:Disconnect()
-        lockertable = {}
+        features.lockers = false
+        features.lockerconnect:Disconnect()
+        features.lockertable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Locker" then
                 if v:FindFirstChild("ESPHighlight") then
@@ -1113,24 +1188,24 @@ end)
 
 ESPSection:NewToggle("NeoStyk ESP", "See All NeoStyks", function(state)
     if state then
-        neostyks = true
+        features.neostyks = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "neostyk") then
-                table.insert(neostyktable, v)
+                table.insert(features.neostyktable, v)
             end
         end
-        neostykconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.neostykconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "neostyk") then
-                table.insert(neostyktable, v)
+                table.insert(features.neostyktable, v)
             end
         end)
         while task.wait(0.1) do
-            if neostyks then
+            if features.neostyks then
                 xpcall(function()
-                    for i = #neostyktable, 1, -1 do
-                        local v = neostyktable[i]
+                    for i = #features.neostyktable, 1, -1 do
+                        local v = features.neostyktable[i]
                         if not v or not v.Parent then
-                            table.remove(neostyktable, i)
+                            table.remove(features.neostyktable, i)
                         else
                             if not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
@@ -1155,14 +1230,14 @@ ESPSection:NewToggle("NeoStyk ESP", "See All NeoStyks", function(state)
                     warn("NeoStyk ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif neostyks == false then
+            elseif features.neostyks == false then
                 break
             end
         end
     else
-        neostyks = false
-        neostykconnect:Disconnect()
-        neostyktable = {}
+        features.neostyks = false
+        features.neostykconnect:Disconnect()
+        features.neostyktable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and string.find(string.lower(v.Name), "neostyk") then
                 if v:FindFirstChild("ESPBillboard") then
@@ -1177,22 +1252,22 @@ ESPSection:NewToggle("Fake Door ESP", "See All Fake Doors", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v.Name == "TricksterRoom" and v:IsA("Model") then
-                table.insert(fakedoortable, v)
+                table.insert(features.fakedoortable, v)
             end
         end
-        fakedoorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.fakedoorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v.Name == "TricksterRoom" and v:IsA("Model") then
-                table.insert(fakedoortable, v)
+                table.insert(features.fakedoortable, v)
             end
         end)
-        fakedoors = true
+        features.fakedoors = true
         while task.wait(0.1) do
-            if fakedoors then
+            if features.fakedoors then
                 xpcall(function()
-                    for i = #fakedoortable, 1, -1 do
-                        local v = fakedoortable[i]
+                    for i = #features.fakedoortable, 1, -1 do
+                        local v = features.fakedoortable[i]
                         if not v or not v.Parent then
-                            table.remove(fakedoortable, i)
+                            table.remove(features.fakedoortable, i)
                         else
                             if not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
@@ -1217,14 +1292,14 @@ ESPSection:NewToggle("Fake Door ESP", "See All Fake Doors", function(state)
                     warn("Fake Door ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif fakedoors == false then
+            elseif features.fakedoors == false then
                 break
             end
         end
     else
-        fakedoors = false
-        fakedoorconnect:Disconnect()
-        fakedoortable = {}
+        features.fakedoors = false
+        features.fakedoorconnect:Disconnect()
+        features.fakedoortable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v.Name == "TricksterRoom" and v:IsA("Model") then
                 if v:FindFirstChild("ESPBillboard") then
@@ -1239,22 +1314,22 @@ ESPSection:NewToggle("Tripwire ESP", "See All Tripwires", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Tripwire" then
-                table.insert(tripwiretable, v)
+                table.insert(features.tripwiretable, v)
             end
         end
-        tripwireconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.tripwireconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Tripwire" then
-                table.insert(tripwiretable, v)
+                table.insert(features.tripwiretable, v)
             end
         end)
-        tripwires = true
+        features.tripwires = true
         while task.wait(0.1) do
-            if tripwires then
+            if features.tripwires then
                 xpcall(function()
-                    for i = #tripwiretable, 1, -1 do
-                        local v = tripwiretable[i]
+                    for i = #features.tripwiretable, 1, -1 do
+                        local v = features.tripwiretable[i]
                         if not v or not v.Parent then
-                            table.remove(tripwiretable, i)
+                            table.remove(features.tripwiretable, i)
                         else
                             if v:FindFirstChild("Main") then
                                 if not v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency ~= 1 then
@@ -1283,14 +1358,14 @@ ESPSection:NewToggle("Tripwire ESP", "See All Tripwires", function(state)
                     warn("Tripwire ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif tripwires == false then
+            elseif features.tripwires == false then
                 break
             end
         end
     else
-        tripwires = false
-        tripwireconnect:Disconnect()
-        tripwiretable = {}
+        features.tripwires = false
+        features.tripwireconnect:Disconnect()
+        features.tripwiretable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Tripwire" then
                 if v.Main:FindFirstChild("ESPBillboard") then
@@ -1305,22 +1380,22 @@ ESPSection:NewToggle("Landmine ESP", "See All Landmines", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Landmine" then
-                table.insert(landminetable, v)
+                table.insert(features.landminetable, v)
             end
         end
-        landmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.landmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Landmine" then
-                table.insert(landminetable, v)
+                table.insert(features.landminetable, v)
             end
         end)
-        landmines = true
+        features.landmines = true
         while task.wait(0.1) do
-            if landmines then
+            if features.landmines then
                 xpcall(function()
-                    for i = #landminetable, 1, -1 do
-                        local v = landminetable[i]
+                    for i = #features.landminetable, 1, -1 do
+                        local v = features.landminetable[i]
                         if not v or not v.Parent then
-                            table.remove(landminetable, i)
+                            table.remove(features.landminetable, i)
                         else
                             if v:FindFirstChild("Main") then
                                 if not v.Main:FindFirstChild("ESPBillboard") and v.Main.Transparency ~= 1 then
@@ -1349,14 +1424,14 @@ ESPSection:NewToggle("Landmine ESP", "See All Landmines", function(state)
                     warn("Landmine ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif landmines == false then
+            elseif features.landmines == false then
                 break
             end
         end
     else
-        landmines = false
-        landmineconnect:Disconnect()
-        landminetable = {}
+        features.landmines = false
+        features.landmineconnect:Disconnect()
+        features.landminetable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Landmine" then
                 if v.Main:FindFirstChild("ESPBillboard") then
@@ -1372,26 +1447,26 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") then
                 if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
-                    table.insert(nodetable, v)
+                    table.insert(features.nodetable, v)
                 end
             end
         end
-        nodeconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.nodeconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") then
                 if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
-                    table.insert(nodetable, v)
+                    table.insert(features.nodetable, v)
                 end
             end
         end)
-        nodes = true
+        features.nodes = true
         while task.wait(0.1) do
-            if nodes then
+            if features.nodes then
                 xpcall(function()
                     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    for i = #nodetable, 1, -1 do
-                        local v = nodetable[i]
+                    for i = #features.nodetable, 1, -1 do
+                        local v = features.nodetable[i]
                         if not v or not v.Parent then
-                            table.remove(nodetable, i)
+                            table.remove(features.nodetable, i)
                         else
                             local distance = (hrp.Position - v.Position).Magnitude
                             local rounded = math.round(distance)
@@ -1420,14 +1495,14 @@ ESPSection:NewToggle("Node Monster ESP", "See All Node Monsters", function(state
                     warn("Node Monster ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif nodes == false then
+            elseif features.nodes == false then
                 break
             end
         end
     else
-        nodes = false
-        nodeconnect:Disconnect()
-        nodetable = {}
+        features.nodes = false
+        features.nodeconnect:Disconnect()
+        features.nodetable = {}
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") then
                 if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
@@ -1445,78 +1520,78 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace.GameplayFolder.Monsters:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace.Camera:GetDescendants()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end
-        entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.entitiesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     task.wait(1)
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end)
-        entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
+        features.entities2connect = game.workspace.GameplayFolder.Monsters.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     task.wait(1)
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end)
-        entities3connect = game.workspace.Camera.DescendantAdded:Connect(function(v)
+        features.entities3connect = game.workspace.Camera.DescendantAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     task.wait(1)
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end)
-        entities4connect = game.workspace.ChildAdded:Connect(function(v)
+        features.entities4connect = game.workspace.ChildAdded:Connect(function(v)
             if v and (v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody")) then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Fish" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "BiggerStatue" or v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     task.wait(1)
-                    table.insert(entitytable, v)
+                    table.insert(features.entitytable, v)
                 end
             end
         end)
-        entities5connect = game.Workspace.DescendantAdded:Connect(function(v)
+        features.entities5connect = game.Workspace.DescendantAdded:Connect(function(v)
             if v.Name == "DwellerModel" and v:IsA("Model") then
                 task.wait(0.5)
-                table.insert(entitytable, v)
+                table.insert(features.entitytable, v)
             end
         end)
-        entities = true
+        features.entities = true
         while task.wait(0.1) do
-            if entities then
+            if features.entities then
                 xpcall(function()
                     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    for i = #entitytable, 1, -1 do
-                        local v = entitytable[i]
+                    for i = #features.entitytable, 1, -1 do
+                        local v = features.entitytable[i]
                         if not v or not v.Parent then
-                            table.remove(entitytable, i)
+                            table.remove(features.entitytable, i)
                         else
                             if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" then
                                 local distance = (hrp.Position - v:GetPivot().Position).Magnitude
@@ -1701,17 +1776,17 @@ ESPSection:NewToggle("Entity ESP", "See All Entities", function(state)
                     warn("Entity ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif entities == false then
+            elseif features.entities == false then
                 break
             end
         end
     else
-        entities = false
-        entitiesconnect:Disconnect()
-        entities2connect:Disconnect()
-        entities3connect:Disconnect()
-        entities4connect:Disconnect()
-        entitytable = {}
+        features.entities = false
+        features.entitiesconnect:Disconnect()
+        features.entities2connect:Disconnect()
+        features.entities3connect:Disconnect()
+        features.entities4connect:Disconnect()
+        features.entitytable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "BiggerStatue" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Statue" or v.Name == "SkinlessCorpse" or v.Name == "TreeBody" or v.Name == "DwellerModel" or v.Name == "Coagulate" or v.Name == "CementShoes" then
@@ -1755,22 +1830,22 @@ ESPSection:NewToggle("Generator ESP", "See All Generators", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                table.insert(generatortable, v)
+                table.insert(features.generatortable, v)
             end
         end
-        generatorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.generatorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                table.insert(generatortable, v)
+                table.insert(features.generatortable, v)
             end
         end)
-        generators = true
+        features.generators = true
         while task.wait(0.1) do
-            if generators then
+            if features.generators then
                 xpcall(function()
-                    for i = #generatortable, 1, -1 do
-                        local v = generatortable[i]
+                    for i = #features.generatortable, 1, -1 do
+                        local v = features.generatortable[i]
                         if not v or not v.Parent then
-                            table.remove(generatortable, i)
+                            table.remove(features.generatortable, i)
                         else
                             if v:FindFirstChild("Fixed") then
                                 if v.Fixed.Value ~= 100 and not v.Model:FindFirstChild("ESPBillboard") then
@@ -1799,14 +1874,14 @@ ESPSection:NewToggle("Generator ESP", "See All Generators", function(state)
                     warn("Generator ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif generators == false then
+            elseif features.generators == false then
                 break
             end
         end
     else
-        generators = false
-        generatorconnect:Disconnect()
-        generatortable = {}
+        features.generators = false
+        features.generatorconnect:Disconnect()
+        features.generatortable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
                 if v.Model:FindFirstChild("ESPBillboard") then
@@ -1821,22 +1896,22 @@ ESPSection:NewToggle("Water Puddle ESP", "See All Water Puddles", function(state
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
-                table.insert(waterpuddlestable, v)
+                table.insert(features.waterpuddlestable, v)
             end
         end
-        waterpuddlesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.waterpuddlesconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
-                table.insert(waterpuddlestable, v)
+                table.insert(features.waterpuddlestable, v)
             end
         end)
-        waterpuddles = true
+        features.waterpuddles = true
         while task.wait(0.1) do
-            if waterpuddles then
+            if features.waterpuddles then
                 xpcall(function()
-                    for i = #waterpuddlestable, 1, -1 do
-                        local v = waterpuddlestable[i]
+                    for i = #features.waterpuddlestable, 1, -1 do
+                        local v = features.waterpuddlestable[i]
                         if not v or not v.Parent then
-                            table.remove(waterpuddlestable, i)
+                            table.remove(features.waterpuddlestable, i)
                         else
                             if v and not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
@@ -1861,14 +1936,14 @@ ESPSection:NewToggle("Water Puddle ESP", "See All Water Puddles", function(state
                     warn("Water Puddle ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif waterpuddles == false then
+            elseif features.waterpuddles == false then
                 break
             end
         end
     else
-        waterpuddles = false
-        waterpuddlesconnect:Disconnect()
-        waterpuddlestable = {}
+        features.waterpuddles = false
+        features.waterpuddlesconnect:Disconnect()
+        features.waterpuddlestable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
                 if v:FindFirstChild("ESPBillboard") then
@@ -1886,22 +1961,22 @@ AuraSection:NewToggle("Grab All Assets Near You", "Grabs All Close Assets", func
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(assetauratable, v)
+                table.insert(features.assetauratable, v)
             end
         end
-        assetauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.assetauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(assetauratable, v)
+                table.insert(features.assetauratable, v)
             end
         end)
-        assetaura = true
+        features.assetaura = true
         while task.wait(0.1) do
-            if assetaura then
+            if features.assetaura then
                 xpcall(function()
-                    for i = #assetauratable, 1, -1 do
-                        local v = assetauratable[i]
+                    for i = #features.assetauratable, 1, -1 do
+                        local v = features.assetauratable[i]
                         if not v or not v.Parent then
-                            table.remove(assetauratable, i)
+                            table.remove(features.assetauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -1915,14 +1990,14 @@ AuraSection:NewToggle("Grab All Assets Near You", "Grabs All Close Assets", func
                     warn("Grab All Assets Error")
                     warn(debug.traceback(err))
                 end)
-            elseif assetaura == false then
+            elseif features.assetaura == false then
                 break
             end
         end
     else
-        assetaura = false
-        assetauraconnect:Disconnect()
-        assetauratable = {}
+        features.assetaura = false
+        features.assetauraconnect:Disconnect()
+        features.assetauratable = {}
     end
 end)
 
@@ -1930,22 +2005,22 @@ AuraSection:NewToggle("Grab All Keycards Near You", "Grabs All Close Keycards", 
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(keycardauratable, v)
+                table.insert(features.keycardauratable, v)
             end
         end
-        keycardauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.keycardauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(keycardauratable, v)
+                table.insert(features.keycardauratable, v)
             end
         end)
-        keycardaura = true
+        features.keycardaura = true
         while task.wait(0.1) do
-            if keycardaura then
+            if features.keycardaura then
                 xpcall(function()
-                    for i = #keycardauratable, 1, -1 do
-                        local v = keycardauratable[i]
+                    for i = #features.keycardauratable, 1, -1 do
+                        local v = features.keycardauratable[i]
                         if not v or not v.Parent then
-                            table.remove(keycardauratable, i)
+                            table.remove(features.keycardauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -1959,14 +2034,14 @@ AuraSection:NewToggle("Grab All Keycards Near You", "Grabs All Close Keycards", 
                     warn("Grab All Keycards Error")
                     warn(debug.traceback(err))
                 end)
-            elseif keycardaura == false then
+            elseif features.keycardaura == false then
                 break
             end
         end
     else
-        keycardaura = false
-        keycardauraconnect:Disconnect()
-        keycardauratable = {}
+        features.keycardaura = false
+        features.keycardauraconnect:Disconnect()
+        features.keycardauratable = {}
     end
 end)
 
@@ -1974,26 +2049,26 @@ AuraSection:NewToggle("Grab All Items Near You", "Grabs All Close Items", functi
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemauratable, v)
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemauratable, v)
                 end
             end
         end
-        itemauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.itemauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(itemauratable, v)
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.itemauratable, v)
                 end
             end
         end)
-        itemaura = true
+        features.itemaura = true
         while task.wait(0.1) do
-            if itemaura then
+            if features.itemaura then
                 xpcall(function()
-                    for i = #itemauratable, 1, -1 do
-                        local v = itemauratable[i]
+                    for i = #features.itemauratable, 1, -1 do
+                        local v = features.itemauratable[i]
                         if not v or not v.Parent then
-                            table.remove(itemauratable, i)
+                            table.remove(features.itemauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -2007,14 +2082,14 @@ AuraSection:NewToggle("Grab All Items Near You", "Grabs All Close Items", functi
                     warn("Grab All Items Error")
                     warn(debug.traceback(err))
                 end)
-            elseif itemaura == false then
+            elseif features.itemaura == false then
                 break
             end
         end
     else
-        itemaura = false
-        itemauraconnect:Disconnect()
-        itemauratable = {}
+        features.itemaura = false
+        features.itemauraconnect:Disconnect()
+        features.itemauratable = {}
     end
 end)
 
@@ -2022,22 +2097,22 @@ AuraSection:NewToggle("Grab All NeoStyks Near You", "Grabs All Close NeoStyks", 
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and string.find(string.lower(v.Name), "neostyk") then
-                table.insert(neostykauratable, v)
+                table.insert(features.neostykauratable, v)
             end
         end
-        neostykauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.neostykauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and string.find(string.lower(v.Name), "neostyk") then
-                table.insert(neostykauratable, v)
+                table.insert(features.neostykauratable, v)
             end
         end)
-        neostykaura = true
+        features.neostykaura = true
         while task.wait(0.1) do
-            if neostykaura then
+            if features.neostykaura then
                 xpcall(function()
-                    for i = #neostykauratable, 1, -1 do
-                        local v = neostykauratable[i]
+                    for i = #features.neostykauratable, 1, -1 do
+                        local v = features.neostykauratable[i]
                         if not v or not v.Parent then
-                            table.remove(neostykauratable, i)
+                            table.remove(features.neostykauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -2051,14 +2126,14 @@ AuraSection:NewToggle("Grab All NeoStyks Near You", "Grabs All Close NeoStyks", 
                     warn("Grab All NeoStyks Error")
                     warn(debug.traceback(err))
                 end)
-            elseif neostykaura == false then
+            elseif features.neostykaura == false then
                 break
             end
         end
     else
-        neostykaura = false
-        neostykauraconnect:Disconnect()
-        neostykauratable = {}
+        features.neostykaura = false
+        features.neostykauraconnect:Disconnect()
+        features.neostykauratable = {}
     end
 end)
 
@@ -2066,22 +2141,22 @@ AuraSection:NewToggle("Grab All Batteries Near You", "Grabs All Close Batteries"
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and string.find(string.lower(v.Name), "battery") then
-                table.insert(batteryauratable, v)
+                table.insert(features.batteryauratable, v)
             end
         end
-        batteryauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.batteryauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and string.find(string.lower(v.Name), "battery") then
-                table.insert(batteryauratable, v)
+                table.insert(features.batteryauratable, v)
             end
         end)
-        batteryaura = true
+        features.batteryaura = true
         while task.wait(0.1) do
-            if batteryaura then
+            if features.batteryaura then
                 xpcall(function()
-                    for i = #batteryauratable, 1, -1 do
-                        local v = batteryauratable[i]
+                    for i = #features.batteryauratable, 1, -1 do
+                        local v = features.batteryauratable[i]
                         if not v or not v.Parent then
-                            table.remove(batteryauratable, i)
+                            table.remove(features.batteryauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -2095,14 +2170,14 @@ AuraSection:NewToggle("Grab All Batteries Near You", "Grabs All Close Batteries"
                     warn("Grab All NeoStyks Error")
                     warn(debug.traceback(err))
                 end)
-            elseif batteryaura == false then
+            elseif features.batteryaura == false then
                 break
             end
         end
     else
-        batteryaura = false
-        batteryauraconnect:Disconnect()
-        batteryauratable = {}
+        features.batteryaura = false
+        features.batteryauraconnect:Disconnect()
+        features.batteryauratable = {}
     end
 end)
 
@@ -2110,22 +2185,22 @@ AuraSection:NewToggle("Disarm Nearby Tripwires", "Disarms Them When Close", func
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Tripwire" then
-                table.insert(tripwireauratable, v)
+                table.insert(features.tripwireauratable, v)
             end
         end
-        tripwireauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.tripwireauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Tripwire" then
-                table.insert(tripwireauratable, v)
+                table.insert(features.tripwireauratable, v)
             end
         end)
-        tripwireaura = true
+        features.tripwireaura = true
         while task.wait(0.1) do
-            if tripwireaura then
+            if features.tripwireaura then
                 xpcall(function()
-                    for i = #tripwireauratable, 1, -1 do
-                        local v = tripwireauratable[i]
+                    for i = #features.tripwireauratable, 1, -1 do
+                        local v = features.tripwireauratable[i]
                         if not v or not v.Parent then
-                            table.remove(tripwireauratable, i)
+                            table.remove(features.tripwireauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -2139,14 +2214,14 @@ AuraSection:NewToggle("Disarm Nearby Tripwires", "Disarms Them When Close", func
                     warn("Disarm Near Tripwires Error")
                     warn(debug.traceback(err))
                 end)
-            elseif tripwireaura == false then
+            elseif features.tripwireaura == false then
                 break
             end
         end
     else
-        tripwireaura = false
-        tripwireauraconnect:Disconnect()
-        tripwireauratable = {}
+        features.tripwireaura = false
+        features.tripwireauraconnect:Disconnect()
+        features.tripwireauratable = {}
     end
 end)
 
@@ -2154,22 +2229,22 @@ AuraSection:NewToggle("Disarm Nearby Landmines", "Diarms Them When Close", funct
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(landmineauratable, v)
+                table.insert(features.landmineauratable, v)
             end
         end
-        landmineauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.landmineauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(landmineauratable, v)
+                table.insert(features.landmineauratable, v)
             end
         end)
-        landmineaura = true
+        features.landmineaura = true
         while task.wait(0.1) do
-            if landmineaura then
+            if features.landmineaura then
                 xpcall(function()
-                    for i = #landmineauratable, 1, -1 do
-                        local v = landmineauratable[i]
+                    for i = #features.landmineauratable, 1, -1 do
+                        local v = features.landmineauratable[i]
                         if not v or not v.Parent then
-                            table.remove(landmineauratable, i)
+                            table.remove(features.landmineauratable, i)
                         else
                             if v:FindFirstChild("ProximityPrompt") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude
@@ -2183,14 +2258,14 @@ AuraSection:NewToggle("Disarm Nearby Landmines", "Diarms Them When Close", funct
                     warn("Disarm Near Landmines Error")
                     warn(debug.traceback(err))
                 end)
-            elseif landmineaura == false then
+            elseif features.landmineaura == false then
                 break
             end
         end
     else
-        landmineaura = false
-        landmineauraconnect:Disconnect()
-        landmineauratable = {}
+        features.landmineaura = false
+        features.landmineauraconnect:Disconnect()
+        features.landmineauratable = {}
     end
 end)
 
@@ -2198,22 +2273,22 @@ AuraSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", fu
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(grabassettable, v)
+                table.insert(features.grabassettable, v)
             end
         end
-        grabassetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.grabassetconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
-                table.insert(grabassettable, v)
+                table.insert(features.grabassettable, v)
             end
         end)
-        grabasset = true
+        features.grabasset = true
         while task.wait(0.1) do
-            if grabasset then
+            if features.grabasset then
                 xpcall(function()
-                    for i = #grabassettable, 1, -1 do
-                        local v = grabassettable[i]
+                    for i = #features.grabassettable, 1, -1 do
+                        local v = features.grabassettable[i]
                         if not v or not v.Parent then
-                            table.remove(grabassettable, i)
+                            table.remove(features.grabassettable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
@@ -2225,14 +2300,14 @@ AuraSection:NewToggle("Grab Assets Through Walls", "Simpler Grab All Assets", fu
                     warn("Grab Assets Through Walls Error")
                     warn(debug.traceback(err))
                 end)
-            elseif grabasset == false then
+            elseif features.grabasset == false then
                 break
             end
         end
     else
-        grabasset = false
-        grabassetconnect:Disconnect()
-        grabassettable = {}
+        features.grabasset = false
+        features.grabassetconnect:Disconnect()
+        features.grabassettable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "currency") or string.find(string.lower(v.Name), "blueprint")) then
                 if v:FindFirstChild("ProxyPart") then
@@ -2248,22 +2323,22 @@ AuraSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards"
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(grabkeycardtable, v)
+                table.insert(features.grabkeycardtable, v)
             end
         end
-        grabkeycardconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.grabkeycardconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
-                table.insert(grabkeycardtable, v)
+                table.insert(features.grabkeycardtable, v)
             end
         end)
-        grabkeycard = true
+        features.grabkeycard = true
         while task.wait(0.1) do
-            if grabkeycard then
+            if features.grabkeycard then
                 xpcall(function()
-                    for i = #grabkeycardtable, 1, -1 do
-                        local v = grabkeycardtable[i]
+                    for i = #features.grabkeycardtable, 1, -1 do
+                        local v = features.grabkeycardtable[i]
                         if not v or not v.Parent then
-                            table.remove(grabkeycardtable, i)
+                            table.remove(features.grabkeycardtable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
@@ -2275,14 +2350,14 @@ AuraSection:NewToggle("Grab Keycards Through Walls", "Simpler Grab All Keycards"
                     warn("Grab Keycards Through Walls Error")
                     warn(debug.traceback(err))
                 end)
-            elseif grabkeycard == false then
+            elseif features.grabkeycard == false then
                 break
             end
         end
     else
-        grabkeycard = false
-        grabkeycardconnect:Disconnect()
-        grabkeycardtable = {}
+        features.grabkeycard = false
+        features.grabkeycardconnect:Disconnect()
+        features.grabkeycardtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "NormalKeyCard" or v.Name == "InnerKeyCard" or v.Name == "RidgeKeyCard" or v.Name == "PasswordPaper") then
                 if v:FindFirstChild("ProxyPart") then
@@ -2299,25 +2374,25 @@ AuraSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", func
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") then
                 if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(grabitemtable, v)
+                    table.insert(features.grabitemtable, v)
                 end
             end
         end
-        grabitemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.grabitemconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") then
-                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" then
-                    table.insert(grabitemtable, v)
+                if v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint" then
+                    table.insert(features.grabitemtable, v)
                 end
             end
         end)
-        grabitem = true
+        features.grabitem = true
         while task.wait(0.1) do
-            if grabitem then
+            if features.grabitem then
                 xpcall(function()
-                    for i = #grabitemtable, 1, -1 do
-                        local v = grabitemtable[i]
+                    for i = #features.grabitemtable, 1, -1 do
+                        local v = features.grabitemtable[i]
                         if not v or not v.Parent then
-                            table.remove(grabitemtable, i)
+                            table.remove(features.grabitemtable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
@@ -2329,16 +2404,16 @@ AuraSection:NewToggle("Grab Items Through Walls", "Simpler Grab All Items", func
                     warn("Grab Items Through Walls Error")
                     warn(debug.traceback(err))
                 end)
-            elseif grabitem == false then
+            elseif features.grabitem == false then
                 break
             end
         end
     else
-        grabitem = false
-        grabitemconnect:Disconnect()
-        grabitemtable = {}
+        features.grabitem = false
+        features.grabitemconnect:Disconnect()
+        features.grabitemtable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
-            if v and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
+            if v and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote" or v.Name == "CrateBlacklight" or v.Name == "CrateBook" or v.Name == "CrateCodeBreacher" or v.Name == "CrateDefib" or v.Name == "CrateFlashBeacon" or v.Name == "CrateFlashlight" or v.Name == "CrateGravelight" or v.Name == "CrateGummylight" or v.Name == "CrateHealthBoost" or v.Name == "CrateLantern" or v.Name == "CrateMedkit" or v.Name == "CrateWindupLight" or v.Name == "DoubleSprint") then
                 if v:FindFirstChild("ProxyPart") then
                     v.ProxyPart.ProximityPrompt.RequiresLineOfSight = true
                     v.ProxyPart.ProximityPrompt.MaxActivationDistance = 6
@@ -2352,22 +2427,22 @@ AuraSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks"
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "neostyk")) then
-                table.insert(grabneostyktable, v)
+                table.insert(features.grabneostyktable, v)
             end
         end
-        grabneostykconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.grabneostykconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "neostyk")) then
-                table.insert(grabneostyktable, v)
+                table.insert(features.grabneostyktable, v)
             end
         end)
-        grabneostyk = true
+        features.grabneostyk = true
         while task.wait(0.1) do
-            if grabneostyk then
+            if features.grabneostyk then
                 xpcall(function()
-                    for i = #grabneostyktable, 1, -1 do
-                        local v = grabneostyktable[i]
+                    for i = #features.grabneostyktable, 1, -1 do
+                        local v = features.grabneostyktable[i]
                         if not v or not v.Parent then
-                            table.remove(grabneostyktable, i)
+                            table.remove(features.grabneostyktable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
@@ -2379,14 +2454,14 @@ AuraSection:NewToggle("Grab Neostyks Through Walls", "Simpler Grab All Neostyks"
                     warn("Grab Neostyks Through Walls Error")
                     warn(debug.traceback(err))
                 end)
-            elseif grabneostyk == false then
+            elseif features.grabneostyk == false then
                 break
             end
         end
     else
-        grabneostyk = false
-        grabneostykconnect:Disconnect()
-        grabneostyktable = {}
+        features.grabneostyk = false
+        features.grabneostykconnect:Disconnect()
+        features.grabneostyktable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "neostyk")) then
                 if v:FindFirstChild("ProxyPart") then
@@ -2402,22 +2477,22 @@ AuraSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batterie
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "battery")) then
-                table.insert(grabbatterytable, v)
+                table.insert(features.grabbatterytable, v)
             end
         end
-        grabbatteryconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.grabbatteryconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "battery")) then
-                table.insert(grabbatterytable, v)
+                table.insert(features.grabbatterytable, v)
             end
         end)
-        grabbattery = true
+        features.grabbattery = true
         while task.wait(0.1) do
-            if grabbattery then
+            if features.grabbattery then
                 xpcall(function()
-                    for i = #grabbatterytable, 1, -1 do
-                        local v = grabbatterytable[i]
+                    for i = #features.grabbatterytable, 1, -1 do
+                        local v = features.grabbatterytable[i]
                         if not v or not v.Parent then
-                            table.remove(grabbatterytable, i)
+                            table.remove(features.grabbatterytable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 v.ProxyPart.ProximityPrompt.RequiresLineOfSight = false
@@ -2429,14 +2504,14 @@ AuraSection:NewToggle("Grab Batteries Through Walls", "Simpler Grab All Batterie
                     warn("Grab Batteries Through Walls Error")
                     warn(debug.traceback(err))
                 end)
-            elseif grabbattery == false then
+            elseif features.grabbattery == false then
                 break
             end
         end
     else
-        grabbattery = false
-        grabbatteryconnect:Disconnect()
-        grabbatterytable = {}
+        features.grabbattery = false
+        features.grabbatteryconnect:Disconnect()
+        features.grabbatterytable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "battery")) then
                 if v:FindFirstChild("ProxyPart") then
@@ -2452,22 +2527,22 @@ AuraSection:NewToggle("Disable All Drawer And Item Locker Prompts", "Helps You N
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "HighLight" or v.Name == "Door") then
-                table.insert(disabledrawertable, v)
+                table.insert(features.disabledrawertable, v)
             end
         end
-        disabledrawerconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.disabledrawerconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (v.Name == "HighLight" or v.Name == "Door") then
-                table.insert(disabledrawertable, v)
+                table.insert(features.disabledrawertable, v)
             end
         end)
-        disabledrawer = true
+        features.disabledrawer = true
         while task.wait(0.1) do
-            if disabledrawer then
+            if features.disabledrawer then
                 xpcall(function()
-                    for i = #disabledrawertable, 1, -1 do
-                        local v = disabledrawertable[i]
+                    for i = #features.disabledrawertable, 1, -1 do
+                        local v = features.disabledrawertable[i]
                         if not v or not v.Parent then
-                            table.remove(disabledrawertable, i)
+                            table.remove(features.disabledrawertable, i)
                         else
                             if (v.Parent.Name == "Drawer" and v.Parent:IsA("Folder")) or v.Parent.Name == "ItemLocker" then
                                 v.ProximityPrompt.Enabled = false
@@ -2478,14 +2553,14 @@ AuraSection:NewToggle("Disable All Drawer And Item Locker Prompts", "Helps You N
                     warn("Disable Drawer Prompts Error")
                     warn(debug.traceback(err))
                 end)
-            elseif disabledrawer == false then
+            elseif features.disabledrawer == false then
                 break
             end
         end
     else
-        disabledrawer = false
-        disabledrawerconnect:Disconnect()
-        disabledrawertable = {}
+        features.disabledrawer = false
+        features.disabledrawerconnect:Disconnect()
+        features.disabledrawertable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (v.Name == "HighLight" or v.Name == "Door") then
                 if v:FindFirstChild("ProximityPrompt") then
@@ -2505,19 +2580,19 @@ end)
 
 VisualSection:NewToggle("Freeze Current Fov", "Keeps Your Fov The Same", function(state)
     if state then
-        freezefov = true
+        features.freezefov = true
         local fov = game.workspace.Camera.FieldOfView
         while task.wait(0.05) do
-            if freezefov then
+            if features.freezefov then
                 if game.workspace:FindFirstChild("Camera") then
                     game.workspace.Camera.FieldOfView = fov
                 end
-            elseif freezefov == false then
+            elseif features.freezefov == false then
                 break
             end
         end
     else
-        freezefov = false
+        features.freezefov = false
     end
 end)
 
@@ -2569,9 +2644,9 @@ end)
 
 VisualSection:NewToggle("See Through Held Item", "Makes Ur Held Item See Through", function(state)
     if state then
-        seethrough = true
+        features.seethrough = true
         while task.wait(0.1) do
-            if seethrough then
+            if features.seethrough then
                 for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
                     if v and v:IsA("Model") and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
                         for _, v2 in pairs(v:GetDescendants()) do
@@ -2581,12 +2656,12 @@ VisualSection:NewToggle("See Through Held Item", "Makes Ur Held Item See Through
                         end
                     end
                 end
-            elseif seethrough == false then
+            elseif features.seethrough == false then
                 break
             end
         end
     else
-        seethrough = false
+        features.seethrough = false
         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
             if v and v:IsA("Model") and (v.Name == "Lantern" or v.Name == "Blacklight" or v.Name == "Book" or v.Name == "CodeBreacher" or v.Name == "Defib" or v.Name == "DwellerPiece" or v.Name == "HealthBoost" or v.Name == "Notebook" or v.Name == "SPRINT" or v.Name == "ToyRemote" or v.Name == "WindupLight" or v.Name == "FlashBeacon" or v.Name == "BigFlashBeacon" or v.Name == "Flashlight" or v.Name == "Gravelight" or v.Name == "Gummylight" or v.Name == "Medkit" or v.Name == "Scanner" or v.Name == "Splorglight" or v.Name == "BlueToyRemote") then
                 for _, v2 in pairs(v:GetDescendants()) do
@@ -2604,22 +2679,22 @@ local NotifSection = Notif:NewSection("Notify For Specific Things")
 
 NotifSection:NewDropdown("Choose A Sound", "Choose The Notification Sound You Want", {"Windows 10", "Default Ding", "Steam", "Default Low", "XBOX", "GTA5", "Discord"}, function(currentOption)
     if currentOption == "Windows 10" then
-        notifid = "rbxassetid://2389339814"
+        features.notifid = "rbxassetid://2389339814"
     elseif currentOption == "Default Ding" then
-        notifid = "rbxassetid://130017098772572"
+        features.notifid = "rbxassetid://130017098772572"
     elseif currentOption == "Steam" then
-        notifid = "rbxassetid://139308638407157"
+        features.notifid = "rbxassetid://139308638407157"
     elseif currentOption == "Default Low" then
-        notifid = "rbxassetid://17208372272"
+        features.notifid = "rbxassetid://17208372272"
     elseif currentOption == "XBOX" then
-        notifid = "rbxassetid://117934611310434"
+        features.notifid = "rbxassetid://117934611310434"
     elseif currentOption == "GTA5" then
-        notifid = "rbxassetid://116627196004523"
+        features.notifid = "rbxassetid://116627196004523"
     elseif currentOption == "Discord" then
-        notifid = "rbxassetid://117715907633385"
+        features.notifid = "rbxassetid://117715907633385"
     end
     if game.SoundService:FindFirstChild("CustomNotifSound") then
-        game.SoundService.CustomNotifSound.SoundId = notifid
+        game.SoundService.CustomNotifSound.SoundId = features.notifid
         game.SoundService.CustomNotifSound:Play()
     end
 end)
@@ -2627,7 +2702,7 @@ end)
 
 NotifSection:NewToggle("Notification Sound", "Sounds For Node Monster And Entity", function(state)
     if state then
-        notif = true
+        features.notif = true
         if not game.SoundService:FindFirstChild("CustomNotifSound") then
             local sound = Instance.new("Sound")
             sound.Name = "CustomNotifSound"
@@ -2636,7 +2711,7 @@ NotifSection:NewToggle("Notification Sound", "Sounds For Node Monster And Entity
             sound.Parent = game.SoundService
         end
     else
-        notif = false
+        features.notif = false
         if game.SoundService:FindFirstChild("CustomNotifSound") then
             game.SoundService.CustomNotifSound:Destroy()
         end
@@ -2645,11 +2720,11 @@ end)
 
 NotifSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster Spawns", function(state)
     if state then
-        anglerconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.anglerconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
                 if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
@@ -2658,59 +2733,59 @@ NotifSection:NewToggle("Node Monster Notifications", "Notify When A Node Monster
             end
         end)
     else
-        anglerconnect:Disconnect()
+        features.anglerconnect:Disconnect()
     end
 end)
 
 NotifSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", function(state)
     if state then
-        entityconnect = game.workspace.DescendantAdded:Connect(function(v)
+        features.entityconnect = game.workspace.DescendantAdded:Connect(function(v)
             if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = v.Name .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.Name == "BiggerState" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Candlebrute" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.name == "State" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Candlebearer" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.Name == "MeatWallDweller" or v.Name == "RottenWallDweller" or v.Name == "WallDweller" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "WallDweller" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.Name == "SkinlessCorpse" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Skinless" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.Name == "TreeBody" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Eden Tree" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
                     end
                 elseif v.Name == "CementShoes" then
                     game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = "Cement Shoes" .. " Has Spawned", Duration = 4,})
-                    if notif then
+                    if features.notif then
                         if game.SoundService:FindFirstChild("CustomNotifSound") then
                             game.SoundService.CustomNotifSound:Play()
                         end
@@ -2719,13 +2794,13 @@ NotifSection:NewToggle("Entity Notifications", "Notify When A Entity Spawns", fu
             end
         end)
     else
-        entityconnect:Disconnect()
+        features.entityconnect:Disconnect()
     end
 end)
 
 NotifSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", function(state)
     if state then
-        anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.anglernotifconnect = game.workspace.ChildAdded:Connect(function(v)
             if v:IsA("Part") then
                 if v.Name == "A60" or v.Name == "A200" or v.Name == "Bleach" or v.Name == "Angler" or v.Name == "Harbinger" or v.Name == "Pandemonium" or v.Name == "Pipsqueak" or v.Name == "WitchingHour" or v.Name == "Blitz" or v.Name == "Froger" or v.Name == "Chainsmoker" or v.Name == "Pinkie" or v.Name == "RidgeAngler" or v.Name == "RidgeChainsmoker" or v.Name == "RidgePinkie" or v.Name == "RidgeBlitz" or v.Name == "RidgeFroger" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" or v.Name == "Mirage" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
@@ -2733,13 +2808,13 @@ NotifSection:NewToggle("Notify Node Monster In Chat", "Says It In Chat", functio
             end
         end)
     else
-        anglernotifconnect:Disconnect()
+        features.anglernotifconnect:Disconnect()
     end
 end)
 
 NotifSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state)
     if state then
-        entitynotifconnect = game.workspace.DescendantAdded:Connect(function(v)
+        features.entitynotifconnect = game.workspace.DescendantAdded:Connect(function(v)
             if v:IsA("Model") or (v:IsA("MeshPart") and v.Name == "TreeBody") then
                 if v.Name == "Eyefestation" or v.Name == "Baldi" or v.Name == "DiVine" or v.Name == "Lopee" or v.Name == "NoGood" or v.Name == "Rebarb" or v.Name == "Coagulate" or v.Name == "CementShoes" then
                     game.TextChatService.TextChannels.RBXGeneral:SendAsync(v.Name .. " Has Spawned")
@@ -2759,7 +2834,7 @@ NotifSection:NewToggle("Notify Entity In Chat", "Say It In Chat", function(state
             end
         end)
     else
-        entitynotifconnect:Disconnect()
+        features.entitynotifconnect:Disconnect()
     end
 end)
 
@@ -2768,14 +2843,14 @@ local AntiSection = Anti:NewSection("Prevent Things")
 
 AntiSection:NewToggle("Allow Risky Avoiding", "Allows Teleporting For Pandemonium And Pipsqueak", function(state)
     if state then
-        risky = true
+        features.risky = true
     else
-        risky = false
+        features.risky = false
     end
 end)
 
 AntiSection:NewSlider("Teleport Distance", "How Close Before It Telports", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
-    tpdistance = s
+    features.tpdistance = s
 end)
 
 AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", function(state)
@@ -2794,9 +2869,9 @@ AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", func
         local name = ""
         local old = nil
         local finished = false
-        avoidconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.avoidconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") then
-                if not risky then
+                if not features.risky then
                     if v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
                         label.Text = "Status: Risky Is False For " .. v.Name
                         task.wait(1)
@@ -2822,7 +2897,7 @@ AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", func
                     if not doonce then
                         if target and target.Parent then
                             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - target.Position).Magnitude
-                            if distance <= tpdistance then
+                            if distance <= features.tpdistance then
                                 doonce = true
                                 old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
                                 label.Text = "Status: Teleporting"
@@ -2841,7 +2916,7 @@ AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", func
                             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old + Vector3.new(100,200,100)
                             game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
                             local distance = (old.Position - target.Position).Magnitude
-                            if distance > tpdistance then
+                            if distance > features.tpdistance then
                                 doonce = false
                                 label.Text = "Status: Detected " .. name
                                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
@@ -2866,7 +2941,7 @@ AntiSection:NewToggle("Avoid Node Monsters", "Avoids Active Node Monsters", func
             end
         end)
     else
-        avoidconnect:Disconnect()
+        features.avoidconnect:Disconnect()
         game.Players.LocalPlayer.PlayerGui.Avoider:Destroy()
     end
 end)
@@ -2914,22 +2989,22 @@ AntiSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People"
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v:IsA("Part") and v.Name == "FriendPart" then
-                table.insert(imaginetable, v)
+                table.insert(features.imaginetable, v)
             end
         end
-        imagineconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.imagineconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v:IsA("Part") and v.Name == "FriendPart" then
-                table.insert(imaginetable, v)
+                table.insert(features.imaginetable, v)
             end
         end)
-        imagine = true
+        features.imagine = true
         while task.wait(0.1) do
-            if imagine then
+            if features.imagine then
                 xpcall(function()
-                    for i = #imaginetable, 1, -1 do
-                        local v = imaginetable[i]
+                    for i = #features.imaginetable, 1, -1 do
+                        local v = features.imaginetable[i]
                         if not v or not v.Parent then
-                            table.remove(imaginetable, i)
+                            table.remove(features.imaginetable, i)
                         else
                             if v then
                                 v:Destroy()
@@ -2940,14 +3015,14 @@ AntiSection:NewToggle("Remove Imaginary Friends", "Remove Those Annoying People"
                     warn("Imagine Friend Error")
                     warn(debug.traceback(err))
                 end)
-            elseif imagine == false then
+            elseif features.imagine == false then
                 break
             end
         end
     else
-        imagine = false
-        imagineconnect:Disconnect()
-        imaginetable = {}
+        features.imagine = false
+        features.imagineconnect:Disconnect()
+        features.imaginetable = {}
     end
 end)
 
@@ -2955,22 +3030,22 @@ AntiSection:NewToggle("Anti Eyefestation", "Stops Eyefestation From Making You L
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Eyefestation" then
-                table.insert(eyefestationtable, v)
+                table.insert(features.eyefestationtable, v)
             end
         end
-        eyefestationconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.eyefestationconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Eyefestation" then
-                table.insert(eyefestationtable, v)
+                table.insert(features.eyefestationtable, v)
             end
         end)
-        eyefestation = true
+        features.eyefestation = true
         while task.wait(0.1) do
-            if eyefestation then
+            if features.eyefestation then
                 xpcall(function()
-                    for i = #eyefestationtable, 1, -1 do
-                        local v = eyefestationtable[i]
+                    for i = #features.eyefestationtable, 1, -1 do
+                        local v = features.eyefestationtable[i]
                         if not v or not v.Parent then
-                            table.remove(eyefestationtable, i)
+                            table.remove(features.eyefestationtable, i)
                         else
                             if v then
                                 v.Active.Value = false
@@ -2981,14 +3056,14 @@ AntiSection:NewToggle("Anti Eyefestation", "Stops Eyefestation From Making You L
                     warn("Anti Eyefestation Error")
                     warn(debug.traceback(err))
                 end)
-            elseif eyefestation == false then
+            elseif features.eyefestation == false then
                 break
             end
         end
     else
-        eyefestation = false
-        eyefestationconnect:Disconnect()
-        eyefestationtable = {}
+        features.eyefestation = false
+        features.eyefestationconnect:Disconnect()
+        features.eyefestationtable = {}
     end
 end)
 
@@ -2996,22 +3071,22 @@ AntiSection:NewToggle("Anti Pandemonium", "Removes Pandemonium", function(state)
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                table.insert(pandemoniumtable, v)
+                table.insert(features.pandemoniumtable, v)
             end
         end
-        pandemoniumconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.pandemoniumconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v.Name == "Pandemonium" or v.Name == "RidgePandemonium" or v.Name == "Anglemonium" or v.Name == "Frogermonium" or v.Name == "Blitzemonium" or v.Name == "Pandesmoker" or v.Name == "Pinkimonium" then
-                table.insert(pandemoniumtable, v)
+                table.insert(features.pandemoniumtable, v)
             end
         end)
-        pandemonium = true
+        features.pandemonium = true
         while task.wait(0.1) do
-            if pandemonium then
+            if features.pandemonium then
                 xpcall(function()
-                    for i = #pandemoniumtable, 1, -1 do
-                        local v = pandemoniumtable[i]
+                    for i = #features.pandemoniumtable, 1, -1 do
+                        local v = features.pandemoniumtable[i]
                         if not v or not v.Parent then
-                            table.remove(pandemoniumtable, i)
+                            table.remove(features.pandemoniumtable, i)
                         else
                             if v then
                                 v:Destroy()
@@ -3022,14 +3097,14 @@ AntiSection:NewToggle("Anti Pandemonium", "Removes Pandemonium", function(state)
                     warn("Anti Pandemonium Error")
                     warn(debug.traceback(err))
                 end)
-            elseif pandemonium == false then
+            elseif features.pandemonium == false then
                 break
             end
         end
     else
-        pandemonium = false
-        pandemoniumconnect:Disconnect()
-        pandemoniumtable = {}
+        features.pandemonium = false
+        features.pandemoniumconnect:Disconnect()
+        features.pandemoniumtable = {}
     end
 end)
 
@@ -3037,22 +3112,22 @@ AntiSection:NewToggle("Anti Pipsqueak", "Removes Pipsqueak", function(state)
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v.Name == "Pipsqueak" then
-                table.insert(pipsqueaktable, v)
+                table.insert(features.pipsqueaktable, v)
             end
         end
-        pipsqueakconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.pipsqueakconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v.Name == "Pipsqueak" then
-                table.insert(pipsqueaktable, v)
+                table.insert(features.pipsqueaktable, v)
             end
         end)
-        pipsqueak = true
+        features.pipsqueak = true
         while task.wait(0.1) do
-            if pipsqueak then
+            if features.pipsqueak then
                 xpcall(function()
-                    for i = #pipsqueaktable, 1, -1 do
-                        local v = pipsqueaktable[i]
+                    for i = #features.pipsqueaktable, 1, -1 do
+                        local v = features.pipsqueaktable[i]
                         if not v or not v.Parent then
-                            table.remove(pipsqueaktable, i)
+                            table.remove(features.pipsqueaktable, i)
                         else
                             if v then
                                 v:Destroy()
@@ -3063,14 +3138,14 @@ AntiSection:NewToggle("Anti Pipsqueak", "Removes Pipsqueak", function(state)
                     warn("Anti Pipsqueak Error")
                     warn(debug.traceback(err))
                 end)
-            elseif pipsqueak == false then
+            elseif features.pipsqueak == false then
                 break
             end
         end
     else
-        pipsqueak = false
-        pipsqueakconnect:Disconnect()
-        pipsqueaktable = {}
+        features.pipsqueak = false
+        features.pipsqueakconnect:Disconnect()
+        features.pipsqueaktable = {}
     end
 end)
 
@@ -3078,22 +3153,22 @@ AntiSection:NewToggle("Anti Harbinger", "Removes Harbinger", function(state)
     if state then
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v.Name == "Harbinger" then
-                table.insert(harbingertable, v)
+                table.insert(features.harbingertable, v)
             end
         end
-        harbingerconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.harbingerconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v.Name == "Harbinger" then
-                table.insert(harbingertable, v)
+                table.insert(features.harbingertable, v)
             end
         end)
-        harbinger = true
+        features.harbinger = true
         while task.wait(0.1) do
-            if harbinger then
+            if features.harbinger then
                 xpcall(function()
-                    for i = #harbingertable, 1, -1 do
-                        local v = harbingertable[i]
+                    for i = #features.harbingertable, 1, -1 do
+                        local v = features.harbingertable[i]
                         if not v or not v.Parent then
-                            table.remove(harbingertable, i)
+                            table.remove(features.harbingertable, i)
                         else
                             if v then
                                 v:Destroy()
@@ -3104,40 +3179,43 @@ AntiSection:NewToggle("Anti Harbinger", "Removes Harbinger", function(state)
                     warn("Anti Harbinger Error")
                     warn(debug.traceback(err))
                 end)
-            elseif harbinger == false then
+            elseif features.harbinger == false then
                 break
             end
         end
     else
-        harbinger = false
-        harbingerconnect:Disconnect()
-        harbingertable = {}
+        features.harbinger = false
+        features.harbingerconnect:Disconnect()
+        features.harbingertable = {}
     end
 end)
 
 AntiSection:NewToggle("Anti Witching Hour", "Removes Witching Hour", function(state)
     if state then
+        local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient.WitchingHour)
         for _, v in pairs(game.workspace:GetChildren()) do
             if v and v.Name == "WitchingHour" then
-                table.insert(witchtable, v)
+                table.insert(features.witchtable, v)
             end
         end
-        witchconnect = game.workspace.ChildAdded:Connect(function(v)
+        features.witchconnect = game.workspace.ChildAdded:Connect(function(v)
             if v and v.Name == "WitchingHour" then
-                table.insert(witchtable, v)
+                table.insert(features.witchtable, v)
             end
         end)
-        witch = true
+        features.witch = true
         while task.wait(0.1) do
-            if witch then
+            if features.witch then
                 xpcall(function()
-                    for i = #witchtable, 1, -1 do
-                        local v = witchtable[i]
+                    for i = #features.witchtable, 1, -1 do
+                        local v = features.witchtable[i]
                         if not v or not v.Parent then
-                            table.remove(witchtable, i)
+                            table.remove(features.witchtable, i)
                         else
                             if v then
-                                v:Destroy()
+                                if v == Module.Model then
+                                    Module.Delete()
+                                end
                             end
                         end
                     end
@@ -3145,14 +3223,216 @@ AntiSection:NewToggle("Anti Witching Hour", "Removes Witching Hour", function(st
                     warn("Anti Witching Hour Error")
                     warn(debug.traceback(err))
                 end)
-            elseif witch == false then
+            elseif features.witch == false then
                 break
             end
         end
     else
-        witch = false
-        witchconnect:Disconnect()
-        witchtable = {}
+        features.witch = false
+        features.witchconnect:Disconnect()
+        features.witchtable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Coagulate", "Removes Coagulate", function(state)
+    if state then
+        local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient.LocalCoagulate)
+        local idleAnimation = game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient.LocalCoagulate.Idle
+        local walkAnimation = game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient.LocalCoagulate.Walk
+        for _, v in pairs(game.workspace.Camera:GetChildren()) do
+            if v and v.Name == "Coagulate" then
+                table.insert(features.coagulatetable, v)
+            end
+        end
+        features.coagulateconnect = game.workspace.Camera.ChildAdded:Connect(function(v)
+            if v and v.Name == "Coagulate" then
+                table.insert(features.coagulatetable, v)
+            end
+        end)
+        features.coagulate = true
+        while task.wait(0.1) do
+            if features.coagulate then
+                xpcall(function()
+                    for i = #features.coagulatetable, 1, -1 do
+                        local v = features.coagulatetable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.coagulatetable, i)
+                        else
+                            if v then
+                                task.wait(2)
+                                local idleTrack
+                                local walkTrack
+                                for _, track in pairs(game.workspace.CurrentCamera.Coagulate.Humanoid.Animator:GetPlayingAnimationTracks()) do
+                                    if idleAnimation and track.Animation.AnimationId == idleAnimation.AnimationId then
+                                        idleTrack = track
+                                    elseif walkAnimation and track.Animation.AnimationId == walkAnimation.AnimationId then
+                                        walkTrack = track
+                                    end
+                                end
+                                Module.Despawn(true, idleTrack, walkTrack)
+                            end
+                            table.remove(features.coagulatetable, i)
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Coagulate Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.coagulate == false then
+                break
+            end
+        end
+    else
+        features.coagulate = false
+        features.coagulateconnect:Disconnect()
+        features.coagulatetable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Skinless", "Removes Skinless", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v.Name == "SkinlessCorpse" then
+                table.insert(features.skinlesstable, v)
+            end
+        end
+        features.skinlessconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v.Name == "SkinlessCorpse" then
+                table.insert(features.skinlesstable, v)
+            end
+        end)
+        features.skinless = true
+        while task.wait(0.1) do
+            if features.skinless then
+                xpcall(function()
+                    for i = #features.skinlesstable, 1, -1 do
+                        local v = features.skinlesstable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.skinlesstable, i)
+                        else
+                            if v then
+                                firesignal(game:GetService("ReplicatedStorage").Events.Skinless_Despawn.OnClientEvent)
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Skinless Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.skinless == false then
+                break
+            end
+        end
+    else
+        features.skinless = false
+        features.skinlessconnect:Disconnect()
+        features.skinlesstable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Eden Trees", "Kills Eden Trees", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") then
+                table.insert(features.edentreetable, v)
+            end
+        end
+        features.edentreeconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") then
+                table.insert(features.edentreetable, v)
+            end
+        end)
+        features.edentree = true
+        while task.wait(0.1) do
+            if features.edentree then
+                xpcall(function()
+                    for i = #features.edentreetable, 1, -1 do
+                        local v = features.edentreetable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.edentreetable, i)
+                        else
+                            if v then
+                                if not v:FindFirstChild("TreeBody") then
+                                    table.remove(features.edentreetable, i)
+                                elseif v:FindFirstChild("TreeBody") then
+                                    firesignal(v.RemoteEvent.OnClientEvent, "Kill")
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Eden Tree Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.edentree == false then
+                break
+            end
+        end
+    else
+        features.edentree = false
+        features.edentreeconnect:Disconnect()
+        features.edentreetable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti Bobber Fish", "Removes The Bobber Fish", function(state)
+    if state then
+        local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient.LocalFish)
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v and v.Name == "Fish" then
+                table.insert(features.bobberfishtable, v)
+            end
+        end
+        features.bobberfishconnect = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(v)
+            if v and v.Name == "Fish" then
+                table.insert(features.bobberfishtable, v)
+            end
+        end)
+        features.bobberfish = true
+        while task.wait(0.1) do
+            if features.bobberfish then
+                xpcall(function()
+                    for i = #features.bobberfishtable, 1, -1 do
+                        local v = features.bobberfishtable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.bobberfishtable, i)
+                        else
+                            if v then
+                                task.wait(1)
+                                Module.HideAll()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Bobber Fish Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.bobberfish == false then
+                break
+            end
+        end
+    else
+        features.bobberfish = false
+        features.bobberfishconnect:Disconnect()
+        features.bobberfishtable = {}
+    end
+end)
+
+AntiSection:NewToggle("Anti GOM", "Make Him Think Ur In A Locker", function(state)
+    if state then
+        local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient)
+        features.gom = true
+        while task.wait(0.1) do
+            if features.gom then
+                Module.LockerState = true
+            elseif features.gom == false then
+                break
+            end
+        end
+    else
+        local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient)
+        features.gom = false
+        Module.LockerState = false
     end
 end)
 
@@ -3160,22 +3440,22 @@ AntiSection:NewToggle("Anti Popups", "Remove Painters Popups", function(state)
     if state then
         for _, v in pairs(game.Players.LocalPlayer.PlayerGui.Main:GetChildren()) do
             if v and v:IsA("Frame") and v.Name == "Popups" then
-                table.insert(popuptable, v)
+                table.insert(features.popuptable, v)
             end
         end
-        popupconnect = game.Players.LocalPlayer.PlayerGui.Main.ChildAdded:Connect(function(v)
+        features.popupconnect = game.Players.LocalPlayer.PlayerGui.Main.ChildAdded:Connect(function(v)
             if v and v:IsA("Frame") and v.Name == "Popups" then
-                table.insert(popuptable, v)
+                table.insert(features.popuptable, v)
             end
         end)
-        popup = true
+        features.popup = true
         while task.wait(0.1) do
-            if popup then
+            if features.popup then
                 xpcall(function()
-                    for i = #popuptable, 1, -1 do
-                        local v = popuptable[i]
+                    for i = #features.popuptable, 1, -1 do
+                        local v = features.popuptable[i]
                         if not v or not v.Parent then
-                            table.remove(popuptable, i)
+                            table.remove(features.popuptable, i)
                         else
                             v:Destroy()
                         end
@@ -3184,14 +3464,14 @@ AntiSection:NewToggle("Anti Popups", "Remove Painters Popups", function(state)
                     warn("Popup Error")
                     warn(debug.traceback(err))
                 end)
-            elseif popup == false then
+            elseif features.popup == false then
                 break
             end
         end
     else
-        popup = false
-        popupconnect:Disconnect()
-        popuptable = {}
+        features.popup = false
+        features.popupconnect:Disconnect()
+        features.popuptable = {}
     end
 end)
 
@@ -3199,22 +3479,22 @@ AntiSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slippin
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
-                table.insert(waterpuddletable, v)
+                table.insert(features.waterpuddletable, v)
             end
         end
-        waterpuddleconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.waterpuddleconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
-                table.insert(waterpuddletable, v)
+                table.insert(features.waterpuddletable, v)
             end
         end)
-        waterpuddle = true
+        features.waterpuddle = true
         while task.wait(0.1) do
-            if waterpuddle then
+            if features.waterpuddle then
                 xpcall(function()
-                    for i = #waterpuddletable, 1, -1 do
-                        local v = waterpuddletable[i]
+                    for i = #features.waterpuddletable, 1, -1 do
+                        local v = features.waterpuddletable[i]
                         if not v or not v.Parent then
-                            table.remove(waterpuddletable, i)
+                            table.remove(features.waterpuddletable, i)
                         else
                             if v:FindFirstChild("HitBox") then
                                 v.HitBox.CanTouch = false
@@ -3225,14 +3505,14 @@ AntiSection:NewToggle("No Slipping On Water Puddles", "Prevents You From Slippin
                     warn("No Slip Water Puddles Error")
                     warn(debug.traceback(err))
                 end)
-            elseif waterpuddle == false then
+            elseif features.waterpuddle == false then
                 break
             end
         end
     else
-        waterpuddle = false
-        waterpuddleconnect:Disconnect()
-        waterpuddletable = {}
+        features.waterpuddle = false
+        features.waterpuddleconnect:Disconnect()
+        features.waterpuddletable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
                 if v:FindFirstChild("HitBox") then
@@ -3247,22 +3527,22 @@ AntiSection:NewToggle("No Locker Claustrophobia", "Prevents You From Getting Kic
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(antifeartable, v)
+                table.insert(features.antifeartable, v)
             end
         end
-        antifearconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.antifearconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and v.Name == "Locker" then
-                table.insert(antifeartable, v)
+                table.insert(features.antifeartable, v)
             end
         end)
-        antifear = true
+        features.antifear = true
         while task.wait(0.1) do
-            if antifear then
+            if features.antifear then
                 xpcall(function()
-                    for i = #antifeartable, 1, -1 do
-                        local v = antifeartable[i]
+                    for i = #features.antifeartable, 1, -1 do
+                        local v = features.antifeartable[i]
                         if not v or not v.Parent then
-                            table.remove(antifeartable, i)
+                            table.remove(features.antifeartable, i)
                         else
                             v:SetAttribute("ClaustrophobiaStartTime", 9999)
                             v:SetAttribute("ClaustrophobiaKickOutTime", 9999)
@@ -3272,14 +3552,14 @@ AntiSection:NewToggle("No Locker Claustrophobia", "Prevents You From Getting Kic
                     warn("No Claustrophobia Error")
                     warn(debug.traceback(err))
                 end)
-            elseif antifear == false then
+            elseif features.antifear == false then
                 break
             end
         end
     else
-        antifear = false
-        antifearconnect:Disconnect()
-        antifeartable = {}
+        features.antifear = false
+        features.antifearconnect:Disconnect()
+        features.antifeartable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and v.Name == "Locker" then
                 v:SetAttribute("ClaustrophobiaStartTime", 9)
@@ -3296,22 +3576,22 @@ FunSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", fun
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(triggerlandminetable, v)
+                table.insert(features.triggerlandminetable, v)
             end
         end
-        triggerlandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.triggerlandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(triggerlandminetable, v)
+                table.insert(features.triggerlandminetable, v)
             end
         end)
-        triggerlandmine = true
+        features.triggerlandmine = true
         while task.wait(0.1) do
-            if triggerlandmine then
+            if features.triggerlandmine then
                 xpcall(function()
-                    for i = #triggerlandminetable, 1, -1 do
-                        local v = triggerlandminetable[i]
+                    for i = #features.triggerlandminetable, 1, -1 do
+                        local v = features.triggerlandminetable[i]
                         if not v or not v.Parent then
-                            table.remove(triggerlandminetable, i)
+                            table.remove(features.triggerlandminetable, i)
                         else
                             if v:FindFirstChild("TouchInterest") then
                                 firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
@@ -3323,14 +3603,14 @@ FunSection:NewToggle("Trigger All Landmines", "Cause Landmines To Detonate", fun
                     warn("Trigger Landmine Error")
                     warn(debug.traceback(err))
                 end)
-            elseif triggerlandmine == false then
+            elseif features.triggerlandmine == false then
                 break
             end
         end
     else
-        triggerlandmine = false
-        triggerlandmineconnect:Disconnect()
-        triggerlandminetable = {}
+        features.triggerlandmine = false
+        features.triggerlandmineconnect:Disconnect()
+        features.triggerlandminetable = {}
     end
 end)
 
@@ -3338,22 +3618,22 @@ FunSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmine
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(walklandminetable, v)
+                table.insert(features.walklandminetable, v)
             end
         end
-        walklandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.walklandmineconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
-                table.insert(walklandminetable, v)
+                table.insert(features.walklandminetable, v)
             end
         end)
-        walklandmines = true
+        features.walklandmines = true
         while task.wait(0.1) do
-            if walklandmines then
+            if features.walklandmines then
                 xpcall(function()
-                    for i = #walklandminetable, 1, -1 do
-                        local v = walklandminetable[i]
+                    for i = #features.walklandminetable, 1, -1 do
+                        local v = features.walklandminetable[i]
                         if not v or not v.Parent then
-                            table.remove(walklandminetable, i)
+                            table.remove(features.walklandminetable, i)
                         else
                             v.CanTouch = false
                         end
@@ -3362,14 +3642,14 @@ FunSection:NewToggle("Walk On Landmines", "Prevents You From Triggering Landmine
                     warn("Walk On Landmine Error")
                     warn(debug.traceback(err))
                 end)
-            elseif walklandmines == false then
+            elseif features.walklandmines == false then
                 break
             end
         end
     else
-        walklandmines = false
-        walklandmineconnect:Disconnect()
-        walklandminetable = {}
+        features.walklandmines = false
+        features.walklandmineconnect:Disconnect()
+        features.walklandminetable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Part") and v.Name == "LandmineSpawn" then
                 v.CanTouch = true
@@ -3380,24 +3660,24 @@ end)
 
 FunSection:NewToggle("Remove Abomination Fans", "Deletes All During Chase", function(state)
     if state then
-        fans = true
+        features.fans = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
-                table.insert(fanstable, v)
+                table.insert(features.fanstable, v)
             end
         end
-        fansconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.fansconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "chasefanmodel")) then
-                table.insert(fanstable, v)
+                table.insert(features.fanstable, v)
             end
         end)
         while task.wait(0.1) do
-            if fans then
+            if features.fans then
                 xpcall(function()
-                    for i = #fanstable, 1, -1 do
-                        local v = fanstable[i]
+                    for i = #features.fanstable, 1, -1 do
+                        local v = features.fanstable[i]
                         if not v or not v.Parent then
-                            table.remove(fanstable, i)
+                            table.remove(features.fanstable, i)
                         else
                             v:Destroy()
                         end
@@ -3406,14 +3686,14 @@ FunSection:NewToggle("Remove Abomination Fans", "Deletes All During Chase", func
                     warn("Delete Fans Error")
                     warn(debug.traceback(err))
                 end)
-            elseif fans == false then
+            elseif features.fans == false then
                 break
             end
         end
     else
-        fans = false
-        fansconnect:Disconnect()
-        fanstable = {}
+        features.fans = false
+        features.fansconnect:Disconnect()
+        features.fanstable = {}
     end
 end)
 
@@ -3429,16 +3709,16 @@ FunSection:NewToggle("Room Counter", "Tells You What Room Ur On", function(state
         label.Position = UDim2.new(0, 0, 0, 50)
         label.Size = UDim2.new(0, 200, 0, 50)
         label.Parent = gui
-        counter = true
+        features.counter = true
         while task.wait(0.05) do
-            if counter then
+            if features.counter then
                 label.Text = "Room: " .. tostring(game.Players.LocalPlayer.PlayerFolder.DoorsOpened.Value)
-            elseif counter == false then
+            elseif features.counter == false then
                 break
             end
         end
     else
-        counter = false
+        features.counter = false
         game.Players.LocalPlayer.PlayerGui.Counter:Destroy()
     end
 end)
@@ -3446,11 +3726,11 @@ end)
 FunSection:NewButton("Bruteforce Door", "Can Cause Ping Spikes, Must Be Touching Door", function()
     for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
         if v:IsA("RemoteFunction") and v.Parent.Name == "Main" then
-            table.insert(keypadtable, v)
+            table.insert(features.keypadtable, v)
         end
     end
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-    for _, v in ipairs(keypadtable) do
+    for _, v in ipairs(features.keypadtable) do
         local distance = (v.Parent.Position - hrp.Position).Magnitude
         if distance <= 10 then
             local remote = v
@@ -3462,7 +3742,7 @@ FunSection:NewButton("Bruteforce Door", "Can Cause Ping Spikes, Must Be Touching
             end
         end
     end
-    keypadtable = {}
+    features.keypadtable = {}
 end)
 
 local Complete = Window:NewTab("Completion")
@@ -3472,23 +3752,23 @@ CompleteSection:NewToggle("Generator Auto Complete", "Completes The Generator", 
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                table.insert(autogeneratortable, v)
+                table.insert(features.autogeneratortable, v)
             end
         end
-        autogeneratorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.autogeneratorconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
-                table.insert(autogeneratortable, v)
+                table.insert(features.autogeneratortable, v)
             end
         end)
-        autogenerator = true
+        features.autogenerator = true
         while task.wait(0.1) do
-            if autogenerator then
+            if features.autogenerator then
                 xpcall(function()
                     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    for i = #autogeneratortable, 1, -1 do
-                        local v = autogeneratortable[i]
+                    for i = #features.autogeneratortable, 1, -1 do
+                        local v = features.autogeneratortable[i]
                         if not v or not v.Parent then
-                            table.remove(autogeneratortable, i)
+                            table.remove(features.autogeneratortable, i)
                         else
                             if v:FindFirstChild("RemoteEvent") then
                                 local distance = (hrp.Position - v:GetPivot().Position).Magnitude
@@ -3502,14 +3782,14 @@ CompleteSection:NewToggle("Generator Auto Complete", "Completes The Generator", 
                     warn("Auto Generator Error")
                     warn(debug.traceback(err))
                 end)
-            elseif autogenerator == false then
+            elseif features.autogenerator == false then
                 break
             end
         end
     else
-        autogenerator = false
-        autogeneratorconnect:Disconnect()
-        autogeneratortable = {}
+        features.autogenerator = false
+        features.autogeneratorconnect:Disconnect()
+        features.autogeneratortable = {}
     end
 end)
 
@@ -3613,43 +3893,41 @@ local HeartSection = Heart:NewSection("Options For This Gamemode")
 
 HeartSection:NewToggle("Ammo ESP", "See All Ammo", function(state)
     if state then
-        ammo = true
+        features.ammo = true
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammotable, v)
+                table.insert(features.ammotable, v)
             end
         end
         for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammotable, v)
+                table.insert(features.ammotable, v)
             end
         end
-        ammoconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.ammoconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammotable, v)
+                table.insert(features.ammotable, v)
             end
         end)
-        ammo2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
+        features.ammo2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammotable, v)
+                table.insert(features.ammotable, v)
             end
         end)
         while task.wait(0.1) do
-            if ammo then
+            if features.ammo then
                 xpcall(function()
-                    for i = #ammotable, 1, -1 do
-                        local v = ammotable[i]
+                    for i = #features.ammotable, 1, -1 do
+                        local v = features.ammotable[i]
                         if not v or not v.Parent then
-                            table.remove(ammotable, i)
+                            table.remove(features.ammotable, i)
                         else
                             if not v:FindFirstChild("ESPHighlight") then
                                 local highlight = Instance.new("Highlight")
                                 highlight.Name = "ESPHighlight"
-                                highlight.FillColor = assetscolor
+                                highlight.FillColor = Color3.new(1, 1, 0)
                                 highlight.OutlineTransparency = 1
                                 highlight.Parent = v
-                            elseif v:FindFirstChild("ESPHighlight") then
-                                v.ESPHighlight.FillColor = assetscolor
                             end
                         end
                     end
@@ -3657,15 +3935,15 @@ HeartSection:NewToggle("Ammo ESP", "See All Ammo", function(state)
                     warn("Ammo ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif ammo == false then
+            elseif features.ammo == false then
                 break
             end
         end
     else
-        ammo = false
-        ammoconnect:Disconnect()
-        ammo2connect:Disconnect()
-        ammotable = {}
+        features.ammo = false
+        features.ammoconnect:Disconnect()
+        features.ammo2connect:Disconnect()
+        features.ammotable = {}
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
                 if v:FindFirstChild("ESPHighlight") then
@@ -3687,32 +3965,32 @@ HeartSection:NewToggle("Grab All Ammo Near You", "Grabs All Close Ammo", functio
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammoauratable, v)
+                table.insert(features.ammoauratable, v)
             end
         end
         for _, v in pairs(game.workspace.RoomsFolder:GetDescendants()) do
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammoauratable, v)
+                table.insert(features.ammoauratable, v)
             end
         end
-        ammoauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+        features.ammoauraconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammoauratable, v)
+                table.insert(features.ammoauratable, v)
             end
         end)
-        ammoaura2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
+        features.ammoaura2connect = game.workspace.RoomsFolder.DescendantAdded:Connect(function(v)
             if v and (string.find(string.lower(v.Name), "shell") or string.find(string.lower(v.Name), "smallammobox")) then
-                table.insert(ammoauratable, v)
+                table.insert(features.ammoauratable, v)
             end
         end)
-        ammoaura = true
+        features.ammoaura = true
         while task.wait(0.1) do
-            if ammoaura then
+            if features.ammoaura then
                 xpcall(function()
-                    for i = #ammoauratable, 1, -1 do
-                        local v = ammoauratable[i]
+                    for i = #features.ammoauratable, 1, -1 do
+                        local v = features.ammoauratable[i]
                         if not v or not v.Parent then
-                            table.remove(ammoauratable, i)
+                            table.remove(features.ammoauratable, i)
                         else
                             if v:FindFirstChild("ProxyPart") then
                                 local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.ProxyPart.Position).Magnitude
@@ -3726,38 +4004,38 @@ HeartSection:NewToggle("Grab All Ammo Near You", "Grabs All Close Ammo", functio
                     warn("Grab All Ammo Error")
                     warn(debug.traceback(err))
                 end)
-            elseif ammoaura == false then
+            elseif features.ammoaura == false then
                 break
             end
         end
     else
-        ammoaura = false
-        ammoauraconnect:Disconnect()
-        ammoaura2connect:Disconnect()
-        ammoauratable = {}
+        features.ammoaura = false
+        features.ammoauraconnect:Disconnect()
+        features.ammoaura2connect:Disconnect()
+        features.ammoauratable = {}
     end
 end)
 
 HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
     if state then
-        zombie = true
+        features.zombie = true
         for _, v in pairs(game.workspace.ReplicatedAI:GetDescendants()) do
             if v and v.Name == "ZombieModel" then
-                table.insert(zombietable, v)
+                table.insert(features.zombietable, v)
             end
         end
-        zombieconnect = game.workspace.ReplicatedAI.DescendantAdded:Connect(function(v)
+        features.zombieconnect = game.workspace.ReplicatedAI.DescendantAdded:Connect(function(v)
             if v and v.Name == "ZombieModel" then
-                table.insert(zombietable, v)
+                table.insert(features.zombietable, v)
             end
         end)
         while task.wait(0.1) do
-            if zombie then
+            if features.zombie then
                 xpcall(function()
-                    for i = #zombietable, 1, -1 do
-                        local v = zombietable[i]
+                    for i = #features.zombietable, 1, -1 do
+                        local v = features.zombietable[i]
                         if not v or not v.Parent then
-                            table.remove(zombietable, i)
+                            table.remove(features.zombietable, i)
                         else
                             if not v:FindFirstChild("ESPHighlight") then
                                 local highlight = Instance.new("Highlight")
@@ -3775,14 +4053,14 @@ HeartSection:NewToggle("Zombie ESP", "See All Zombies", function(state)
                     warn("Zombie ESP Error")
                     warn(debug.traceback(err))
                 end)
-            elseif zombie == false then
+            elseif features.zombie == false then
                 break
             end
         end
     else
-        zombie = false
-        zombieconnect:Disconnect()
-        zombietable = {}
+        features.zombie = false
+        features.zombieconnect:Disconnect()
+        features.zombietable = {}
         for _, v in pairs(game.workspace.ReplicatedAI:GetDescendants()) do
             if v and v.Name == "ZombieModel" then
                 if v:FindFirstChild("ESPHighlight") then
