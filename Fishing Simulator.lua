@@ -5,11 +5,21 @@ local seacreaturetable = {}
 local seacreature = false
 local seacreatureconnect
 local fish = ""
-local size = 1
+local size = 3
 local mutation = "commonglow"
 local auto = false
 local autocatch = false
 local status = false
+local fishnamestable = {}
+local hitesprange = false
+local hitdistance = 100
+
+if game.ReplicatedStorage:FindFirstChild("Assets") then
+    for _, fishname in pairs(game.ReplicatedStorage.Assets.Fish:GetChildren()) do
+        table.insert(fishnamestable, fishname.Name)
+    end
+    table.sort(fishnamestable)
+end
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Fishing Simulator", Duration = 4,})
 
@@ -30,8 +40,8 @@ end)
 
 local MainSection = Main:NewSection("Experimental Features")
 
-MainSection:NewTextBox("Desired Fish", "No Spaces And All Lowercase", function(txt)
-	fish = txt
+MainSection:NewDropdown("Desired Fish", "Choose The Fish", fishnamestable, function(currentOption)
+    fish = currentOption
 end)
 
 MainSection:NewDropdown("Desired Size", "Wanted Size", {"Baby", "Small", "Normal", "Large", "Huge"}, function(currentOption)
@@ -73,7 +83,7 @@ MainSection:NewToggle("Auto Catch After 2sec", "Faster Catch For Catch Wanted Fi
     end
 end)
 
-MainSection:NewButton("Catch Wanted Fish", "Helps A Lot With Hard Quests", function()
+MainSection:NewButton("Catch Desired Fish", "Helps A Lot With Hard Quests", function()
     local hooked
     local count = 0
     for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
@@ -108,7 +118,7 @@ MainSection:NewButton("Catch Wanted Fish", "Helps A Lot With Hard Quests", funct
     end
 end)
 
-MainSection:NewButton("Catch Wanted Fish With Specific Size", "Helps A Lot With Hard Quests", function()
+MainSection:NewButton("Catch Desired Fish With Specific Size", "Helps A Lot With Hard Quests", function()
     local hooked
     local count = 0
     for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
@@ -145,7 +155,7 @@ MainSection:NewButton("Catch Wanted Fish With Specific Size", "Helps A Lot With 
     end
 end)
 
-MainSection:NewButton("Catch Wanted Fish With Specific Mutation", "Helps A Lot With Hard Quests", function()
+MainSection:NewButton("Catch Desired Fish With Specific Mutation", "Helps A Lot With Hard Quests", function()
     local hooked
     local count = 0
     for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
@@ -308,17 +318,6 @@ FishSection:NewButton("Sell All Fish", "Sell All Your Fish", function()
     game:GetService("ReplicatedStorage").Shared.DataStreams.processGameItemSold:InvokeServer("SellEverything")
 end)
 
-FishSection:NewButton("Delete Water (Loops So Only Click Once)", "Remove All Terrain Water", function()
-    for _, v in pairs(game.Workspace:GetChildren()) do
-        if v.Name == "FlatPlane1" or v.Name == "FlatPlane2" or v.Name == "FlatPlane3" or v.Name == "FlatPlane4" then
-            v.Transparency = 0.5
-        end
-    end
-    while wait(0.2) do
-        workspace.Terrain:Clear()
-    end
-end)
-
 FishSection:NewToggle("Walk On Water (Jesus)", "Walk On The Water", function(state)
     if state then
         for _, v in pairs(game.Workspace:GetChildren()) do
@@ -448,7 +447,7 @@ TPSection:NewButton("Pharaoh's Dunes", "TP There", function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4216.44189, 49.6530342, 361.791901, -0.0456423573, 0.000128529966, -0.998957932, -0.000632887997, 0.99999994, 0.000157590955, 0.998957753, 0.00063942105, -0.0456422642)
 end)
 
-local TPSection = TP:NewSection("Ocean")
+local TPSection = TP:NewSection("Timeless Tides")
 
 TPSection:NewButton("Smuggler's Bay", "TP There", function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-233.537033, 49.8551636, -47.3619614, 0.0340561084, 5.96809926e-08, -0.999419928, -6.92355897e-08, 1, 5.73563703e-08, 0.999419928, 6.72420981e-08, 0.0340561084)
@@ -506,7 +505,7 @@ GrindSection:NewButton("TP To Shark Loot", "Grinding", function()
     for _, v in pairs(game.Workspace.DroppedItems:GetChildren()) do
         if v:FindFirstChild("Ring") then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:GetPivot()
-            task.wait(0.15)
+            task.wait(0.1)
         end
     end
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
@@ -515,16 +514,16 @@ end)
 local ESP = Window:NewTab("ESP")
 local ESPSection = ESP:NewSection("ESP For Things")
 
-ESPSection:NewToggle("ESP Sea Creatures", "See Their Name", function(state)
+ESPSection:NewToggle("Sea Creature ESP", "See Their Name", function(state)
     if state then
         seacreature = true
         for _, v in pairs(game.workspace:GetChildren()) do
-            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
+            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
                 table.insert(seacreaturetable, v)
             end
         end
         seacreatureconnect = game.workspace.ChildAdded:Connect(function(v)
-            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
+            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
                 table.insert(seacreaturetable, v)
             end
         end)
@@ -539,8 +538,8 @@ ESPSection:NewToggle("ESP Sea Creatures", "See Their Name", function(state)
                             if not v:FindFirstChild("ESPBillboard") then
                                 local billboard = Instance.new("BillboardGui")
                                 billboard.Name = "ESPBillboard"
-                                billboard.Size = UDim2.new(0, 50, 0, 50)
-                                billboard.StudsOffset = Vector3.new(0, 0, 0)
+                                billboard.Size = UDim2.new(0, 100, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 1, 0)
                                 billboard.AlwaysOnTop = true
                                 billboard.Parent = v
 
@@ -552,6 +551,21 @@ ESPSection:NewToggle("ESP Sea Creatures", "See Their Name", function(state)
                                 label.TextScaled = true
                                 label.Text = v.Name
                                 label.Parent = billboard
+                                local highlight = Instance.new("Highlight")
+                                highlight.OutlineTransparency = 1
+                                highlight.Name = "ESPHighlight"
+                                highlight.Parent = v
+                            elseif v:FindFirstChild("ESPBillboard") then
+                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+                                local rounded = math.round(distance)
+                                v.ESPBillboard.TextLabel.Text = v.Name .. "[" .. rounded .. "]"
+                                if hitesprange then
+                                    if distance < hitdistance then
+                                        v.ESPHighlight.FillColor = Color3.new(0, 1, 0)
+                                    elseif distance > hitdistance and v.ESPHighlight.FillColor == Color3.new(0, 1, 0) then
+                                        v.ESPHighlight.FillColor = Color3.new(1, 0, 0)
+                                    end
+                                end
                             end
                         end
                     end
@@ -568,12 +582,70 @@ ESPSection:NewToggle("ESP Sea Creatures", "See Their Name", function(state)
         seacreatureconnect:Disconnect()
         seacreaturetable = {}
         for _, v in pairs(game.workspace:GetChildren()) do
-            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" then
+            if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
                 if v:FindFirstChild("ESPBillboard") then
                     v.ESPBillboard:Destroy()
+                    v.Highlight:Destroy()
                 end
             end
         end
+    end
+end)
+
+local Damage = Window:NewTab("Damage")
+local DamageSection = Damage:NewSection("Throw Spear Or Axe Before Each Use")
+
+DamageSection:NewToggle("Change Color Of ESP Within Range", "Makes It Sort Of Visual When To Click", function(state)
+    if state then
+        hitesprange = true
+    else
+        hitesprange = false
+    end
+end)
+
+DamageSection:NewSlider("Distance", "Distance To Check Before Inflicting Damage", 500, 100, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    hitdistance = s
+end)
+
+DamageSection:NewKeybind("Hit Nearest Sea Creature", "Inflict Damage To Closest Creature", Enum.KeyCode.V, function()
+	local closest = math.huge
+    local closestobj = nil
+    local tool = nil
+    for _, v in pairs(game.workspace:GetChildren()) do
+        if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance < closest and distance < hitdistance then
+                closest = distance
+                closestobj = v
+            end
+        end
+    end
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Tool") then
+            tool = v
+        end
+    end
+    game.ReplicatedStorage.Shared.DataStreams.MonsterHit:FireServer(closestobj, tool.Name, true)
+end)
+
+DamageSection:NewKeybind("Hit All Nearby Sea Creature", "Inflict Damage To Nearby Creature", Enum.KeyCode.B, function()
+	local close = {}
+    local tool = nil
+    for _, v in pairs(game.workspace:GetChildren()) do
+        if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance < hitdistance then
+                table.insert(close, v)
+            end
+        end
+    end
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Tool") then
+            tool = v
+        end
+    end
+    for _, v in pairs(close) do
+        game.ReplicatedStorage.Shared.DataStreams.MonsterHit:FireServer(v, tool.Name, true)
     end
 end)
 
@@ -603,6 +675,18 @@ VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
         lighting.Ambient = Color3.fromRGB(128, 128, 128)
         lighting.Brightness = 1
         lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+    end
+end)
+
+VisualSection:NewButton("Delete Water (Loops So Only Click Once)", "Remove All Terrain Water", function()
+    for _, v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "FlatPlane1" or v.Name == "FlatPlane2" or v.Name == "FlatPlane3" or v.Name == "FlatPlane4" then
+            v.Transparency = 0.5
+            v.Material = "Air"
+        end
+    end
+    while wait(0.2) do
+        workspace.Terrain:Clear()
     end
 end)
 
