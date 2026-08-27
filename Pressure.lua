@@ -78,6 +78,10 @@ local features = {
     waterpuddlestable = {},
     waterpuddles = false,
     waterpuddlesconnect = nil,
+    -- oddcardesp
+    oddcardstable = {},
+    oddcards = false,
+    oddcardsconnect = nil,
     -- assetaura
     assetauratable = {},
     assetaura = false,
@@ -1948,6 +1952,62 @@ ESPSection:NewToggle("Water Puddle ESP", "See All Water Puddles", function(state
             if v and v:IsA("Model") and v.Name == "WaterPuddle" then
                 if v:FindFirstChild("ESPBillboard") then
                     v.ESPBillboard:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+ESPSection:NewToggle("BigTopper Odd Card ESP", "See The Odd Card Out", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v:IsA("Model") and v.Name == "Ring" then
+                table.insert(features.oddcardstable, v)
+            end
+        end
+        features.oddcardsconnect = game.workspace.ChildAdded:Connect(function(v)
+            if v and v:IsA("Model") and v.Name == "Ring" then
+                table.insert(features.oddcardstable, v)
+            end
+        end)
+        features.oddcards = true
+        while task.wait(0.1) do
+            if features.oddcards then
+                xpcall(function()
+                    for i = #features.oddcardstable, 1, -1 do
+                        local v = features.oddcardstable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.oddcardstable, i)
+                        else
+                            if v:FindFirstChild("Target") then
+                                if not v.Target:FindFirstChild("ESPHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "ESPHighlight"
+                                    highlight.FillColor = Color3.new(0, 0, 1)
+                                    highlight.OutlineTransparency = 1
+                                    highlight.Parent = v.Target
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("BigTopper Odd Card ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.oddcards == false then
+                break
+            end
+        end
+    else
+        features.oddcards = false
+        features.oddcardsconnect:Disconnect()
+        features.oddcardstable = {}
+        for _, v in pairs(game.workspace:GetChildren()) do
+            if v and v:IsA("Model") and v.Name == "Ring" then
+                if v:FindFirstChild("Target") then
+                    if v.Target:FindFirstChild("ESPHighlight") then
+                        v.Target.ESPHighlight:Destroy()
+                    end
                 end
             end
         end
