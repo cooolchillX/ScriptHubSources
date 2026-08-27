@@ -585,7 +585,7 @@ ESPSection:NewToggle("Sea Creature ESP", "See Their Name", function(state)
             if v.Name == "GreatWhiteShark" or v.Name == "BigGreatWhiteShark" or v.Name == "NeonGreatWhiteShark" or v.Name == "KillerWhale" or v.Name == "NeonKillerWhale" or v.Name == "HammerheadShark" or v.Name == "VoidHammerheadShark" or v.Name == "ArmoredShark" or v.Name == "NeonArmoredShark" or v.Name == "CorruptedArmoredShark" or v.Name == "Piranha" or v.Name == "NeonPiranha" or v.Name == "ElephantSeal" or v.Name == "NeonElephantSeal" or v.Name == "CorruptedElephantSeal" or v.Name == "GinormousTrout" or v.Name == "UmbralSkimmer" or v.Name == "SweetTooth" or v.Name == "MobyWood" then
                 if v:FindFirstChild("ESPBillboard") then
                     v.ESPBillboard:Destroy()
-                    v.Highlight:Destroy()
+                    v.ESPHighlight:Destroy()
                 end
             end
         end
