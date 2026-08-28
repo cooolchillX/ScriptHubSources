@@ -194,6 +194,10 @@ local features = {
     bobberfishtable = {},
     bobberfish = false,
     bobberfishconnect = nil,
+    -- searchlights
+    searchlightstable = {},
+    searchlights = false,
+    searchlightsconnect = nil,
     --gom
     gom = false,
     -- popup
@@ -3527,6 +3531,47 @@ AntiSection:NewToggle("Anti GOM", "Make Him Think Ur In A Locker", function(stat
         local Module = require(game.Players.LocalPlayer.PlayerGui.Main.Client.MainClient)
         features.gom = false
         Module.LockerState = false
+    end
+end)
+
+AntiSection:NewToggle("Anti Searchlights", "Labotomize Seachlights", function(state)
+    if state then
+        for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
+            if v and v:IsA("Model") and v.Name == "Searchlights" then
+                table.insert(features.searchlightstable, v)
+            end
+        end
+        features.searchlightsconnect = game.workspace.GameplayFolder.Rooms.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Model") and v.Name == "Searchlights" then
+                table.insert(features.searchlightstable, v)
+            end
+        end)
+        features.searchlights = true
+        while task.wait(0.1) do
+            if features.searchlights then
+                xpcall(function()
+                    for i = #features.searchlightstable, 1, -1 do
+                        local v = features.searchlightstable[i]
+                        if not v or not v.Parent then
+                            table.remove(features.searchlightstable, i)
+                        else
+                            if v then
+                                v:Destroy()
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Anti Seachlights Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif features.searchlights == false then
+                break
+            end
+        end
+    else
+        features.searchlights = false
+        features.searchlightsconnect:Disconnect()
+        features.searchlightstable = {}
     end
 end)
 
