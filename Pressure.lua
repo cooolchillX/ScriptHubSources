@@ -13,6 +13,9 @@ local features = {
     prompts = {},
     insta = false,
     instaconnection = nil,
+    -- localdmgimmunity
+    localdmgimmune = false,
+    dmghook = nil,
     -- assetesp
     assettable = {},
     assets = false,
@@ -224,6 +227,8 @@ local features = {
     autogeneratortable = {},
     autogenerator = false,
     autogeneratorconnect = nil,
+    -- autokittyclock
+    autokittyclock = false,
     -- ammo
     ammotable = {},
     ammo = false,
@@ -402,6 +407,24 @@ local function stopTPWalk3()
     resetKeys()
 end
 
+features.dmghook = hookmetamethod(game, "__namecall", function(self, ...)
+    if localdmgimmune then
+        if self == game.ReplicatedStorage.Events.LocalDamage and getnamecallmethod() == "FireServer" then
+            local args = {...}
+            args[1] = 0
+            args[2] = ""
+            args[3] = nil
+            args[4] = ""
+            args[5] = nil
+            return features.dmghook(self, unpack(args))
+        else
+            return features.dmghook(self, ...)
+        end
+    else
+        return features.dmghook(self, ...)
+    end
+end)
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure", Duration = 4,})
 
 local Main = Window:NewTab("Main")
@@ -523,6 +546,14 @@ MainSection:NewToggle("Instant Interaction", "No Need To Hold", function(state)
         features.insta = false
         features.instaconnection:Disconnect()
         features.prompts = {}
+    end
+end)
+
+MainSection:NewToggle("Local Damage Immunity", "Prevent Local Damage From Happening", function(state)
+    if state then
+        localdmgimmune = true
+    else
+        localdmgimmune = false
     end
 end)
 
@@ -3805,10 +3836,20 @@ FunSection:NewButton("Bruteforce Door", "Can Cause Ping Spikes, Must Be Touching
     features.keypadtable = {}
 end)
 
-local Complete = Window:NewTab("Completion")
-local CompleteSection = Complete:NewSection("Finish Specific Tasks Quickly")
+FunSection:NewToggle("Kitty Clock Doesn't Break", "Kitty Clock Wont Break When Winding", function(state)
+    if state then
+        local Module = require(game.ReplicatedStorage.ToolsModule.KittyClock)
+        Module.CRANK_BREAK_OVER = 9999999
+    else
+        local Module = require(game.ReplicatedStorage.ToolsModule.KittyClock)
+        Module.CRANK_BREAK_OVER = 55
+    end
+end)
 
-CompleteSection:NewToggle("Generator Auto Complete", "Completes The Generator", function(state)
+local Automation = Window:NewTab("Automation")
+local AutomationSection = Automation:NewSection("Finish Specific Tasks Quickly")
+
+AutomationSection:NewToggle("Generator Auto Complete", "Completes The Generator", function(state)
     if state then
         for _, v in pairs(game.workspace.GameplayFolder.Rooms:GetDescendants()) do
             if v and v:IsA("Model") and (v.Name == "PresetGenerator" or v.Name == "Generator") then
@@ -3853,7 +3894,22 @@ CompleteSection:NewToggle("Generator Auto Complete", "Completes The Generator", 
     end
 end)
 
-CompleteSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Turrets", function()
+AutomationSection:NewToggle("Auto Wind Kitty Clock", "Must Hold Out Kitty Clock", function(state)
+    if state then
+        features.autokittyclock = true
+        while task.wait(0.1) do
+            if features.autokittyclock then
+                game.ReplicatedStorage.Events.Activate:FireServer("KittyClock", "WindUp")
+            elseif features.autokittyclock == false then
+                break
+            end
+        end
+    else
+        features.autokittyclock = false
+    end
+end)
+
+AutomationSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates Turrets", function()
     local cando = false
     local something = false
     local object = nil
@@ -3892,7 +3948,7 @@ CompleteSection:NewButton("Deactivate Turrets", "Goes To The Box And Deactivates
     end
 end)
 
-CompleteSection:NewButton("Complete Seachlights Ending After Cannons", "Completes The Lever Part Of Seachlights", function()
+AutomationSection:NewButton("Complete Seachlights Ending After Cannons", "Completes The Lever Part Of Seachlights", function()
     local lever2 = nil
     local lever3 = nil
     local lever4 = nil
