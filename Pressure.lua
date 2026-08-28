@@ -15,6 +15,7 @@ local features = {
     instaconnection = nil,
     -- localdmgimmunity
     localdmgimmune = false,
+    dmghookonce = false,
     dmghook = nil,
     -- assetesp
     assettable = {},
@@ -407,24 +408,6 @@ local function stopTPWalk3()
     resetKeys()
 end
 
-features.dmghook = hookmetamethod(game, "__namecall", function(self, ...)
-    if localdmgimmune then
-        if self == game.ReplicatedStorage.Events.LocalDamage and getnamecallmethod() == "FireServer" then
-            local args = {...}
-            args[1] = 0
-            args[2] = ""
-            args[3] = nil
-            args[4] = ""
-            args[5] = nil
-            return features.dmghook(self, unpack(args))
-        else
-            return features.dmghook(self, ...)
-        end
-    else
-        return features.dmghook(self, ...)
-    end
-end)
-
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Pressure", Duration = 4,})
 
 local Main = Window:NewTab("Main")
@@ -552,6 +535,26 @@ end)
 MainSection:NewToggle("Local Damage Immunity", "Prevent Local Damage From Happening", function(state)
     if state then
         localdmgimmune = true
+        if not dmghookonce then
+            dmghookonce = true
+            features.dmghook = hookmetamethod(game, "__namecall", function(self, ...)
+                if localdmgimmune then
+                    if self == game.ReplicatedStorage.Events.LocalDamage and getnamecallmethod() == "FireServer" then
+                        local args = {...}
+                        args[1] = 0
+                        args[2] = ""
+                        args[3] = nil
+                        args[4] = ""
+                        args[5] = nil
+                        return features.dmghook(self, unpack(args))
+                    else
+                        return features.dmghook(self, ...)
+                    end
+                else
+                    return features.dmghook(self, ...)
+                end
+            end)
+        end
     else
         localdmgimmune = false
     end
