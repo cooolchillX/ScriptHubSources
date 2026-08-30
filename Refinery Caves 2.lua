@@ -244,10 +244,14 @@ ESPSection:NewToggle("Tree ESP", "See Tree Names", function(state)
     if state then
         tree = true
         for _, v in pairs(game.workspace.WorldSpawn.Trees:GetChildren()) do
-            table.insert(treetable, v)
+            if v.Name ~= "_Decoration" then
+                table.insert(treetable, v)
+            end
         end
         treeconnect = game.workspace.WorldSpawn.Trees.ChildAdded:Connect(function(v)
-            table.insert(treetable, v)
+            if v.Name ~= "_Decoration" then
+                table.insert(treetable, v)
+            end
         end)
         while task.wait(0.1) do
             if tree then
