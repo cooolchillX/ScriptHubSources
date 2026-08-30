@@ -88,7 +88,7 @@ ItemTeleportSection:NewButton("Create TP Point", "Make The Point", function()
             local highlight = Instance.new("Highlight")
             highlight.Name = "Highlight"
             highlight.FillColor = Color3.fromRGB(0, 255, 0)
-            highlight.Parent = game.workspace.TpPoint
+            highlight.Parent = point
 
             local billboard = Instance.new("BillboardGui")
             billboard.Name = "ESPBillboard"
@@ -116,8 +116,7 @@ ItemTeleportSection:NewButton("Delete TP Point", "Remove The Point", function()
 end)
 
 ItemTeleportSection:NewButton("TP To Point", "Tp You To The Point", function()
-    local a = game.workspace.TpPoint.CFrame
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = a
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.TpPoint.CFrame
 end)
 
 ItemTeleportSection:NewButton("Select The Object", "Selects The Tree You Want To TP", function()
@@ -147,6 +146,8 @@ ItemTeleportSection:NewButton("TP Selected Object To Point", "TP It To A Point",
     if selectedinstance then
         local distance = (hrp.Position - selectedinstance.Position).Magnitude
         if distance <= 10 then
+            hrp.CFrame = selectedinstance.CFrame
+            game.ReplicatedStorage.Events.GrabHandler:InvokeServer(selectedinstance, "Grab", selectedinstance.Position, nil)
             hrp.CFrame = game.workspace.TpPoint.CFrame
             selectedinstance.CFrame = game.workspace.TpPoint.CFrame
             task.wait(1)
@@ -159,23 +160,87 @@ ItemTeleportSection:NewButton("TP Selected Object To Point", "TP It To A Point",
     end
 end)
 
-ItemTeleportSection:NewKeybind("TP Selected Object Keybind", "TP It", Enum.KeyCode.P, function()
+ItemTeleportSection:NewButton("TP All Nearby Stones To Point", "TP It To A Point", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
     local old = hrp.CFrame
-    if selectedinstance then
-        local distance = (hrp.Position - selectedinstance.Position).Magnitude
-        if distance <= 10 then
-            hrp.CFrame = game.workspace.TpPoint.CFrame
-            task.wait(0.2)
-            selectedinstance.CFrame = game.workspace.TpPoint.CFrame
-            task.wait(0.5)
-            hrp.CFrame = old
-        elseif distance > 10 then
-            game.StarterGui:SetCore("SendNotification", {Title = "Warning", Text = "Object Is Too Far Away", Duration = 4,})
+    local stones = {}
+    for _, v in pairs(game.workspace.Grab:GetChildren()) do
+        if v:IsA("Model") and v.Name == "MaterialPart" then
+            if v:FindFirstChild("Part") then
+                local distance = (hrp.Position - v.Part.Position).Magnitude
+                if distance <= 10 then
+                    table.insert(stones, v)
+                end
+            end
         end
-    elseif selectedinstance == nil or selectedinstance.Parent == nil then
-        game.StarterGui:SetCore("SendNotification", {Title = "Error", Text = "Object Does Not Exist", Duration = 4,})
     end
+    game.StarterGui:SetCore("SendNotification", {Title = "Teleporting", Text = "Total:" .. tostring(#stones), Duration = 4,})
+    for _, v in pairs(stones) do
+        task.wait(0.05)
+        task.spawn(function()
+            hrp.CFrame = v.Part.CFrame
+            game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Grab", v.Part.Position, nil)
+        end)
+    end
+    hrp.CFrame = game.workspace.TpPoint.CFrame
+    for _, v in pairs(stones) do
+        v.Part.CFrame = game.workspace.TpPoint.CFrame
+    end
+    task.wait(0.5)
+    hrp.CFrame = old
+    stones = {}
+end)
+
+local ItemTeleportSection = ItemTeleport:NewSection("Extra Point For Quality Of Life")
+
+ItemTeleportSection:NewButton("Create Extra TP Point", "Makes Things Easier", function()
+    local waitforclick
+    game.StarterGui:SetCore("SendNotification", {Title = "Waiting", Text = "Click Where You Want The Point", Duration = 4,})
+    waitforclick = game.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then
+            return
+        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            local point = Instance.new("Part")
+            point.Name = "ExtraTpPoint"
+            point.Size = Vector3.new(1, 1, 1)
+            point.Position = game.Players.LocalPlayer:GetMouse().Hit.Position + Vector3.new(0, 3, 0)
+            point.Anchored = true
+            point.Color = Color3.new(1, 1, 1)
+            point.CanCollide = false
+            point.Parent = game.workspace
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "Highlight"
+            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+            highlight.Parent = point
+
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ESPBillboard"
+            billboard.Size = UDim2.new(0, 50, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 0, 0)
+            billboard.AlwaysOnTop = true
+            billboard.Parent = point
+
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(1, 0, 0.25, 0)
+            label.Position = UDim2.new(0, 0, 0, 0)
+            label.BackgroundTransparency = 1
+            label.TextColor3 = Color3.new(1, 0, 0)
+            label.TextScaled = true
+            label.Text = "Extra TP Point"
+            label.Parent = billboard
+            game.StarterGui:SetCore("SendNotification", {Title = "Extra Point Set", Text = "Extra TP Point Has Been Set", Duration = 4,})
+            waitforclick:Disconnect()
+        end
+    end)
+end)
+
+ItemTeleportSection:NewButton("Delete Extra TP Point", "Makes Things Easier", function()
+    game.workspace.ExtraTpPoint:Destroy()
+end)
+
+ItemTeleportSection:NewButton("TP To Extra TP Point", "Makes Things Easier", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.ExtraTpPoint.CFrame
 end)
 
 local ESP = Window:NewTab("ESP")
