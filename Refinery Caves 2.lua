@@ -1,6 +1,8 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local nocliptable = {}
+local noclip = false
 local selectedinstance = nil
 local oretable = {}
 local ore = false
@@ -48,6 +50,34 @@ end)
 
 PlayerSection:NewButton("Reset Gravity", "Reset Your Gravity To Default", function()
     game.Workspace.Gravity = 196.2
+end)
+
+PlayerSection:NewToggle("Noclip", "Clip Through Walls", function(state)
+    if state then
+        noclip = true
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v and (v:IsA("Part") or v:IsA("MeshPart")) then
+                if v.CanCollide then
+                    table.insert(nocliptable, v)
+                end
+            end
+        end
+        while task.wait(0.1) do
+            if noclip then
+                for _, v in pairs(nocliptable) do
+                    v.CanCollide = false
+                end
+            elseif noclip == false then
+                break
+            end
+        end
+    else
+        noclip = false
+        for _, v in pairs(nocliptable) do
+            v.CanCollide = true
+        end
+        nocliptable = {}
+    end
 end)
 
 local World = Window:NewTab("World")
@@ -251,12 +281,12 @@ ESPSection:NewToggle("Ore ESP", "See Ore Names", function(state)
     if state then
         ore = true
         for _, v in pairs(game.workspace.WorldSpawn.Ores:GetChildren()) do
-            if v.Name ~= "_Decoration" and v.Name ~= "Null" then
+            if v.Name ~= "_Decoration" and v.Name ~= "Null" and v.Name ~= "Tall Grass" and v.Name ~= "Bush" and v.Name ~= "Flower Grass" then
                 table.insert(oretable, v)
             end
         end
         oreconnect = game.workspace.WorldSpawn.Ores.ChildAdded:Connect(function(v)
-            if v.Name ~= "_Decoration" and v.Name ~= "Null" then
+            if v.Name ~= "_Decoration" and v.Name ~= "Null" and v.Name ~= "Tall Grass" and v.Name ~= "Bush" and v.Name ~= "Flower Grass" then
                 table.insert(oretable, v)
             end
         end)
