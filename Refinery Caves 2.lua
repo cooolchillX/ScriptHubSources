@@ -870,7 +870,7 @@ ESPSection:NewToggle("Player ESP", "See Player Names", function(state)
                                         textLabel.TextColor3 = playercolor
                                         textLabel.Text = v.Name
                                         textLabel.Parent = billboard
-                                    elseif v:FindFirstChild("ESPBillboard") then
+                                    elseif v.HumanoidRootPart:FindFirstChild("ESPBillboard") then
                                         v.HumanoidRootPart.ESPBillboard.TextLabel.TextColor3 = playercolor
                                     end
                                 end
