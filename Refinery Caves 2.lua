@@ -33,330 +33,427 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
-local player = Players.LocalPlayer
-local camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
 
-local speed = 100
-local vflySpeed = 100
-local moveDir = Vector3.zero
+local FlySpeed = 100
+local VehicleFlySpeed = 100
 
-local connection
-local vflyConnection
 
-local vflyVelocity
-local vflyGyro
-local vflyRotationOffset
+local FlyActive = false
+local VehicleFlyActive = false
 
-local keys = {
+local FlyHeartbeat = nil
+local VehicleFlyHeartbeat = nil
+
+local FlyVelocityObject = nil
+local VehicleVelocityObject = nil
+local VehicleGyroObject = nil
+
+local CurrentVehicleRoot = nil
+local CurrentVehicleSeat = nil
+local VehicleRotationOffset = nil
+
+local MovementState = {
     W = false,
     A = false,
     S = false,
     D = false
 }
 
-local function updateMoveDir()
-    moveDir = Vector3.zero
+local MovementVector = Vector3.zero
 
-    if keys.W then
-        moveDir += Vector3.new(0, 0, -1)
+
+local function GetPlayerCharacter()
+    local PlayerCharacter = LocalPlayer.Character
+
+    if PlayerCharacter and PlayerCharacter.Parent then
+        return PlayerCharacter
     end
 
-    if keys.S then
-        moveDir += Vector3.new(0, 0, 1)
-    end
-
-    if keys.A then
-        moveDir += Vector3.new(-1, 0, 0)
-    end
-
-    if keys.D then
-        moveDir += Vector3.new(1, 0, 0)
-    end
+    return nil
 end
 
-local function resetKeys()
-    for key in pairs(keys) do
-        keys[key] = false
-    end
-
-    moveDir = Vector3.zero
-end
-
-local function getCharacter()
-    local character = player.Character
-
-    if not character or not character.Parent then
+local function GetPlayerHumanoid(PlayerCharacter)
+    if not PlayerCharacter then
         return nil
     end
 
-    return character
+    return PlayerCharacter:FindFirstChildOfClass("Humanoid")
 end
 
-local function getRoot(character)
-    if not character then
+local function GetPlayerRoot(PlayerCharacter)
+    if not PlayerCharacter then
         return nil
     end
 
-    return character:FindFirstChild("HumanoidRootPart")
+    return PlayerCharacter:FindFirstChild("HumanoidRootPart")
 end
 
-UIS.InputBegan:Connect(function(input, gpe)
-    if gpe then
+local function UpdateMovement()
+    local NewVector = Vector3.zero
+
+    if MovementState.W then
+        NewVector += Vector3.new(0, 0, -1)
+    end
+
+    if MovementState.S then
+        NewVector += Vector3.new(0, 0, 1)
+    end
+
+    if MovementState.A then
+        NewVector += Vector3.new(-1, 0, 0)
+    end
+
+    if MovementState.D then
+        NewVector += Vector3.new(1, 0, 0)
+    end
+
+    MovementVector = NewVector
+end
+
+local function ClearMovement()
+    MovementState.W = false
+    MovementState.A = false
+    MovementState.S = false
+    MovementState.D = false
+
+    MovementVector = Vector3.zero
+end
+
+UIS.InputBegan:Connect(function(InputObject, GameProcessed)
+    if GameProcessed then
         return
     end
 
-    if input.KeyCode == Enum.KeyCode.W then
-        keys.W = true
-    elseif input.KeyCode == Enum.KeyCode.S then
-        keys.S = true
-    elseif input.KeyCode == Enum.KeyCode.A then
-        keys.A = true
-    elseif input.KeyCode == Enum.KeyCode.D then
-        keys.D = true
+    if InputObject.KeyCode == Enum.KeyCode.W then
+        MovementState.W = true
+    elseif InputObject.KeyCode == Enum.KeyCode.A then
+        MovementState.A = true
+    elseif InputObject.KeyCode == Enum.KeyCode.S then
+        MovementState.S = true
+    elseif InputObject.KeyCode == Enum.KeyCode.D then
+        MovementState.D = true
     end
 
-    updateMoveDir()
+    UpdateMovement()
 end)
 
-UIS.InputEnded:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.W then
-        keys.W = false
-    elseif input.KeyCode == Enum.KeyCode.S then
-        keys.S = false
-    elseif input.KeyCode == Enum.KeyCode.A then
-        keys.A = false
-    elseif input.KeyCode == Enum.KeyCode.D then
-        keys.D = false
+UIS.InputEnded:Connect(function(InputObject)
+    if InputObject.KeyCode == Enum.KeyCode.W then
+        MovementState.W = false
+    elseif InputObject.KeyCode == Enum.KeyCode.A then
+        MovementState.A = false
+    elseif InputObject.KeyCode == Enum.KeyCode.S then
+        MovementState.S = false
+    elseif InputObject.KeyCode == Enum.KeyCode.D then
+        MovementState.D = false
     end
 
-    updateMoveDir()
+    UpdateMovement()
 end)
 
 UIS.TextBoxFocused:Connect(function()
-    resetKeys()
+    ClearMovement()
 end)
 
 UIS.WindowFocusReleased:Connect(function()
-    resetKeys()
+    ClearMovement()
 end)
 
 
-local function startFly()
-    if connection then
+local function GetMovementDirection()
+    local CurrentCamera = workspace.CurrentCamera
+
+    if not CurrentCamera then
+        return Vector3.zero
+    end
+
+    if MovementVector.Magnitude <= 0 then
+        return Vector3.zero
+    end
+
+    local WorldDirection =
+        CurrentCamera.CFrame:VectorToWorldSpace(MovementVector)
+
+    if WorldDirection.Magnitude <= 0 then
+        return Vector3.zero
+    end
+
+    return WorldDirection.Unit
+end
+
+
+local function RemoveFlyObject()
+    if FlyVelocityObject then
+        if FlyVelocityObject.Parent then
+            FlyVelocityObject:Destroy()
+        end
+
+        FlyVelocityObject = nil
+    end
+end
+
+
+function startFly()
+    FlyActive = true
+
+    if FlyHeartbeat then
         return
     end
 
-    local character = getCharacter()
-    local hrp = getRoot(character)
-
-    if not character or not hrp then
-        return
-    end
-
-    local bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.Name = "FlyVelocity"
-    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    bodyVelocity.Velocity = Vector3.zero
-    bodyVelocity.Parent = hrp
-
-    connection = RunService.Heartbeat:Connect(function()
-        local currentCharacter = getCharacter()
-        local currentHrp = getRoot(currentCharacter)
-
-        if not currentCharacter or not currentHrp then
-            if bodyVelocity then
-                bodyVelocity:Destroy()
-                bodyVelocity = nil
-            end
-
+    FlyHeartbeat = RunService.Heartbeat:Connect(function()
+        if not FlyActive then
             return
         end
 
-        if bodyVelocity.Parent ~= currentHrp then
-            if bodyVelocity then
-                bodyVelocity:Destroy()
-            end
+        local PlayerCharacter = GetPlayerCharacter()
 
-            bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Name = "FlyVelocity"
-            bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-            bodyVelocity.Velocity = Vector3.zero
-            bodyVelocity.Parent = currentHrp
+        if not PlayerCharacter then
+            RemoveFlyObject()
+            return
         end
 
-        if moveDir.Magnitude > 0 then
-            local direction = camera.CFrame:VectorToWorldSpace(moveDir)
+        local PlayerHumanoid =
+            GetPlayerHumanoid(PlayerCharacter)
 
-            if direction.Magnitude > 0 then
-                direction = direction.Unit
-                bodyVelocity.Velocity = direction * speed
-            end
+        local PlayerRoot =
+            GetPlayerRoot(PlayerCharacter)
+
+        if not PlayerHumanoid or not PlayerRoot then
+            RemoveFlyObject()
+            return
+        end
+
+        if not FlyVelocityObject
+            or FlyVelocityObject.Parent ~= PlayerRoot then
+
+            RemoveFlyObject()
+
+            FlyVelocityObject = Instance.new("BodyVelocity")
+            FlyVelocityObject.Name = "FlyVelocityObject"
+            FlyVelocityObject.MaxForce = Vector3.new(
+                math.huge,
+                math.huge,
+                math.huge
+            )
+            FlyVelocityObject.P = 10000
+            FlyVelocityObject.Velocity = Vector3.zero
+            FlyVelocityObject.Parent = PlayerRoot
+        end
+
+        local MovementDirection = GetMovementDirection()
+
+        if MovementDirection.Magnitude > 0 then
+            FlyVelocityObject.Velocity =
+                MovementDirection * FlySpeed
         else
-            bodyVelocity.Velocity = Vector3.zero
+            FlyVelocityObject.Velocity =
+                Vector3.zero
         end
     end)
 end
 
-local function stopFly()
-    if connection then
-        connection:Disconnect()
-        connection = nil
+function stopFly()
+    FlyActive = false
+
+    RemoveFlyObject()
+    ClearMovement()
+
+    if FlyHeartbeat then
+        FlyHeartbeat:Disconnect()
+        FlyHeartbeat = nil
     end
+end
 
-    local character = getCharacter()
-    local hrp = getRoot(character)
 
-    if hrp then
-        local bodyVelocity = hrp:FindFirstChild("FlyVelocity")
-
-        if bodyVelocity then
-            bodyVelocity:Destroy()
+local function RemoveVehicleFlyObjects()
+    if VehicleVelocityObject then
+        if VehicleVelocityObject.Parent then
+            VehicleVelocityObject:Destroy()
         end
+
+        VehicleVelocityObject = nil
     end
 
-    resetKeys()
+    if VehicleGyroObject then
+        if VehicleGyroObject.Parent then
+            VehicleGyroObject:Destroy()
+        end
+
+        VehicleGyroObject = nil
+    end
+
+    CurrentVehicleRoot = nil
+    CurrentVehicleSeat = nil
+    VehicleRotationOffset = nil
 end
 
 
-local function cleanupVFlyObjects()
-    if vflyVelocity then
-        vflyVelocity:Destroy()
-        vflyVelocity = nil
-    end
+local function CreateVehicleFlyObjects(NewRoot, NewSeat)
+    RemoveVehicleFlyObjects()
 
-    if vflyGyro then
-        vflyGyro:Destroy()
-        vflyGyro = nil
-    end
+    CurrentVehicleRoot = NewRoot
+    CurrentVehicleSeat = NewSeat
 
-    vflyRotationOffset = nil
+    VehicleRotationOffset =
+        NewSeat.CFrame:ToObjectSpace(NewRoot.CFrame)
+
+    VehicleVelocityObject = Instance.new("BodyVelocity")
+    VehicleVelocityObject.Name = "VehicleFlyVelocityObject"
+    VehicleVelocityObject.MaxForce = Vector3.new(
+        math.huge,
+        math.huge,
+        math.huge
+    )
+    VehicleVelocityObject.P = 10000
+    VehicleVelocityObject.Velocity = Vector3.zero
+    VehicleVelocityObject.Parent = NewRoot
+
+    VehicleGyroObject = Instance.new("BodyGyro")
+    VehicleGyroObject.Name = "VehicleFlyGyroObject"
+    VehicleGyroObject.MaxTorque = Vector3.new(
+        math.huge,
+        math.huge,
+        math.huge
+    )
+    VehicleGyroObject.P = 10000
+    VehicleGyroObject.D = 500
+    VehicleGyroObject.CFrame = NewRoot.CFrame
+    VehicleGyroObject.Parent = NewRoot
 end
 
-local function vflyOn()
-    if vflyConnection then
+
+function vflyOn()
+    VehicleFlyActive = true
+
+    if VehicleFlyHeartbeat then
         return
     end
 
-    vflyConnection = RunService.Heartbeat:Connect(function()
-        local character = getCharacter()
-
-        if not character then
-            cleanupVFlyObjects()
+    VehicleFlyHeartbeat = RunService.Heartbeat:Connect(function()
+        if not VehicleFlyActive then
             return
         end
 
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        local PlayerCharacter = GetPlayerCharacter()
 
-        if not humanoid then
-            cleanupVFlyObjects()
+        if not PlayerCharacter then
+            RemoveVehicleFlyObjects()
             return
         end
 
-        local seat = humanoid.SeatPart
+        local PlayerHumanoid =
+            GetPlayerHumanoid(PlayerCharacter)
 
-        if not seat or not seat:IsA("VehicleSeat") then
-            cleanupVFlyObjects()
+        if not PlayerHumanoid then
+            RemoveVehicleFlyObjects()
             return
         end
 
-        local root = seat.AssemblyRootPart
+        local CurrentSeat = PlayerHumanoid.SeatPart
 
-        if not root then
-            cleanupVFlyObjects()
+        if not CurrentSeat
+            or not CurrentSeat:IsA("VehicleSeat") then
+
+            RemoveVehicleFlyObjects()
             return
         end
 
-        if not vflyVelocity
-            or not vflyGyro
-            or vflyVelocity.Parent ~= root
-            or vflyGyro.Parent ~= root then
+        local VehicleRoot =
+            CurrentSeat.AssemblyRootPart
 
-            cleanupVFlyObjects()
+        if not VehicleRoot
+            or not VehicleRoot.Parent then
 
-            vflyVelocity = Instance.new("BodyVelocity")
-            vflyVelocity.Name = "VFlyVelocity"
-            vflyVelocity.MaxForce = Vector3.new(
-                math.huge,
-                math.huge,
-                math.huge
+            RemoveVehicleFlyObjects()
+            return
+        end
+
+        if not VehicleVelocityObject
+            or not VehicleGyroObject
+            or CurrentVehicleRoot ~= VehicleRoot
+            or CurrentVehicleSeat ~= CurrentSeat
+            or VehicleVelocityObject.Parent ~= VehicleRoot
+            or VehicleGyroObject.Parent ~= VehicleRoot
+            or not VehicleRotationOffset then
+
+            CreateVehicleFlyObjects(
+                VehicleRoot,
+                CurrentSeat
             )
-            vflyVelocity.Velocity = Vector3.zero
-            vflyVelocity.Parent = root
-
-            vflyGyro = Instance.new("BodyGyro")
-            vflyGyro.Name = "VFlyGyro"
-            vflyGyro.MaxTorque = Vector3.new(
-                math.huge,
-                math.huge,
-                math.huge
-            )
-            vflyGyro.P = 10000
-            vflyGyro.D = 500
-            vflyGyro.Parent = root
-
-            vflyRotationOffset = seat.CFrame:ToObjectSpace(root.CFrame)
         end
 
-        if not vflyRotationOffset then
-            vflyRotationOffset = seat.CFrame:ToObjectSpace(root.CFrame)
+        if not VehicleVelocityObject
+            or not VehicleGyroObject
+            or not VehicleRotationOffset then
+
+            return
         end
 
-        local direction = camera.CFrame:VectorToWorldSpace(moveDir)
+        local MovementDirection = GetMovementDirection()
 
-        if direction.Magnitude > 0 then
-            direction = direction.Unit
+        if MovementDirection.Magnitude > 0 then
+            VehicleVelocityObject.Velocity =
+                MovementDirection * VehicleFlySpeed
         else
-            direction = Vector3.zero
+            VehicleVelocityObject.Velocity =
+                Vector3.zero
         end
 
-        vflyVelocity.Velocity = direction * vflySpeed
+        local CurrentCamera = workspace.CurrentCamera
 
-        local look = camera.CFrame.LookVector
+        if CurrentCamera then
+            local CameraLook =
+                CurrentCamera.CFrame.LookVector
 
-        local cameraCF = CFrame.lookAt(
-            root.Position,
-            root.Position + look
+            if CameraLook.Magnitude > 0 then
+
+                local CameraCFrame = CFrame.lookAt(
+                    VehicleRoot.Position,
+                    VehicleRoot.Position + CameraLook
+                )
+
+                -- Apply the original vehicle/seat offset.
+                local TargetCFrame =
+                    CameraCFrame * VehicleRotationOffset
+
+                VehicleGyroObject.CFrame =
+                    CFrame.new(VehicleRoot.Position) *
+                    (TargetCFrame - TargetCFrame.Position)
+            end
+        end
+    end)
+end
+
+function vflyOff()
+    VehicleFlyActive = false
+
+    RemoveVehicleFlyObjects()
+    ClearMovement()
+
+    if VehicleFlyHeartbeat then
+        VehicleFlyHeartbeat:Disconnect()
+        VehicleFlyHeartbeat = nil
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
+
+    RemoveFlyObject()
+    RemoveVehicleFlyObjects()
+    ClearMovement()
+
+    task.spawn(function()
+        NewCharacter:WaitForChild(
+            "HumanoidRootPart",
+            10
         )
-
-        local target = cameraCF * vflyRotationOffset
-
-        vflyGyro.CFrame =
-            CFrame.new(root.Position) *
-            (target - target.Position)
     end)
-end
-
-local function vflyOff()
-    if vflyConnection then
-        vflyConnection:Disconnect()
-        vflyConnection = nil
-    end
-
-    cleanupVFlyObjects()
-    resetKeys()
-end
-
-
-player.CharacterAdded:Connect(function(character)
-    if connection then
-        connection:Disconnect()
-        connection = nil
-    end
-
-    cleanupVFlyObjects()
-    resetKeys()
-
-    character:WaitForChild("HumanoidRootPart", 5)
 end)
 
-player.CharacterRemoving:Connect(function()
-    if connection then
-        connection:Disconnect()
-        connection = nil
-    end
-
-    cleanupVFlyObjects()
-    resetKeys()
+LocalPlayer.CharacterRemoving:Connect(function()
+    RemoveFlyObject()
+    RemoveVehicleFlyObjects()
 end)
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Refinery Caves 2", Duration = 4,})
@@ -426,7 +523,7 @@ PlayerSection:NewToggle("Fly", "Fly Into The Air", function(state)
 end)
 
 PlayerSection:NewSlider("Fly Speed", "Change How Fast You Fly", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
-    speed = s
+    FlySpeed = s
 end)
 
 PlayerSection:NewToggle("Vehicle Fly", "Fly Into The Air", function(state)
@@ -438,7 +535,7 @@ PlayerSection:NewToggle("Vehicle Fly", "Fly Into The Air", function(state)
 end)
 
 PlayerSection:NewSlider("Vehicle Fly Speed", "Change How Fast You Fly", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
-    vflySpeed = s
+    VehicleFlySpeed = s
 end)
 
 local World = Window:NewTab("World")
