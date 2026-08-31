@@ -17,6 +17,7 @@ local seaconnect
 local spottable = {}
 local spot = false
 local spotconnect
+local oilpartholder = {}
 local lightingconnects = {}
 
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Refinery Caves 2", Duration = 4,})
@@ -532,6 +533,67 @@ ESPSection:NewToggle("Fishing Hotspot ESP", "See Hotspots Names", function(state
                 v.ESPBillboard:Destroy()
             end
         end
+    end
+end)
+
+ESPSection:NewToggle("Oil Spot ESP", "See Oil Spots", function(state)
+    if state then
+        oil = true
+        while task.wait(0.1) do
+            if oil then
+                local oilspots = game:GetService("ReplicatedStorage").Events.OilUpdates.OilUpdatesRPC:InvokeServer()
+                local currentIDs = {}
+                for _, oilspot in pairs(oilspots) do
+                    currentIDs[oilspot.id] = true
+                    if not oilpartholder[oilspot.id] then
+                        local part = Instance.new("Part")
+                        part.Name = "OilESP_" .. oilspot.id
+                        part.Size = Vector3.new(1, 1, 1)
+                        part.Transparency = 1
+                        part.Anchored = true
+                        part.CanCollide = false
+                        part.CanTouch = false
+                        part.CanQuery = false
+                        part.Position = oilspot.pos + Vector3.new(0, 260, 0)
+                        part.Parent = workspace
+                        local billboard = Instance.new("BillboardGui")
+                        billboard.Name = "ESPBillboard"
+                        billboard.Size = UDim2.new(0, 50, 0, 50)
+                        billboard.StudsOffset = Vector3.new(0, 1, 0)
+                        billboard.AlwaysOnTop = true
+                        billboard.Parent = part
+
+                        local textLabel = Instance.new("TextLabel")
+                        textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                        textLabel.Position = UDim2.new(0, 0, 0, 0)
+                        textLabel.BackgroundTransparency = 1
+                        textLabel.TextColor3 = Color3.fromRGB(85, 255, 255)
+                        textLabel.Text = "Oil Spot"
+                        textLabel.Parent = billboard
+                        part:SetAttribute("SpotID", oilspot.id)
+                        oilpartholder[oilspot.id] = part
+                    end
+                end
+                for id, part in pairs(oilpartholder) do
+                    if not currentIDs[id] then
+                        if part then
+                            part:Destroy()
+                        end
+                        oilpartholder[id] = nil
+                    end
+                end
+            elseif oil == false then
+                break
+            end
+        end
+    else
+        oil = false
+        for _, v in pairs(oilpartholder) do
+            if v then
+                v:Destroy()
+            end
+        end
+        oilpartholder = {}
     end
 end)
 
