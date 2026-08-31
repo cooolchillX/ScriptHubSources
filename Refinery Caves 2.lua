@@ -37,8 +37,6 @@ local camera = workspace.CurrentCamera
 local speed = 100
 local moveDir = Vector3.zero
 local connection
-local connection2
-local connection3
 local keys = {
     W = false,
     A = false,
