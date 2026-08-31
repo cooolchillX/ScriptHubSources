@@ -664,7 +664,6 @@ ItemTeleportSection:NewButton("TP All Nearby Stones To Point", "TP It To A Point
         task.wait(0.01)
         pcall(function()
             game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Grab", v.Part.Position, nil)
-            game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
         end)
     end
     hrp.CFrame = game.workspace.TpPoint.CFrame
@@ -693,7 +692,6 @@ ItemTeleportSection:NewButton("TP All Nearby Items To Point", "TP It To A Point"
         task.wait(0.01)
         pcall(function()
             game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.PrimaryPart, "Grab", v.PrimaryPart.Position, nil)
-            game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.PrimaryPart, "Ungrab")
         end)
     end
     hrp.CFrame = game.workspace.TpPoint.CFrame
