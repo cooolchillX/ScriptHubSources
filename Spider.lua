@@ -187,5 +187,18 @@ UISection:NewKeybind("Show/Hide GUI", "Toggle UI", Enum.KeyCode.RightShift, func
 	Library:ToggleUI()
 end)
 
+local colors = {
+    SchemeColor = Color3.fromRGB(0,255,255),
+    Background = Color3.fromRGB(0, 0, 0),
+    Header = Color3.fromRGB(0, 0, 0),
+    TextColor = Color3.fromRGB(255,255,255),
+    ElementColor = Color3.fromRGB(20, 20, 20)
+}
+for theme, color in pairs(colors) do
+    UISection:NewColorPicker(theme, "Change your "..theme, color, function(color3)
+        Library:ChangeColor(theme, color3)
+    end)
+end
+
 game:GetService("Players").LocalPlayer.PlayerGui.GUI.ToggleSettings.BloodTip.TextLabel.Text = "COOOLCHILL_X HUB ON TOP!"
 game:GetService("Players").LocalPlayer.PlayerGui.GUI.ToggleSettings.BloodTip.UIGradient.Color = ColorSequence.new(Color3.fromRGB(0, 0, 255), Color3.fromRGB(255, 0, 0))
