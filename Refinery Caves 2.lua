@@ -181,7 +181,6 @@ ItemTeleportSection:NewButton("TP Selected Object To Point", "TP It To A Point",
             game.ReplicatedStorage.Events.GrabHandler:InvokeServer(selectedinstance, "Grab", selectedinstance.Position, nil)
             hrp.CFrame = game.workspace.TpPoint.CFrame
             selectedinstance.CFrame = game.workspace.TpPoint.CFrame
-            game.ReplicatedStorage.Events.GrabHandler:InvokeServer(selectedinstance, "Ungrab")
             task.wait(1)
             hrp.CFrame = old
         elseif distance > 10 then
@@ -217,7 +216,6 @@ ItemTeleportSection:NewButton("TP All Nearby Stones To Point", "TP It To A Point
     hrp.CFrame = game.workspace.TpPoint.CFrame
     for _, v in pairs(stones) do
         v.Part.CFrame = game.workspace.TpPoint.CFrame
-        game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
     end
     task.wait(0.5)
     hrp.CFrame = old
