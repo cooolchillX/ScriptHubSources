@@ -653,10 +653,12 @@ ItemTeleportSection:NewButton("TP All Nearby Stones To Point", "TP It To A Point
     for _, v in pairs(game.workspace.Grab:GetChildren()) do
         if v:IsA("Model") and v.Name == "MaterialPart" then
             if v:FindFirstChild("Part") then
-                local distance = (hrp.Position - v.Part.Position).Magnitude
-                if distance <= 10 then
-                    table.insert(stones, v)
-                end
+                pcall(function()
+                    local distance = (hrp.Position - v.Part.Position).Magnitude
+                    if distance <= 10 then
+                        table.insert(stones, v)
+                    end
+                end)
             end
         end
     end
@@ -682,10 +684,12 @@ ItemTeleportSection:NewButton("TP All Nearby Items To Point", "TP It To A Point"
     local objects = {}
     for _, v in pairs(game.workspace.Grab:GetChildren()) do
         if v:IsA("Model") then
-            local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
-            if distance <= 10 then
-                table.insert(objects, v)
-            end
+            pcall(function()
+                local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
+                if distance <= 10 then
+                    table.insert(objects, v)
+                end
+            end)
         end
     end
     game.StarterGui:SetCore("SendNotification", {Title = "Teleporting", Text = "Total:" .. tostring(#objects), Duration = 4,})
