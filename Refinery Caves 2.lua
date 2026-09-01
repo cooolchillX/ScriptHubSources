@@ -27,6 +27,7 @@ local seacolor = Color3.fromRGB(0, 255, 0)
 local spotcolor = Color3.fromRGB(85,255,255)
 local oilcolor = Color3.fromRGB(85,255,255)
 local waitforclickhit
+local waitforclickhit2
 local lightingconnects = {}
 
 local Players = game:GetService("Players")
@@ -1400,6 +1401,33 @@ MinigameSection:NewToggle("Always 100% Hit", "Hits A 100 Percent Strike", functi
     end)
     else
         waitforclickhit:Disconnect()
+    end
+end)
+
+MinigameSection:NewToggle("Always 99% Hit", "Hits A 99 Percent Strike", function(state)
+    if state then
+    waitforclickhit2 = game.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then
+            return
+        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                if v:IsA("Tool") and (string.find(string.lower(v.Name), "pickaxe") or string.find(string.lower(v.Name), "axe")) then
+                    if game.Players.LocalPlayer:GetMouse().Target.Parent.Name == "Hittable" then
+                        task.spawn(function()
+                            task.wait(0.1)
+                            local randomNumber = 0.98 + math.random() * 0.01
+                            local proper = tonumber(string.format("%.14f", randomNumber))
+                            game.ReplicatedStorage.Events.Tools.Attack:FireServer({Alpha = proper, ResponseTime = proper + 0.1})
+                            game.StarterGui:SetCore("SendNotification", {Title = "Hit", Text = "Alpha:" .. tostring(proper) .. " ResponseTime:" .. tostring(proper + 0.1), Duration = 4,})
+                        end)
+                    end
+                end
+            end
+        end
+    end)
+    else
+        waitforclickhit2:Disconnect()
     end
 end)
 
