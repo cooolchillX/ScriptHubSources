@@ -26,8 +26,6 @@ local playercolor = Color3.fromRGB(0, 255, 0)
 local seacolor = Color3.fromRGB(0, 255, 0)
 local spotcolor = Color3.fromRGB(85,255,255)
 local oilcolor = Color3.fromRGB(85,255,255)
-local waitforclickhit
-local waitforclickhit2
 local lightingconnects = {}
 
 local Players = game:GetService("Players")
