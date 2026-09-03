@@ -879,6 +879,14 @@ TeleportSection:NewButton("Vi's Logics", "Teleport There", function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5148.03809, 59.7154121, -2829.74927, 0.997086287, 1.01241229e-08, -0.0762815848, -5.65205616e-09, 1, 5.88416533e-08, 0.0762815848, -5.82390598e-08, 0.997086287)
 end)
 
+TeleportSection:NewButton("Vi's Lab", "Teleport There", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4498.48828, 129.565063, -1908.57251, 0.202024609, 6.31735162e-08, 0.979380429, -1.1013914e-07, 1, -4.1784272e-08, -0.979380429, -9.94266713e-08, 0.202024609)
+end)
+
+TeleportSection:NewButton("Vi's Lab Inside", "Teleport There", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4443.63086, -195.823303, -2021.24219, -0.0159949269, 4.715206e-08, -0.999872088, 3.92838722e-08, 1, 4.65296708e-08, 0.999872088, -3.85346084e-08, -0.0159949269)
+end)
+
 TeleportSection:NewButton("Crash Site", "Teleport There", function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6235.18115, -19.7800884, -2161.48682, 0.217048958, 7.77799443e-08, 0.976160705, -4.60883349e-08, 1, -6.94317208e-08, -0.976160705, -2.99195406e-08, 0.217048958)
 end)
