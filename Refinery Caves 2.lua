@@ -1309,10 +1309,13 @@ ESPSection:NewToggle("Ore ESP", "See Ore Names", function(state)
                                 billboard.Parent = v
 
                                 local textLabel = Instance.new("TextLabel")
-                                textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                                textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                                 textLabel.Position = UDim2.new(0, 0, 0, 0)
-                                textLabel.BackgroundTransparency = 1
+                                textLabel.BackgroundTransparency = 0
                                 textLabel.TextColor3 = orecolor
+                                textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                textLabel.AutomaticSize = "XY"
+                                textLabel.BorderSizePixel = 0
                                 textLabel.Text = v.Name
                                 textLabel.Parent = billboard
                             elseif v:FindFirstChild("ESPBillboard") then
@@ -1370,10 +1373,13 @@ ESPSection:NewToggle("Tree ESP", "See Tree Names", function(state)
                                 billboard.Parent = v
 
                                 local textLabel = Instance.new("TextLabel")
-                                textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                                textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                                 textLabel.Position = UDim2.new(0, 0, 0, 0)
-                                textLabel.BackgroundTransparency = 1
+                                textLabel.BackgroundTransparency = 0
                                 textLabel.TextColor3 = treecolor
+                                textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                textLabel.AutomaticSize = "XY"
+                                textLabel.BorderSizePixel = 0
                                 textLabel.Text = v.Name
                                 textLabel.Parent = billboard
                             elseif v:FindFirstChild("ESPBillboard") then
@@ -1429,10 +1435,13 @@ ESPSection:NewToggle("Player ESP", "See Player Names", function(state)
                                         billboard.Parent = v.HumanoidRootPart
 
                                         local textLabel = Instance.new("TextLabel")
-                                        textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                                        textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                                         textLabel.Position = UDim2.new(0, 0, 0, 0)
-                                        textLabel.BackgroundTransparency = 1
+                                        textLabel.BackgroundTransparency = 0
                                         textLabel.TextColor3 = playercolor
+                                        textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                        textLabel.AutomaticSize = "XY"
+                                        textLabel.BorderSizePixel = 0
                                         textLabel.Text = v.Name
                                         textLabel.Parent = billboard
                                     elseif v.HumanoidRootPart:FindFirstChild("ESPBillboard") then
@@ -1490,10 +1499,13 @@ ESPSection:NewToggle("Sea Monster ESP", "See Sea Monster Names", function(state)
                                 billboard.Parent = v
 
                                 local textLabel = Instance.new("TextLabel")
-                                textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                                textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                                 textLabel.Position = UDim2.new(0, 0, 0, 0)
-                                textLabel.BackgroundTransparency = 1
+                                textLabel.BackgroundTransparency = 0
                                 textLabel.TextColor3 = seacolor
+                                textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                textLabel.AutomaticSize = "XY"
+                                textLabel.BorderSizePixel = 0
                                 textLabel.Text = v.Name
                                 textLabel.Parent = billboard
                             elseif v:FindFirstChild("ESPBillboard") then
@@ -1547,10 +1559,13 @@ ESPSection:NewToggle("Fishing Hotspot ESP", "See Hotspots Names", function(state
                                 billboard.Parent = v
 
                                 local textLabel = Instance.new("TextLabel")
-                                textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                                textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                                 textLabel.Position = UDim2.new(0, 0, 0, 0)
-                                textLabel.BackgroundTransparency = 1
+                                textLabel.BackgroundTransparency = 0
                                 textLabel.TextColor3 = spotcolor
+                                textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                textLabel.AutomaticSize = "XY"
+                                textLabel.BorderSizePixel = 0
                                 textLabel.Text = v.Name .. " Luck:" .. tostring(v:GetAttribute("Luck"))
                                 textLabel.Parent = billboard
                             elseif v:FindFirstChild("ESPBillboard") then
@@ -1606,10 +1621,13 @@ ESPSection:NewToggle("Oil Spot ESP", "See Oil Spots", function(state)
                         billboard.Parent = part
 
                         local textLabel = Instance.new("TextLabel")
-                        textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                        textLabel.Size = UDim2.new(1, 0, 0.4, 0)
                         textLabel.Position = UDim2.new(0, 0, 0, 0)
-                        textLabel.BackgroundTransparency = 1
+                        textLabel.BackgroundTransparency = 0
                         textLabel.TextColor3 = oilcolor
+                        textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                        textLabel.AutomaticSize = "XY"
+                        textLabel.BorderSizePixel = 0
                         textLabel.Text = "Oil Spot"
                         textLabel.Parent = billboard
                         part:SetAttribute("SpotID", oilspot.id)
