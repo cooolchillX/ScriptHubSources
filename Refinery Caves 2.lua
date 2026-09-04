@@ -1551,7 +1551,7 @@ ESPSection:NewToggle("Fishing Hotspot ESP", "See Hotspots Names", function(state
                                 textLabel.Position = UDim2.new(0, 0, 0, 0)
                                 textLabel.BackgroundTransparency = 1
                                 textLabel.TextColor3 = spotcolor
-                                textLabel.Text = v.Name .. " Luck: 50%"
+                                textLabel.Text = v.Name .. " Luck:" .. tostring(v:GetAttribute("Luck"))
                                 textLabel.Parent = billboard
                             elseif v:FindFirstChild("ESPBillboard") then
                                 v.ESPBillboard.TextLabel.TextColor3 = spotcolor
