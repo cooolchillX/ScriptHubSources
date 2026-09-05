@@ -27,6 +27,7 @@ local seacolor = Color3.fromRGB(0, 255, 0)
 local spotcolor = Color3.fromRGB(85,255,255)
 local oilcolor = Color3.fromRGB(85,255,255)
 local lightingconnects = {}
+local showtime = false
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -1722,6 +1723,32 @@ VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
             v:Disconnect()
         end
         lightingconnects = {}
+    end
+end)
+
+VisualSection:NewToggle("Show Current Time", "A Free Clock", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "ShowTime"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local namelabel = Instance.new("TextLabel")
+        namelabel.Name = "Time"
+        namelabel.Text = "Time: "
+        namelabel.TextScaled = true
+        namelabel.Position = UDim2.new(0, 0, 0, 0)
+        namelabel.Size = UDim2.new(0, 200, 0, 50)
+        namelabel.Parent = gui
+        showtime = true
+        while task.wait(0.1) do
+            if showtime then
+                game.Players.LocalPlayer.PlayerGui.ShowTime.Time.Text = "Time: " .. tostring(game.Lighting.TimeOfDay)
+            elseif showtime == false then
+                break
+            end
+        end
+    else
+        showtime = false
+        game.Players.LocalPlayer.PlayerGui.ShowTime:Destroy()
     end
 end)
 
