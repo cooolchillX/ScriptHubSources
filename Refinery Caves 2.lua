@@ -714,7 +714,7 @@ ItemTeleportSection:NewButton("Fix Grabbing For Nearby Objects", "Fixes The Grab
             pcall(function()
                 local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
                 if distance <= 10 then
-                    game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
+                    game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.PrimaryPart, "Ungrab")
                 end
             end)
         end
