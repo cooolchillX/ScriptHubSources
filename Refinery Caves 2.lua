@@ -3,6 +3,7 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
 local nocliptable = {}
 local noclip = false
+local onleave
 local selectedinstance = nil
 local oretable = {}
 local ore = false
@@ -548,6 +549,21 @@ WorldSection:NewToggle("Toggle Crystalized Abyss Bridge", "Toggle If It Exists",
     else
         workspace.Map.Structures.LightBridge.Bridge.Transparency = 1
         workspace.Map.Structures.LightBridge.Bridge.CanCollide = false
+    end
+end)
+
+WorldSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing", function(state)
+    if state then
+        onleave = game.Players.PlayerRemoving:Connect(function(player)
+            local old
+            old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = player.Name .. " Teleporting", Duration = 4,})
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916)
+            task.wait(2)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+        end)
+    else
+        onleave:Disconnect()
     end
 end)
 
@@ -1748,6 +1764,165 @@ VisualSection:NewToggle("Show Current Time", "A Free Clock", function(state)
     else
         showtime = false
         game.Players.LocalPlayer.PlayerGui.ShowTime:Destroy()
+    end
+end)
+
+local Mods = Window:NewTab("Machine Mods")
+local ModsSection = Mods:NewSection("Modify Your Machines So They Are Efficient")
+
+ModsSection:NewButton("Mod Polisher", "Easier To Polish Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Polisher" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2.Name == "InsideHitbox" then
+                        v2.Transparency = 0.5
+                    else
+                        v2:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+ModsSection:NewButton("Mod Sawmill", "Easier To Saw Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and string.find(string.lower(v.Name), "sawmill") then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2.Name == "Hitbox" then
+                        if v2.Parent ~= v then
+                            v2.Transparency = 0.5
+                        end
+                    else
+                        v2:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+ModsSection:NewButton("Mod Furnace", "Easier To Smelt Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and string.find(string.lower(v.Name), "furnace") then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2.Name == "Hitbox" then
+                        if v2.Parent ~= v then
+                            v2.Transparency = 0.5
+                        end
+                    else
+                        v2:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+ModsSection:NewButton("Mod Packager", "Easier To Package Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Packager" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2.Name == "Hitbox" then
+                        if v2.Parent.Name == "Packager" then
+                            v2.Transparency = 0.5
+                        end
+                    elseif v2.Name == "PanelHitbox" or (v2.Name == "Interact" and v2:IsA("RemoteEvent")) then
+                        if v2.Name == "PanelHitbox" then
+                            v2.Transparency = 0.5
+                        end
+                    else
+                        v2:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+ModsSection:NewButton("Mod Industrial Packager", "Easier To Package Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Industrial Packager" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2.Name == "InsideHitbox" or v2.Name == "WoodHitbox" then
+                        v2.Transparency = 0.5
+                    elseif v2.Name == "Screen" or v2:IsDescendantOf(v.Screen) or v2.Name == "PanelHitbox" or (v2.Name == "Interact" and v2:IsA("RemoteEvent")) then
+                        if v2.Name == "PanelHitbox" then
+                            v2.Transparency = 0.5
+                        end
+                    else
+                        v2:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+ModsSection:NewButton("Mod Side Material Storage", "Easier To Hold Lots Of Stuff", function()
+    local plot = nil
+    for _, v in pairs(game.workspace.Plots:GetChildren()) do
+        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
+            plot = v
+        end
+    end
+    for _, v in pairs(plot.Objects:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Side Material Storage" then
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
+            if distance <= 10 then
+                for _, v2 in pairs(v:GetDescendants()) do
+                    if v2:IsDescendantOf(v.ScriptingParts) then
+                        if v2.Name == "ItemInput" or v2.Name == "ItemOutput" then
+                            v2.Transparency = 0.5
+                        end
+                    else
+                        if v2.Name ~= "ScriptingParts" then
+                            v2:Destroy()
+                        end
+                    end
+                end
+            end
+        end
     end
 end)
 
