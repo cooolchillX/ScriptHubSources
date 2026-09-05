@@ -677,21 +677,6 @@ ItemTeleportSection:NewButton("TP All Nearby Stones To Point", "TP It To A Point
     stones = {}
 end)
 
-ItemTeleportSection:NewButton("Fix Grabbing For Nearby Stones", "Fixes The Grabbing Issue With The Proton", function()
-    for _, v in pairs(game.workspace.Grab:GetChildren()) do
-        if v:IsA("Model") and v.Name == "MaterialPart" then
-            if v:FindFirstChild("Part") then
-                pcall(function()
-                    local distance = (hrp.Position - v.Part.Position).Magnitude
-                    if distance <= 10 then
-                        game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
-                    end
-                end)
-            end
-        end
-    end
-end)
-
 ItemTeleportSection:NewButton("TP All Nearby Items To Point", "TP It To A Point", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
     local old = hrp.CFrame
@@ -720,6 +705,22 @@ ItemTeleportSection:NewButton("TP All Nearby Items To Point", "TP It To A Point"
     task.wait(0.3)
     hrp.CFrame = old
     objects = {}
+end)
+
+ItemTeleportSection:NewButton("Fix Grabbing For Nearby Objects", "Fixes The Grabbing Issue With The Proton", function()
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+    for _, v in pairs(game.workspace.Grab:GetChildren()) do
+        if v:IsA("Model") and v.Name == "MaterialPart" then
+            if v:FindFirstChild("Part") then
+                pcall(function()
+                    local distance = (hrp.Position - v.Part.Position).Magnitude
+                    if distance <= 10 then
+                        game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
+                    end
+                end)
+            end
+        end
+    end
 end)
 
 local ItemTeleportSection = ItemTeleport:NewSection("Extra Point For Quality Of Life")
