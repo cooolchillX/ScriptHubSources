@@ -710,15 +710,13 @@ end)
 ItemTeleportSection:NewButton("Fix Grabbing For Nearby Objects", "Fixes The Grabbing Issue With The Proton", function()
     local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
     for _, v in pairs(game.workspace.Grab:GetChildren()) do
-        if v:IsA("Model") and v.Name == "MaterialPart" then
-            if v:FindFirstChild("Part") then
-                pcall(function()
-                    local distance = (hrp.Position - v.Part.Position).Magnitude
-                    if distance <= 10 then
-                        game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
-                    end
-                end)
-            end
+        if v:IsA("Model") and v.PrimaryPart then
+            pcall(function()
+                local distance = (hrp.Position - v.PrimaryPart.Position).Magnitude
+                if distance <= 10 then
+                    game.ReplicatedStorage.Events.GrabHandler:InvokeServer(v.Part, "Ungrab")
+                end
+            end)
         end
     end
 end)
