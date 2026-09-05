@@ -1708,7 +1708,7 @@ local VisualSection = Visual:NewSection("Helps See Better")
 VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
     if state then
         local lighting = game:GetService("Lighting")
-        local properties = {ClockTime = 14, GlobalShadows = false, Ambient = Color3.fromRGB(255, 255, 255), Brightness = 10, OutdoorAmbient = Color3.fromRGB(255, 255, 255)}
+        local properties = {ClockTime = 14, GlobalShadows = false, Ambient = Color3.fromRGB(255, 255, 255), Brightness = 5, OutdoorAmbient = Color3.fromRGB(255, 255, 255)}
         for i, v in pairs(properties) do
             lighting[i] = v
             lightingconnects[i] = lighting:GetPropertyChangedSignal(i):Connect(function()
