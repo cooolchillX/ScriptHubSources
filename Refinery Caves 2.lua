@@ -6,6 +6,7 @@ local noclip = false
 local dragtable = {}
 local drag = false
 local dragconnect
+local drag2connect
 local onleave
 local antiafk
 local selectedinstance = nil
@@ -551,7 +552,17 @@ PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", funct
                 table.insert(dragtable, v)
             end
         end
+        for _, v in pairs(game.workspace.Vehicles:GetDescendants()) do
+            if v.Name == "_Grab" then
+                table.insert(dragtable, v)
+            end
+        end
         dragconnect = game.workspace.Grab.DescendantAdded:Connect(function(v)
+            if v.Name == "_Grab" then
+                table.insert(dragtable, v)
+            end
+        end)
+        drag2connect = game.workspace.Vehicles.DescendantAdded:Connect(function(v)
             if v.Name == "_Grab" then
                 table.insert(dragtable, v)
             end
@@ -584,6 +595,7 @@ PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", funct
     else
         drag = false
         dragconnect:Disconnect()
+        drag2connect:Disconnect()
         dragtable = {}
     end
 end)
