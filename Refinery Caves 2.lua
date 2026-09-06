@@ -3,6 +3,9 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
 local nocliptable = {}
 local noclip = false
+local dragtable = {}
+local drag = false
+local dragconnect
 local onleave
 local antiafk
 local selectedinstance = nil
@@ -538,6 +541,51 @@ end)
 
 PlayerSection:NewSlider("Vehicle Fly Speed", "Change How Fast You Fly", 500, 100, function(s) -- 500 (MaxValue) | 100 (MinValue)
     VehicleFlySpeed = s
+end)
+
+PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", function(state)
+    if state then
+        drag = true
+        for _, v in pairs(game.workspace.Grab:GetDescendants()) do
+            if v.Name == "_Grab" then
+                table.insert(dragtable, v)
+            end
+        end
+        dragconnect = game.workspace.Grab.DescendantAdded:Connect(function(v)
+            if v.Name == "_Grab" then
+                table.insert(dragtable, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if drag then
+                xpcall(function()
+                    for i = #dragtable, 1, -1 do
+                        local v = dragtable[i]
+                        if not v or not v.Parent then
+                            table.remove(dragtable, i)
+                        else
+                            v.P.Responsiveness = 200
+                            v.P.MaxForce = 1000000
+                            v.P.RigidityEnabled = true
+                            v.R.Responsiveness = 200
+                            v.R.MaxTorque = 1200000
+                            v.R.RigidityEnabled = true
+                            v.BGui.ImageLabel.ImageColor3 = Color3.new(1, 0, 0)
+                        end
+                    end
+                end, function(err)
+                    warn("Hard Dragger Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif drag == false then
+                break
+            end
+        end
+    else
+        drag = false
+        dragconnect:Disconnect()
+        dragtable = {}
+    end
 end)
 
 local World = Window:NewTab("World")
