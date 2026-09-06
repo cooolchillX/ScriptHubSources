@@ -4,6 +4,7 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 local nocliptable = {}
 local noclip = false
 local onleave
+local antiafk
 local selectedinstance = nil
 local oretable = {}
 local ore = false
@@ -555,15 +556,51 @@ end)
 WorldSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing", function(state)
     if state then
         onleave = game.Players.PlayerRemoving:Connect(function(player)
+            if player.Character then
+                player.Character:Destroy()
+            end
+            if player then
+                player:Destroy()
+            end
             local old
-            old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            for _, v in pairs(game.workspace.Plots:GetChildren()) do
+                if v:GetAttribute("Owner") == player.Name then
+                    for _, v2 in pairs(v:GetChildren()) do
+                        if v then
+                            v:Destroy()
+                        end
+                    end
+                end
+            end
             game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = player.Name .. " Teleporting", Duration = 4,})
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916)
-            task.wait(2)
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+            local humanoid = game.Players.LocalPlayer.Character.Humanoid
+            local seat = humanoid.SeatPart
+            if seat and seat:IsA("VehicleSeat") then
+                local car = seat.Parent
+                old = car:GetPivot()
+                car:PivotTo(CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916))
+                task.wait(2)
+                car:PivotTo(old)
+            else
+                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916)
+                task.wait(2)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+            end
         end)
     else
         onleave:Disconnect()
+    end
+end)
+
+WorldSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", function(state)
+    if state then
+        antiafk = game.Players.LocalPlayer.Idled:Connect(function()
+            game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.F13, false, game)
+            game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.F13, false, game)
+        end)
+    else
+        antiafk:Disconnect()
     end
 end)
 
