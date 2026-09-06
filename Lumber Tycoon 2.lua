@@ -1,6 +1,9 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local hardragger = false
+local largerange = false
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "Lumber Tycoon 2", Duration = 4,})
 
 local Main = Window:NewTab("Main")
@@ -12,6 +15,52 @@ end)
 
 MainSection:NewSlider("JumpPower", "Jump High", 200, 50, function(s) -- 200 (MaxValue) | 50 (MinValue)
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
+
+MainSection:NewToggle("Hard Dragger", "Makes Holding Objects Easy", function(state)
+    if state then
+        hardragger = true
+        while task.wait(0.1) do
+            if hardragger then
+                if game.workspace:FindFirstChild("Dragger") then
+                    game.workspace.Dragger.BodyPosition.P = 80000
+                    game.workspace.Dragger.BodyPosition.maxForce = Vector3.new(1000000, 1000000, 1000000)
+                end
+            elseif hardragger == false then
+                break
+            end
+        end
+    else
+        hardragger = false
+        if game.workspace:FindFirstChild("Dragger") then
+            game.workspace.Dragger.BodyPosition.P = 10000
+            game.workspace.Dragger.maxForce = Vector3.new(17000, 17000, 17000)
+        end
+    end
+end)
+
+MainSection:NewToggle("Increase Axe Range", "Hit Trees Farther Away", function(state)
+    if state then
+        largerange = true
+        while task.wait(0.1) do
+            if largerange then
+                for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v:IsA("Tool") and v:FindFirstChild("Range") then
+                        v.Range.Value = 100
+                    end
+                end
+            elseif largerange == false then
+                break
+            end
+        end
+    else
+        largerange = false
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("Tool") and v:FindFirstChild("Range") then
+                v.Range.Value = 10
+            end
+        end
+    end
 end)
 
 local TP = Window:NewTab("Teleport")
