@@ -37,6 +37,7 @@ local lightingconnects = {}
 local showtime = false
 local onleave
 local antiafk
+local antiragdoll
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -493,6 +494,10 @@ end)
 
 PlayerSection:NewButton("Reset Gravity", "Reset Your Gravity To Default", function()
     game.Workspace.Gravity = 196.2
+end)
+
+PlayerSection:NewSlider("Max Camera Zoom", "Changed How Far You Can Zoom Out", 200, 80, function(s) -- 200 (MaxValue) | 80 (MinValue)
+    game.Players.LocalPlayer.CameraMaxZoomDistance = s
 end)
 
 PlayerSection:NewToggle("Noclip", "Clip Through Walls", function(state)
@@ -1793,10 +1798,17 @@ ESPSection:NewToggle("Oil Spot ESP", "See Oil Spots", function(state)
                         textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
                         textLabel.AutomaticSize = "XY"
                         textLabel.BorderSizePixel = 0
-                        textLabel.Text = "Oil Spot"
+                        textLabel.Text = "Oil Spot" .. tostring(oilspot.amount) .. "/" .. tostring(oilspot.max)
                         textLabel.Parent = billboard
                         part:SetAttribute("SpotID", oilspot.id)
                         oilpartholder[oilspot.id] = part
+                    elseif oilpartholder[oilspot.id] then
+                        if game.workspace:FindFirstChild("OilESP_" .. oilspot.id) then
+                            local part = game.workspace["OilESP_" .. oilspot.id]
+                            if part:FindFirstChild("ESPBillboard") then
+                                part.ESPBillboard.TextLabel.Text = "Oil Spot" .. tostring(oilspot.amount) .. "/" .. tostring(oilspot.max)
+                            end
+                        end
                     end
                 end
                 for id, part in pairs(oilpartholder) do
@@ -1854,55 +1866,6 @@ end)
 
 ESPCustomSection:NewColorPicker("Oil Spot Color", "Change Its Color", Color3.fromRGB(85,255,255), function(color)
     oilcolor = color
-end)
-
-local Visual = Window:NewTab("Visual")
-local VisualSection = Visual:NewSection("Helps See Better")
-
-VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
-    if state then
-        local lighting = game:GetService("Lighting")
-        local properties = {ClockTime = 14, GlobalShadows = false, Ambient = Color3.fromRGB(255, 255, 255), Brightness = 5, OutdoorAmbient = Color3.fromRGB(255, 255, 255)}
-        for i, v in pairs(properties) do
-            lighting[i] = v
-            lightingconnects[i] = lighting:GetPropertyChangedSignal(i):Connect(function()
-                if lighting[i] ~= v then
-                    lighting[i] = v
-                end
-            end)
-        end
-    else
-        for _, v in pairs(lightingconnects) do
-            v:Disconnect()
-        end
-        lightingconnects = {}
-    end
-end)
-
-VisualSection:NewToggle("Show Current Time", "A Free Clock", function(state)
-    if state then
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "ShowTime"
-        gui.Parent = game.Players.LocalPlayer.PlayerGui
-        local namelabel = Instance.new("TextLabel")
-        namelabel.Name = "Time"
-        namelabel.Text = "Time: "
-        namelabel.TextScaled = true
-        namelabel.Position = UDim2.new(0, 0, 0, 0)
-        namelabel.Size = UDim2.new(0, 200, 0, 50)
-        namelabel.Parent = gui
-        showtime = true
-        while task.wait(0.1) do
-            if showtime then
-                game.Players.LocalPlayer.PlayerGui.ShowTime.Time.Text = "Time: " .. tostring(game.Lighting.TimeOfDay)
-            elseif showtime == false then
-                break
-            end
-        end
-    else
-        showtime = false
-        game.Players.LocalPlayer.PlayerGui.ShowTime:Destroy()
-    end
 end)
 
 local Mods = Window:NewTab("Machine Mods")
@@ -2028,6 +1991,55 @@ ModsSection:NewButton("Mod Side Material Storage", "Easier To Hold Lots Of Stuff
     end
 end)
 
+local Visual = Window:NewTab("Visual")
+local VisualSection = Visual:NewSection("Helps See Better")
+
+VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
+    if state then
+        local lighting = game:GetService("Lighting")
+        local properties = {ClockTime = 14, GlobalShadows = false, Ambient = Color3.fromRGB(255, 255, 255), Brightness = 5, OutdoorAmbient = Color3.fromRGB(255, 255, 255)}
+        for i, v in pairs(properties) do
+            lighting[i] = v
+            lightingconnects[i] = lighting:GetPropertyChangedSignal(i):Connect(function()
+                if lighting[i] ~= v then
+                    lighting[i] = v
+                end
+            end)
+        end
+    else
+        for _, v in pairs(lightingconnects) do
+            v:Disconnect()
+        end
+        lightingconnects = {}
+    end
+end)
+
+VisualSection:NewToggle("Show Current Time", "A Free Clock", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "ShowTime"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local namelabel = Instance.new("TextLabel")
+        namelabel.Name = "Time"
+        namelabel.Text = "Time: "
+        namelabel.TextScaled = true
+        namelabel.Position = UDim2.new(0, 0, 0, 0)
+        namelabel.Size = UDim2.new(0, 200, 0, 50)
+        namelabel.Parent = gui
+        showtime = true
+        while task.wait(0.1) do
+            if showtime then
+                game.Players.LocalPlayer.PlayerGui.ShowTime.Time.Text = "Time: " .. tostring(game.Lighting.TimeOfDay)
+            elseif showtime == false then
+                break
+            end
+        end
+    else
+        showtime = false
+        game.Players.LocalPlayer.PlayerGui.ShowTime:Destroy()
+    end
+end)
+
 local Misc = Window:NewTab("Miscellaneous")
 local MiscSection = Misc:NewSection("Extra Things That Are Helpful")
 
@@ -2065,7 +2077,7 @@ MiscSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing",
     end
 end)
 
-MiscSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", function(state)
+MiscSection:NewToggle("Anti AFK", "Wont Get Kicked After 20 Minutes", function(state)
     if state then
         antiafk = game.Players.LocalPlayer.Idled:Connect(function()
             game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.F13, false, game)
@@ -2073,6 +2085,21 @@ MiscSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", f
         end)
     else
         antiafk:Disconnect()
+    end
+end)
+
+MiscSection:NewToggle("Anti Ragdoll", "Avoid Falling Over", function(state)
+    if state then
+        game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+        game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+        antiragdoll = game.Players.LocalPlayer.Character.Humanoid.StateChanged:Connect(function(_, newState)
+            if newState == Enum.HumanoidStateType.Ragdoll
+                or newState == Enum.HumanoidStateType.FallingDown then
+                game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            end
+        end)
+    else
+        antiragdoll:Disconnect()
     end
 end)
 
