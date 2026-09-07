@@ -1868,13 +1868,7 @@ local Mods = Window:NewTab("Machine Mods")
 local ModsSection = Mods:NewSection("Modify Your Machines So They Are Efficient")
 
 ModsSection:NewButton("Mod Polisher", "Easier To Polish Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and v.Name == "Polisher" then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
@@ -1891,13 +1885,7 @@ ModsSection:NewButton("Mod Polisher", "Easier To Polish Lots Of Stuff", function
 end)
 
 ModsSection:NewButton("Mod Sawmill", "Easier To Saw Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and string.find(string.lower(v.Name), "sawmill") then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
@@ -1916,13 +1904,7 @@ ModsSection:NewButton("Mod Sawmill", "Easier To Saw Lots Of Stuff", function()
 end)
 
 ModsSection:NewButton("Mod Furnace", "Easier To Smelt Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and string.find(string.lower(v.Name), "furnace") then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
@@ -1941,13 +1923,7 @@ ModsSection:NewButton("Mod Furnace", "Easier To Smelt Lots Of Stuff", function()
 end)
 
 ModsSection:NewButton("Mod Packager", "Easier To Package Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and v.Name == "Packager" then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
@@ -1970,13 +1946,7 @@ ModsSection:NewButton("Mod Packager", "Easier To Package Lots Of Stuff", functio
 end)
 
 ModsSection:NewButton("Mod Industrial Packager", "Easier To Package Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and v.Name == "Industrial Packager" then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
@@ -1997,13 +1967,7 @@ ModsSection:NewButton("Mod Industrial Packager", "Easier To Package Lots Of Stuf
 end)
 
 ModsSection:NewButton("Mod Side Material Storage", "Easier To Hold Lots Of Stuff", function()
-    local plot = nil
-    for _, v in pairs(game.workspace.Plots:GetChildren()) do
-        if v:GetAttribute("Owner") == game.Players.LocalPlayer.Name then
-            plot = v
-        end
-    end
-    for _, v in pairs(plot.Objects:GetChildren()) do
+    for _, v in pairs(game.workspace.Plots:GetDescendants()) do
         if v:IsA("Model") and v.Name == "Side Material Storage" then
             local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:GetPivot().Position).Magnitude
             if distance <= 10 then
