@@ -2044,22 +2044,6 @@ end)
 MiscSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing", function(state)
     if state then
         onleave = game.Players.PlayerRemoving:Connect(function(player)
-            if player.Character then
-                player.Character:Destroy()
-            end
-            if player then
-                player:Destroy()
-            end
-            local old
-            for _, v in pairs(game.workspace.Plots:GetChildren()) do
-                if v:GetAttribute("Owner") == player.Name then
-                    for _, v2 in pairs(v:GetChildren()) do
-                        if v then
-                            v:Destroy()
-                        end
-                    end
-                end
-            end
             game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = player.Name .. " Teleporting", Duration = 4,})
             local humanoid = game.Players.LocalPlayer.Character.Humanoid
             local seat = humanoid.SeatPart
