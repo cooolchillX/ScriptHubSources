@@ -7,8 +7,6 @@ local dragtable = {}
 local drag = false
 local dragconnect
 local drag2connect
-local onleave
-local antiafk
 local selectedinstance = nil
 local oretable = {}
 local ore = false
@@ -34,6 +32,8 @@ local spotcolor = Color3.fromRGB(85,255,255)
 local oilcolor = Color3.fromRGB(85,255,255)
 local lightingconnects = {}
 local showtime = false
+local onleave
+local antiafk
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -600,72 +600,8 @@ PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", funct
     end
 end)
 
-local World = Window:NewTab("World")
-local WorldSection = World:NewSection("Modify The Environment")
-
-WorldSection:NewToggle("Toggle Crystalized Abyss Bridge", "Toggle If It Exists", function(state)
-    if state then
-        workspace.Map.Structures.LightBridge.Bridge.Transparency = 0.5
-        workspace.Map.Structures.LightBridge.Bridge.CanCollide = true
-    else
-        workspace.Map.Structures.LightBridge.Bridge.Transparency = 1
-        workspace.Map.Structures.LightBridge.Bridge.CanCollide = false
-    end
-end)
-
-WorldSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing", function(state)
-    if state then
-        onleave = game.Players.PlayerRemoving:Connect(function(player)
-            if player.Character then
-                player.Character:Destroy()
-            end
-            if player then
-                player:Destroy()
-            end
-            local old
-            for _, v in pairs(game.workspace.Plots:GetChildren()) do
-                if v:GetAttribute("Owner") == player.Name then
-                    for _, v2 in pairs(v:GetChildren()) do
-                        if v then
-                            v:Destroy()
-                        end
-                    end
-                end
-            end
-            game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = player.Name .. " Teleporting", Duration = 4,})
-            local humanoid = game.Players.LocalPlayer.Character.Humanoid
-            local seat = humanoid.SeatPart
-            if seat and seat:IsA("VehicleSeat") then
-                local car = seat.Parent
-                old = car:GetPivot()
-                car:PivotTo(CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916))
-                task.wait(2)
-                car:PivotTo(old)
-            else
-                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916)
-                task.wait(2)
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
-            end
-        end)
-    else
-        onleave:Disconnect()
-    end
-end)
-
-WorldSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", function(state)
-    if state then
-        antiafk = game.Players.LocalPlayer.Idled:Connect(function()
-            game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.F13, false, game)
-            game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.F13, false, game)
-        end)
-    else
-        antiafk:Disconnect()
-    end
-end)
-
-local ItemTeleport = Window:NewTab("Teleport Items")
-local ItemTeleportSection = ItemTeleport:NewSection("Teleport Materials")
+local ItemTeleport = Window:NewTab("Item Teleports")
+local ItemTeleportSection = ItemTeleport:NewSection("Teleport Objects")
 
 ItemTeleportSection:NewButton("Create TP Point", "Make The Point", function()
     local waitforclick
@@ -1815,6 +1751,14 @@ RemoverSection:NewButton("Remove Sarcophagus Gate", "Easily Move In And Out", fu
     game.workspace.Map.Structures.Checkpoint.Gate:Destroy()
 end)
 
+RemoverSection:NewButton("Remove Meteor Crater", "Prevent Loss Of Stars", function()
+    if game.workspace.Map:FindFirstChild("CraterSolar") then
+        game.workspace.Map.CraterSolar:Destroy()
+    elseif game.workspace.Map:FindFirstChild("CraterLunar") then
+        game.workspace.Map.CraterLunar:Destroy()
+    end
+end)
+
 local Visual = Window:NewTab("Visual")
 local VisualSection = Visual:NewSection("Helps See Better")
 
@@ -1984,6 +1928,70 @@ ModsSection:NewButton("Mod Side Material Storage", "Easier To Hold Lots Of Stuff
                 end
             end
         end
+    end
+end)
+
+local Misc = Window:NewTab("Miscellaneous")
+local MiscSection = Misc:NewSection("Extra Things That Are Helpful")
+
+MiscSection:NewToggle("Toggle Crystalized Abyss Bridge", "Toggle If It Exists", function(state)
+    if state then
+        workspace.Map.Structures.LightBridge.Bridge.Transparency = 0.5
+        workspace.Map.Structures.LightBridge.Bridge.CanCollide = true
+    else
+        workspace.Map.Structures.LightBridge.Bridge.Transparency = 1
+        workspace.Map.Structures.LightBridge.Bridge.CanCollide = false
+    end
+end)
+
+MiscSection:NewToggle("Anti Crash", "Hopefully Prevent The Bug Of You Crashing", function(state)
+    if state then
+        onleave = game.Players.PlayerRemoving:Connect(function(player)
+            if player.Character then
+                player.Character:Destroy()
+            end
+            if player then
+                player:Destroy()
+            end
+            local old
+            for _, v in pairs(game.workspace.Plots:GetChildren()) do
+                if v:GetAttribute("Owner") == player.Name then
+                    for _, v2 in pairs(v:GetChildren()) do
+                        if v then
+                            v:Destroy()
+                        end
+                    end
+                end
+            end
+            game.StarterGui:SetCore("SendNotification", {Title = "Alert", Text = player.Name .. " Teleporting", Duration = 4,})
+            local humanoid = game.Players.LocalPlayer.Character.Humanoid
+            local seat = humanoid.SeatPart
+            if seat and seat:IsA("VehicleSeat") then
+                local car = seat.Parent
+                old = car:GetPivot()
+                car:PivotTo(CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916))
+                task.wait(2)
+                car:PivotTo(old)
+            else
+                old = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2311.25024, 102.052567, 5369.77637, -0.82302916, 3.3572757e-08, 0.567999125, 6.41579634e-09, 1, -4.98105841e-08, -0.567999125, -3.73513949e-08, -0.82302916)
+                task.wait(2)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = old
+            end
+        end)
+    else
+        onleave:Disconnect()
+    end
+end)
+
+MiscSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", function(state)
+    if state then
+        antiafk = game.Players.LocalPlayer.Idled:Connect(function()
+            game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.F13, false, game)
+            game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.F13, false, game)
+        end)
+    else
+        antiafk:Disconnect()
     end
 end)
 
