@@ -994,6 +994,17 @@ TeleportSection:NewButton("Deadzone", "Teleport There", function()
     end
 end)
 
+TeleportSection:NewButton("Swamp", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(740.906189, 2.45746231, 2104.48145, 0.28273347, 4.59551686e-08, -0.959198534, 5.97283423e-09, 1, 4.96705219e-08, 0.959198534, -1.97726528e-08, 0.28273347))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(740.906189, 2.45746231, 2104.48145, 0.28273347, 4.59551686e-08, -0.959198534, 5.97283423e-09, 1, 4.96705219e-08, 0.959198534, -1.97726528e-08, 0.28273347)
+    end
+end)
+
 TeleportSection:NewButton("Dell's Shipyard", "Teleport There", function()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
     local seat = humanoid.SeatPart
