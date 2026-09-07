@@ -1740,25 +1740,6 @@ ESPCustomSection:NewColorPicker("Oil Spot Color", "Change Its Color", Color3.fro
     oilcolor = color
 end)
 
-local Remover = Window:NewTab("Remover")
-local RemoverSection = Remover:NewSection("Remove Stuff")
-
-RemoverSection:NewButton("Remove Stone Cradle And Deadzone Walls", "Easily Move Out The Nightshade Or Weeping Soul", function()
-    game.workspace.Map.Novabay.Terrain.Model:Destroy()
-end)
-
-RemoverSection:NewButton("Remove Sarcophagus Gate", "Easily Move In And Out", function()
-    game.workspace.Map.Structures.Checkpoint.Gate:Destroy()
-end)
-
-RemoverSection:NewButton("Remove Meteor Crater", "Prevent Loss Of Stars", function()
-    if game.workspace.Map:FindFirstChild("CraterSolar") then
-        game.workspace.Map.CraterSolar:Destroy()
-    elseif game.workspace.Map:FindFirstChild("CraterLunar") then
-        game.workspace.Map.CraterLunar:Destroy()
-    end
-end)
-
 local Visual = Window:NewTab("Visual")
 local VisualSection = Visual:NewSection("Helps See Better")
 
@@ -1992,6 +1973,24 @@ MiscSection:NewToggle("Anti AFK", "Hopefully Prevent The Bug Of You Crashing", f
         end)
     else
         antiafk:Disconnect()
+    end
+end)
+
+local MiscSection = Misc:NewSection("Removers")
+
+MiscSection:NewButton("Remove Stone Cradle And Deadzone Walls", "Easily Move Out The Nightshade Or Weeping Soul", function()
+    game.workspace.Map.Novabay.Terrain.Model:Destroy()
+end)
+
+MiscSection:NewButton("Remove Sarcophagus Gate", "Easily Move In And Out", function()
+    game.workspace.Map.Structures.Checkpoint.Gate:Destroy()
+end)
+
+MiscSection:NewButton("Remove Meteor Crater", "Prevent Loss Of Stars", function()
+    if game.workspace.Map:FindFirstChild("CraterSolar") then
+        game.workspace.Map.CraterSolar:Destroy()
+    elseif game.workspace.Map:FindFirstChild("CraterLunar") then
+        game.workspace.Map.CraterLunar:Destroy()
     end
 end)
 
