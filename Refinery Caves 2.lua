@@ -1095,6 +1095,17 @@ TeleportSection:NewButton("Layer 3", "Teleport There", function()
     end
 end)
 
+TeleportSection:NewButton("Layer 4", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-4149.5498, -886.929626, 2652.33496, -0.960367441, -6.84009436e-08, 0.278737217, -6.84194674e-08, 1, 9.6618411e-09, -0.278737217, -9.79213421e-09, -0.960367441))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4149.5498, -886.929626, 2652.33496, -0.960367441, -6.84009436e-08, 0.278737217, -6.84194674e-08, 1, 9.6618411e-09, -0.278737217, -9.79213421e-09, -0.960367441)
+    end
+end)
+
 TeleportSection:NewButton("Layer 4 Castle", "Teleport There", function()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
     local seat = humanoid.SeatPart
@@ -1103,6 +1114,74 @@ TeleportSection:NewButton("Layer 4 Castle", "Teleport There", function()
         car:PivotTo(CFrame.new(-3871.63672, -916.958496, 3786.55005, -0.962824643, -2.17193623e-08, 0.270127118, -7.4051596e-09, 1, 5.40097247e-08, -0.270127118, 5.00015602e-08, -0.962824643))
     else
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3871.63672, -916.958496, 3786.55005, -0.962824643, -2.17193623e-08, 0.270127118, -7.4051596e-09, 1, 5.40097247e-08, -0.270127118, 5.00015602e-08, -0.962824643)
+    end
+end)
+
+local TeleportSection = Teleport:NewSection("Frozen Castle")
+
+TeleportSection:NewButton("Library", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-3829.67114, -917.058044, 3898.5249, 0.212273866, -6.76988279e-08, 0.977210224, -6.0877575e-08, 1, 8.25017423e-08, -0.977210224, -7.70031576e-08, 0.212273866))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3829.67114, -917.058044, 3898.5249, 0.212273866, -6.76988279e-08, 0.977210224, -6.0877575e-08, 1, 8.25017423e-08, -0.977210224, -7.70031576e-08, 0.212273866)
+    end
+end)
+
+TeleportSection:NewButton("King's Quarter", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-4003.12671, -916.934509, 3874.19385, 0.426732033, -1.10623475e-08, 0.904378116, 3.6440106e-08, 1, -4.96231989e-09, -0.904378116, 3.50732137e-08, 0.426732033))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4003.12671, -916.934509, 3874.19385, 0.426732033, -1.10623475e-08, 0.904378116, 3.6440106e-08, 1, -4.96231989e-09, -0.904378116, 3.50732137e-08, 0.426732033)
+    end
+end)
+
+TeleportSection:NewButton("Dining Room", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-4014.94287, -883.059326, 3880.34814, 0.393786371, -2.48266776e-08, 0.91920197, 1.05720686e-08, 1, 2.24798686e-08, -0.91920197, 8.65600425e-10, 0.393786371))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4014.94287, -883.059326, 3880.34814, 0.393786371, -2.48266776e-08, 0.91920197, 1.05720686e-08, 1, 2.24798686e-08, -0.91920197, 8.65600425e-10, 0.393786371)
+    end
+end)
+
+TeleportSection:NewButton("Jail Cells", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-3933.77002, -942.687439, 3786.34131, -0.277041435, 7.34383505e-08, -0.960857987, -2.64564615e-09, 1, 7.71927873e-08, 0.960857987, 2.39276901e-08, -0.277041435))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3933.77002, -942.687439, 3786.34131, -0.277041435, 7.34383505e-08, -0.960857987, -2.64564615e-09, 1, 7.71927873e-08, 0.960857987, 2.39276901e-08, -0.277041435)
+    end
+end)
+
+TeleportSection:NewButton("Wizard's Room", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-4029.14014, -883.034424, 3809.58936, 0.931499243, -3.55527447e-08, -0.363743335, 4.41673471e-08, 1, 1.53655204e-08, 0.363743335, -3.03785477e-08, 0.931499243))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4029.14014, -883.034424, 3809.58936, 0.931499243, -3.55527447e-08, -0.363743335, 4.41673471e-08, 1, 1.53655204e-08, 0.363743335, -3.03785477e-08, 0.931499243)
+    end
+end)
+
+TeleportSection:NewButton("Treasure Room", "Teleport There", function()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("VehicleSeat") then
+        local car = seat.Parent
+        car:PivotTo(CFrame.new(-4017.67725, -916.939758, 4071.76562, -0.913556159, -2.31228037e-09, 0.406712562, -2.24597194e-08, 1, -4.47636381e-08, -0.406712562, -5.00287491e-08, -0.913556159))
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4017.67725, -916.939758, 4071.76562, -0.913556159, -2.31228037e-09, 0.406712562, -2.24597194e-08, 1, -4.47636381e-08, -0.406712562, -5.00287491e-08, -0.913556159)
     end
 end)
 
