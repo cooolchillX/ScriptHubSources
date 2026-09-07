@@ -3,6 +3,7 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
 local nocliptable = {}
 local noclip = false
+local dragclip = false
 local dragtable = {}
 local drag = false
 local dragconnect
@@ -544,6 +545,14 @@ PlayerSection:NewSlider("Vehicle Fly Speed", "Change How Fast You Fly", 500, 100
     VehicleFlySpeed = s
 end)
 
+PlayerSection:NewToggle("Disable Object Noclip On Hard Dragger", "Disables Objects From Being Able To Clip", function(state)
+    if state then
+        dragclip = true
+    else
+        dragclip = false
+    end
+end)
+
 PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", function(state)
     if state then
         drag = true
@@ -575,13 +584,23 @@ PlayerSection:NewToggle("Hard Dragger", "Be Able To Pick Up Heavy Things", funct
                         if not v or not v.Parent then
                             table.remove(dragtable, i)
                         else
-                            v.P.Responsiveness = 200
-                            v.P.MaxForce = 1000000
-                            v.P.RigidityEnabled = true
-                            v.R.Responsiveness = 200
-                            v.R.MaxTorque = 1200000
-                            v.R.RigidityEnabled = true
-                            v.BGui.ImageLabel.ImageColor3 = Color3.new(1, 0, 0)
+                            if dragclip then
+                                v.P.Responsiveness = 200
+                                v.P.MaxForce = 1000000
+                                v.P.RigidityEnabled = false
+                                v.R.Responsiveness = 200
+                                v.R.MaxTorque = 1200000
+                                v.R.RigidityEnabled = false
+                                v.BGui.ImageLabel.ImageColor3 = Color3.new(1, 0, 0)
+                            else
+                                v.P.Responsiveness = 200
+                                v.P.MaxForce = 1000000
+                                v.P.RigidityEnabled = true
+                                v.R.Responsiveness = 200
+                                v.R.MaxTorque = 1200000
+                                v.R.RigidityEnabled = true
+                                v.BGui.ImageLabel.ImageColor3 = Color3.new(1, 0, 0)
+                            end
                         end
                     end
                 end, function(err)
