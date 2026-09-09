@@ -1,8 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
-game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "RUNAWAYS", Duration = 4,})
-
 local infjump
 local npcesptable = {}
 local npcesp = false
@@ -132,6 +130,8 @@ local function stopTPWalk()
     end
     resetKeys()
 end
+
+game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "RUNAWAYS", Duration = 4,})
 
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Common Things")
