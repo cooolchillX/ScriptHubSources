@@ -4,6 +4,12 @@ local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 local wp = false
 local jp = false
 local hh = false
+local prompts = {}
+local insta = false
+local instaconnection
+local insta2 = false
+local instaconnection2
+local prompts2 = {}
 local esp = false
 local espcolor = Color3.fromRGB(255, 0, 0)
 local hitbox = false
@@ -83,6 +89,80 @@ end)
 
 MainSection:NewButton("Infinite Yield", "Load It", function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
+MainSection:NewToggle("Instant Interaction", "Instantly Fire Prompts", function(state)
+    if state then
+        insta = true
+        for _, v in pairs(game.workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
+            end
+        end
+        instaconnection = game.workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("ProximityPrompt") then
+                table.insert(prompts, v)
+            end
+        end)
+        while task.wait(0.1) do
+            if insta then
+                xpcall(function()
+                    for i = #prompts, 1, -1 do
+                        local v = prompts[i]
+                        if not v or not v.Parent then
+                            table.remove(prompts, i)
+                        else
+                            v.HoldDuration = 0
+                        end
+                    end
+                end, function(err)
+                    warn("Instant Interact Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif insta == false then
+                break
+            end
+        end
+    else
+        insta = false
+        instaconnection:Disconnect()
+        prompts = {}
+    end
+end)
+
+MainSection:NewToggle("Instant Interaction V2", "Instantly Fire Prompts", function(state)
+    if state then
+        insta2 = true
+        for _, v in pairs(game.workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                v.HoldDuration = 0
+                local promptconnect = v:GetPropertyChangedSignal("HoldDuration"):Connect(function()
+                    if v.HoldDuration ~= 0 then
+                        v.HoldDuration = 0
+                    end
+                end)
+                table.insert(prompts2, promptconnect)
+            end
+        end
+        instaconnection2 = game.workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("ProximityPrompt") then
+                v.HoldDuration = 0
+                local promptconnect = v:GetPropertyChangedSignal("HoldDuration"):Connect(function()
+                    if v.HoldDuration ~= 0 then
+                        v.HoldDuration = 0
+                    end
+                end)
+                table.insert(prompts2, promptconnect)
+            end
+        end)
+    else
+        insta2 = false
+        instaconnection2:Disconnect()
+        for _, v in pairs(prompts2) do
+            v:Disconnect()
+        end
+        prompts2 = {}
+    end
 end)
 
 local ESP = Window:NewTab("ESP")
