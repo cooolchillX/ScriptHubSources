@@ -14,6 +14,9 @@ local employeeconnect
 local itemtable = {}
 local item = false
 local itemconnect
+local playerstable = {}
+local players = false
+local playersconnect
 local selectedpoint = "Point1"
 local pointcolor = Color3.new(1, 0, 0)
 local itemnames = {}
@@ -211,6 +214,61 @@ ESPSection:NewToggle("Item ESP", "See Items Through Walls", function(state)
                     if v:FindFirstChild("ESPBillboard") then
                         v.ESPBillboard:Destroy()
                     end
+                end
+            end
+        end
+    end
+end)
+
+ESPSection:NewToggle("Player ESP", "ESP The Players", function(state)
+    if state then
+        for _, v in pairs(game.Players:GetPlayers()) do
+            table.insert(playerstable, v)
+        end
+        playersconnect = game.Players.PlayerAdded:Connect(function(v)
+            table.insert(playerstable, v)
+        end)
+        players = true
+        while task.wait(0.1) do
+            if players then
+                xpcall(function()
+                    for i = #playerstable, 1, -1 do
+                        local v = playerstable[i]
+                        if not v or not v.Parent then
+                            table.remove(playerstable, i)
+                        else
+                            if v ~= game.Players.LocalPlayer then
+                                local character = v.Character
+                                if character then
+                                    if not character:FindFirstChild("ESPHighlight") then
+                                        if character:FindFirstChild("HumanoidRootPart") then
+                                            local highlight = Instance.new("Highlight")
+                                            highlight.Name = "ESPHighlight"
+                                            highlight.FillColor = Color3.new(0, 1, 0)
+                                            highlight.Parent = character
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Player ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif players == false then
+                break
+            end
+        end
+    else
+        players = false
+        playersconnect:Disconnect()
+        playerstable = {}
+        for _, Players in pairs(game.Players:GetPlayers()) do
+            if Players ~= game.Players.LocalPlayer then
+                local character = Players.Character
+                if character and character:FindFirstChild("ESPHighlight") then
+                    character.ESPHighlight:Destroy()
                 end
             end
         end
