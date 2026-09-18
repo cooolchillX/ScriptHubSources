@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
+local Window = Library.CreateLib("cooolchill_X GUI", _G.WantedTheme or "DarkTheme")
 
 local nocliptable = {}
 local noclip = false
