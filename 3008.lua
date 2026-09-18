@@ -1,61 +1,272 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("cooolchill_X GUI", "DarkTheme")
 
+local speed = 16
+local jump = 50
+local speedtoggle = false
+local jumptoggle = false
+local once = false
+local falldamagehook
+local falldamage = false
+local employeetable = {}
+local employee = false
+local employeeconnect
+local itemtable = {}
+local item = false
+local itemconnect
+local selectedpoint = "Point1"
+local pointcolor = Color3.new(1, 0, 0)
+local itemnames = {}
+
+for _, v in pairs(game.ReplicatedStorage.Modules.Item._EDIBLE:GetDescendants()) do
+    if v:IsA("ModuleScript") then
+        table.insert(itemnames, v.Name)
+    end
+end
+
 game.StarterGui:SetCore("SendNotification", {Title = "Loaded", Text = "3008", Duration = 4,})
 
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Common Things")
 
 MainSection:NewSlider("WalkSpeed", "Move Faster", 200, 16, function(s) -- 200 (MaxValue) | 16 (MinValue)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+    speed = s
 end)
 
 MainSection:NewSlider("JumpPower", "Jump Higher", 200, 50, function(s) -- 200 (MaxValue) | 50 (MinValue)
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+    jump = s
 end)
 
 MainSection:NewToggle("Loop Walkspeed", "Loop Speed", function(state)
     if state then
-        a = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
-        i = true
-        while wait() do
-            if i == true then
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = a
-            elseif i == false then
+        speedtoggle = true
+        while task.wait(0.1) do
+            if speedtoggle then
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+            elseif speedtoggle == false then
                 break
             end
         end
     else
-        i = false
+        speedtoggle = false
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
     end
 end)
 
 MainSection:NewToggle("Loop JumpPower", "Loop Jump Height", function(state)
     if state then
-        a = game.Players.LocalPlayer.Character.Humanoid.JumpPower
-        i = true
-        while wait() do
-            if i == true then
-                game.Players.LocalPlayer.Character.Humanoid.JumpPower = a
-            elseif i == false then
+        jumptoggle = true
+        while task.wait(0.1) do
+            if jumptoggle then
+                game.Players.LocalPlayer.Character.Humanoid.JumpPower = jump
+            elseif jumptoggle == false then
                 break
             end
         end
     else
-        i = false
+        jumptoggle = false
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
     end
 end)
 
-local Extras = Window:NewTab("Extras")
-local ExtrasSection = Extras:NewSection("Extra Things You May Like")
+MainSection:NewToggle("Disable Fall Damage", "Disables Damage", function(state)
+    if state then
+        falldamage = true
+        if not once then
+            once = true
+            falldamagehook = hookmetamethod(game, "__namecall", function(self, ...)
+                if falldamage then
+                    if getnamecallmethod() == "FireServer" and self == game.Players.LocalPlayer.Character.System.Event then
+                        local args = {...}
+                        args[2].OriginalDamage = 0
+                        args[2].Damage = 0
+                        return falldamagehook(self, unpack(args))
+                    end
+                    return falldamagehook(self, ...)
+                end
+                return falldamagehook(self, ...)
+            end)
+        end
+    else
+        falldamage = false
+    end
+end)
 
-ExtrasSection:NewButton("Disable Fall Damage", "Disable It For Good", function()
+MainSection:NewButton("Disable Fall Damage (Legacy)", "Disable It For Good", function()
     game.Players.LocalPlayer.Character.FallDamage:Destroy()
 end)
 
-ExtrasSection:NewToggle("Disable Fog", "No Fog", function(state)
+local ESP = Window:NewTab("ESP")
+local ESPSection = ESP:NewSection("See Stuff Through Walls")
+
+ESPSection:NewToggle("Employee ESP", "See Employees Through Walls", function(state)
+    if state then
+        employee = true
+        for _, v in pairs(game.workspace.GameObjects.Physical.Employees:GetChildren()) do
+            table.insert(employeetable, v)
+        end
+        employeeconnect = game.workspace.GameObjects.Physical.Employees.ChildAdded:Connect(function(v)
+            table.insert(employeetable, v)
+        end)
+        while task.wait(0.1) do
+            if employee then
+                xpcall(function()
+                    for i = #employeetable, 1, -1 do
+                        local v = employeetable[i]
+                        if not v or not v.Parent then
+                            table.remove(employeetable, i)
+                        else
+                            if not v:FindFirstChild("ESPHighlight") then
+                                if v:FindFirstChild("HumanoidRootPart") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "ESPHighlight"
+                                    highlight.FillColor = Color3.new(1, 0, 0)
+                                    highlight.OutlineTransparency = 1
+                                    highlight.Parent = v
+                                end
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Employee ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif employee == false then
+                break
+            end
+        end
+    else
+        employee = false
+        employeeconnect:Disconnect()
+        employeetable = {}
+        for _, v in pairs(game.workspace.GameObjects.Physical.Employees:GetChildren()) do
+            if v:FindFirstChild("ESPHighlight") then
+                v.ESPHighlight:Destroy()
+            end
+        end
+    end
+end)
+
+ESPSection:NewToggle("Item ESP", "See Items Through Walls", function(state)
+    if state then
+        item = true
+        for _, v in pairs(game.workspace.GameObjects.Physical:GetDescendants()) do
+            for _, v2 in pairs(itemnames) do
+                if v.Name == v2 then
+                    table.insert(itemtable, v)
+                end
+            end
+        end
+        itemconnect = game.workspace.GameObjects.Physical.DescendantAdded:Connect(function(v)
+            for _, v2 in pairs(itemnames) do
+                if v.Name == v2 then
+                    table.insert(itemtable, v)
+                end
+            end
+        end)
+        while task.wait(0.1) do
+            if item then
+                xpcall(function()
+                    for i = #itemtable, 1, -1 do
+                        local v = itemtable[i]
+                        if not v or not v.Parent then
+                            table.remove(itemtable, i)
+                        else
+                            if not v:FindFirstChild("ESPBillboard") then
+                                local billboard = Instance.new("BillboardGui")
+                                billboard.Name = "ESPBillboard"
+                                billboard.Size = UDim2.new(0, 50, 0, 50)
+                                billboard.StudsOffset = Vector3.new(0, 1, 0)
+                                billboard.AlwaysOnTop = true
+                                billboard.Parent = v
+
+                                local textLabel = Instance.new("TextLabel")
+                                textLabel.Size = UDim2.new(1, 0, 0.4, 0)
+                                textLabel.Position = UDim2.new(0, 0, 0, 0)
+                                textLabel.BackgroundTransparency = 0
+                                textLabel.TextColor3 = Color3.new(0, 1, 0)
+                                textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+                                textLabel.AutomaticSize = "XY"
+                                textLabel.BorderSizePixel = 0
+                                textLabel.Text = v.Name
+                                textLabel.Parent = billboard
+                            end
+                        end
+                    end
+                end, function(err)
+                    warn("Item ESP Error")
+                    warn(debug.traceback(err))
+                end)
+            elseif item == false then
+                break
+            end
+        end
+    else
+        item = false
+        itemconnect:Disconnect()
+        itemtable = {}
+        for _, v in pairs(game.workspace.GameObjects.Physical:GetDescendants()) do
+            for _, v2 in pairs(itemnames) do
+                if v.Name == v2 then
+                    if v:FindFirstChild("ESPBillboard") then
+                        v.ESPBillboard:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end)
+
+local TP = Window:NewTab("Waypoint TP")
+local TPSection = TP:NewSection("Set A Game Waypoint Too For Better")
+
+TPSection:NewDropdown("Choose A Point", "Select A Point To Set", {"Point1", "Point2", "Point3", "Point4"}, function(currentOption)
+    selectedpoint = currentOption
+end)
+
+TPSection:NewButton("Set Waypoint", "Tp Test", function()
+    local point = Instance.new("Part")
+    point.Name = selectedpoint
+    point.Size = Vector3.new(1, 1, 1)
+    point.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+    point.Anchored = true
+    point.Color = Color3.new(1, 1, 1)
+    point.CanCollide = false
+    point.Parent = game.workspace
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ESPBillboard"
+    billboard.Size = UDim2.new(0, 50, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 0, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = point
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 0.25, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = pointcolor
+    label.TextScaled = true
+    label.Text = selectedpoint
+    label.Parent = billboard
+end)
+
+TPSection:NewButton("TP To Waypoint", "Tp", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace[selectedpoint].CFrame
+end)
+
+TPSection:NewButton("Delete Waypoint", "Remove", function()
+    game.workspace[selectedpoint]:Destroy()
+end)
+
+TPSection:NewColorPicker("Waypoint Color", "Color For Point", Color3.fromRGB(1,0,0), function(color)
+    pointcolor = color
+end)
+
+local Visual = Window:NewTab("Visual")
+local VisualSection = Visual:NewSection("Clear Up Screen")
+
+VisualSection:NewToggle("Disable Fog", "No Fog", function(state)
     if state then
         local lighting = game:GetService("Lighting")
         lighting.FogEnd = 100000
@@ -65,118 +276,50 @@ ExtrasSection:NewToggle("Disable Fog", "No Fog", function(state)
     end
 end)
 
-ExtrasSection:NewToggle("FullBright", "Toggle Brightness", function(state)
+VisualSection:NewToggle("FullBright", "Brighten The Game", function(state)
     if state then
         local lighting = game:GetService("Lighting")
-        lighting.GlobalShadows = false
-        lighting.Ambient = Color3.fromRGB(255, 255, 255)
-        lighting.Brightness = 5
-        lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+        local properties = {ClockTime = 14, GlobalShadows = false, Ambient = Color3.fromRGB(255, 255, 255), Brightness = 5, OutdoorAmbient = Color3.fromRGB(255, 255, 255)}
+        for i, v in pairs(properties) do
+            lighting[i] = v
+            lightingconnects[i] = lighting:GetPropertyChangedSignal(i):Connect(function()
+                if lighting[i] ~= v then
+                    lighting[i] = v
+                end
+            end)
+        end
     else
-        local lighting = game:GetService("Lighting")
-        lighting.GlobalShadows = true
-        lighting.Ambient = Color3.fromRGB(128, 128, 128)
-        lighting.Brightness = 1
-        lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+        for _, v in pairs(lightingconnects) do
+            v:Disconnect()
+        end
+        lightingconnects = {}
     end
 end)
 
-local TP = Window:NewTab("Waypoint TP")
-local TPSection = TP:NewSection("Set A Game Waypoint Too For Better")
-local TPSection = TP:NewSection("Waypoint 1")
-
-TPSection:NewButton("Set Waypoint 1", "Tp Test", function()
-    local a = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-
-    local point1 = Instance.new("Part")
-    point1.Name = "Point1"
-    point1.Size = Vector3.new(1, 1, 1)
-    point1.Position = a
-    point1.Anchored = true
-    point1.Color = Color3.new(1, 1, 1)
-    point1.CanCollide = false
-    point1.Parent = workspace.GameObjects.Physical.Map
-end)
-
-TPSection:NewButton("TP To Waypoint 1", "Tp", function()
-    local a = workspace.GameObjects.Physical.Map.Point1.CFrame
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = a
-end)
-
-TPSection:NewButton("Delete Waypoint 1", "Remove", function()
-    workspace.GameObjects.Physical.Map.Point1:Destroy()
-end)
-
-local TPSection = TP:NewSection("Waypoint 2")
-
-TPSection:NewButton("Set Waypoint 2", "Tp Test", function()
-    local a = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-
-    local point2 = Instance.new("Part")
-    point2.Name = "Point2"
-    point2.Size = Vector3.new(1, 1, 1)
-    point2.Position = a
-    point2.Anchored = true
-    point2.Color = Color3.new(1, 1, 1)
-    point2.CanCollide = false
-    point2.Parent = workspace.GameObjects.Physical.Map
-end)
-
-TPSection:NewButton("TP To Waypoint 2", "Tp", function()
-    local a = workspace.GameObjects.Physical.Map.Point2.CFrame
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = a
-end)
-
-TPSection:NewButton("Delete Waypoint 2", "Remove", function()
-    workspace.GameObjects.Physical.Map.Point2:Destroy()
-end)
-
-local TPSection = TP:NewSection("Waypoint 3")
-
-TPSection:NewButton("Set Waypoint 3", "Tp Test", function()
-    local a = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-
-    local point3 = Instance.new("Part")
-    point3.Name = "Point3"
-    point3.Size = Vector3.new(1, 1, 1)
-    point3.Position = a
-    point3.Anchored = true
-    point3.Color = Color3.new(1, 1, 1)
-    point3.CanCollide = false
-    point3.Parent = workspace.GameObjects.Physical.Map
-end)
-
-TPSection:NewButton("TP To Waypoint 3", "Tp", function()
-    local a = workspace.GameObjects.Physical.Map.Point3.CFrame
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = a
-end)
-
-TPSection:NewButton("Delete Waypoint 3", "Remove", function()
-    workspace.GameObjects.Physical.Map.Point3:Destroy()
-end)
-
-local TPSection = TP:NewSection("Waypoint 4")
-
-TPSection:NewButton("Set Waypoint 4", "Tp Test", function()
-    local a = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-
-    local point4 = Instance.new("Part")
-    point4.Name = "Point4"
-    point4.Size = Vector3.new(1, 1, 1)
-    point4.Position = a
-    point4.Anchored = true
-    point4.Color = Color3.new(1, 1, 1)
-    point4.CanCollide = false
-    point4.Parent = workspace.GameObjects.Physical.Map
-end)
-
-TPSection:NewButton("TP To Waypoint 4", "Tp", function()
-    local a = workspace.GameObjects.Physical.Map.Point4.CFrame
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = a
-end)
-
-TPSection:NewButton("Delete Waypoint 4", "Remove", function()
-    workspace.GameObjects.Physical.Map.Point4:Destroy()
+VisualSection:NewToggle("Show Time Left", "A Free Clock", function(state)
+    if state then
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "ShowTime"
+        gui.Parent = game.Players.LocalPlayer.PlayerGui
+        local namelabel = Instance.new("TextLabel")
+        namelabel.Name = "Time"
+        namelabel.Text = "Time: "
+        namelabel.TextScaled = true
+        namelabel.Position = UDim2.new(0, 0, 0, 0)
+        namelabel.Size = UDim2.new(0, 200, 0, 50)
+        namelabel.Parent = gui
+        showtime = true
+        while task.wait(0.1) do
+            if showtime then
+                game.Players.LocalPlayer.PlayerGui.ShowTime.Time.Text = game.ReplicatedStorage.ServerSettings.TimeSettings:GetAttribute("TimeState") .. " Time: " .. tostring(game.ReplicatedStorage.ServerSettings.TimeSettings.TimeLeft.Value)
+            elseif showtime == false then
+                break
+            end
+        end
+    else
+        showtime = false
+        game.Players.LocalPlayer.PlayerGui.ShowTime:Destroy()
+    end
 end)
 
 local UI = Window:NewTab("UI Toggle")
