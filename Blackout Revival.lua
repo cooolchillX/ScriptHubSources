@@ -9,6 +9,8 @@ local features = {
     -- noclip
     noclip = false,
     nocliptable = {},
+    -- dropcash
+    cashamount = 1,
     -- npcesp
     npcespdistance = 100,
     npcespcolor = Color3.fromRGB(255, 0, 0),
@@ -31,6 +33,10 @@ local features = {
     nospread = false,
     -- norecoil
     norecoil = false,
+    -- autoblock
+    autoblockconnections = {},
+    blockdistance = 1,
+    blockdelay = 0,
     -- instainteract
     prompts = {},
     insta = false,
@@ -219,8 +225,16 @@ MainSection:NewToggle("Noclip", "Clip Through Walls", function(state)
     end
 end)
 
-MainSection:NewSlider("Max Camera Zoom", "Changed How Far You Can Zoom Out", 100, 10, function(s) -- 10 (MaxValue) | 1 (MinValue)
+MainSection:NewSlider("Max Camera Zoom", "Change How Far You Can Zoom Out", 100, 10, function(s) -- 10 (MaxValue) | 1 (MinValue)
     game.Players.LocalPlayer.CameraMaxZoomDistance = s
+end)
+
+MainSection:NewSlider("Cash Amount", "How Much money To Drop", 5000, 1, function(s) -- 5000 (MaxValue) | 1 (MinValue)
+    features.cashamount = s
+end)
+
+MainSection:NewButton("Drop Cash", "Drops Selected Cash Amount", function()
+    game.ReplicatedStorage.Events.Player.DropMoney:FireServer(features.cashamount)
 end)
 
 local ESP = Window:NewTab("ESP")
@@ -517,7 +531,7 @@ CombatSection:NewToggle("Auto Melee", "Attacks All Nearby NPC's", function(state
         end
     else
         features.automelee = false
-        featues.automeleenpcconnect:Disconnect()
+        features.automeleenpcconnect:Disconnect()
         features.automeleeconnect:Disconnect()
         features.automeleetable = {}
         features.automeleenpctable = {}
@@ -587,6 +601,66 @@ CombatSection:NewToggle("No Recoil", "No More Screen Movement", function(state)
         end
     else
         features.norecoil = false
+    end
+end)
+
+CombatSection:NewSlider("Distance", "Distance Before Blocking", 30, 1, function(s) -- 30 (MaxValue) | 1 (MinValue)
+    features.blockdistance = s
+end)
+
+CombatSection:NewSlider("Delay", "Delay Of The Block", 100, 0, function(s) -- 100 (MaxValue) | 0 (MinValue)
+    features.blockdelay = s / 100
+end)
+
+CombatSection:NewToggle("Auto Block", "Blocks For You", function(state)
+    if state then
+        for _, v in pairs(game.workspace:GetDescendants()) do
+            if v and v:IsA("Configuration") then
+                local blockconnect
+                local deletedcheck
+                blockconnect = v:GetAttributeChangedSignal("LastSwing"):Connect(function()
+                    local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Parent.Parent.HumanoidRootPart.Position).Magnitude
+                    if distance <= features.blockdistance then
+                        task.wait(features.blockdelay)
+                        task.spawn(function()
+                            game.ReplicatedStorage.MeleeStorage.Events.Block:InvokeServer()
+                        end)
+                    end
+                end)
+                deletedcheck = v.AncestryChanged:Connect(function()
+                    blockconnect:Disconnect()
+                    deletedcheck:Disconnect()
+                end)
+                table.insert(features.autoblockconnections, blockconnect)
+                table.insert(features.autoblockconnections, deletedcheck)
+            end
+        end
+        features.automeleenpcconnect = game.workspace.DescendantAdded:Connect(function(v)
+            if v and v:IsA("Configuration") then
+                local blockconnect
+                local deletedcheck
+                blockconnect = v:GetAttributeChangedSignal("LastSwing"):Connect(function()
+                    local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Parent.Parent.HumanoidRootPart.Position).Magnitude
+                    if distance <= features.blockdistance then
+                        task.wait(features.blockdelay)
+                        task.spawn(function()
+                            game.ReplicatedStorage.MeleeStorage.Events.Block:InvokeServer()
+                        end)
+                    end
+                end)
+                deletedcheck = v.AncestryChanged:Connect(function()
+                    blockconnect:Disconnect()
+                    deletedcheck:Disconnect()
+                end)
+                table.insert(features.autoblockconnections, blockconnect)
+                table.insert(features.autoblockconnections, deletedcheck)
+            end
+        end)
+    else
+        for _, v in pairs(features.autoblockconnections) do
+            v:Disconnect()
+            features.autoblockconnections = {}
+        end
     end
 end)
 
