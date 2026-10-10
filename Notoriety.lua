@@ -189,7 +189,9 @@ RemoveSection:NewToggle("Remove Police (Host Only)", "Gets Rid Of All Police", f
             if noguards then
                 for _, v in pairs(game.workspace.Police:GetChildren()) do
                     if v and not v:FindFirstChild("Lanyard") and not v:FindFirstChild("KeyAccessory") then
-                        v.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(5000000, 5000000, 5000000)
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            v.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(5000000, 5000000, 5000000)
+                        end
                     end
                 end
             elseif noguards == false then
