@@ -18,6 +18,7 @@ local civcolor = Color3.fromRGB(0, 255, 0)
 local untiedcivcolor = Color3.fromRGB(255, 0, 0)
 local tiedcivcolor = Color3.fromRGB(255, 100, 0)
 local noguards = false
+local nocivilians = false
 local secure = false
 local teleportpolice = false
 local keyguard = false
@@ -200,6 +201,27 @@ RemoveSection:NewToggle("Remove Police (Host Only)", "Gets Rid Of All Police", f
         end
     else
         noguards = false
+    end
+end)
+
+RemoveSection:NewToggle("Remove Civilians (Host Only)", "Gets Rid Of All Civilians", function(state)
+    if state then
+        nocivilians = true
+        while task.wait(0.5) do
+            if nocivilians then
+                for _, v in pairs(game.workspace.Citizens:GetChildren()) do
+                    if v and not v:FindFirstChild("Lanyard") and not v:FindFirstChild("KeyAccessory") then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            v.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(5000000, 5000000, 5000000)
+                        end
+                    end
+                end
+            elseif nocivilians == false then
+                break
+            end
+        end
+    else
+        nocivilians = false
     end
 end)
 
