@@ -204,7 +204,7 @@ RemoveSection:NewToggle("Remove Police (Host Only)", "Gets Rid Of All Police", f
     end
 end)
 
-RemoveSection:NewToggle("Remove Civilians (Host Only)", "Gets Rid Of All Civilians", function(state)
+RemoveSection:NewToggle("Remove Civilians (Host Only) (Old Heists Only)", "Gets Rid Of All Civilians", function(state)
     if state then
         nocivilians = true
         while task.wait(0.5) do
