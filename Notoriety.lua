@@ -204,13 +204,13 @@ RemoveSection:NewToggle("Remove Police (Host Only)", "Gets Rid Of All Police", f
     end
 end)
 
-RemoveSection:NewToggle("Remove Civilians (Host Only) (Old Heists Only)", "Gets Rid Of All Civilians", function(state)
+RemoveSection:NewToggle("Remove Tied Civilians (Host Only)", "Gets Rid Of All Civilians", function(state)
     if state then
         nocivilians = true
         while task.wait(0.5) do
             if nocivilians then
                 for _, v in pairs(game.workspace.Citizens:GetChildren()) do
-                    if v and not v:FindFirstChild("Lanyard") and not v:FindFirstChild("KeyAccessory") then
+                    if v.Name == "CitizenTied" then
                         if v:FindFirstChild("HumanoidRootPart") then
                             v.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(5000000, 5000000, 5000000)
                         end
@@ -334,8 +334,48 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
             if police then
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Police:GetChildren()) do
-                    if keycardguard then
-                        if not v:FindFirstChild("Lanyard") then
+                    if v and v:FindFirstChild("HumanoidRootPart") then
+                        if keycardguard then
+                            if not v:FindFirstChild("Lanyard") then
+                                local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
+                                local rounded = math.round(distance)
+                                if rounded <= prox then
+                                    if v and not v:FindFirstChild("PoliceHighlight") then
+                                        local highlight = Instance.new("Highlight")
+                                        highlight.Name = "PoliceHighlight"
+                                        highlight.FillTransparency = 0.5
+                                        highlight.FillColor = polcolor
+                                        highlight.OutlineTransparency = 0.5
+                                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                        highlight.Parent = v
+                                    elseif v and v:FindFirstChild("PoliceHighlight") then
+                                        v.PoliceHighlight.FillColor = polcolor
+                                    end
+                                elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
+                                    v.PoliceHighlight:Destroy()
+                                end
+                            end
+                        elseif keyguard then
+                            if not v:FindFirstChild("KeyAccessory") then
+                                local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
+                                local rounded = math.round(distance)
+                                if rounded <= prox then
+                                    if v and not v:FindFirstChild("PoliceHighlight") then
+                                        local highlight = Instance.new("Highlight")
+                                        highlight.Name = "PoliceHighlight"
+                                        highlight.FillTransparency = 0.5
+                                        highlight.FillColor = polcolor
+                                        highlight.OutlineTransparency = 0.5
+                                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                        highlight.Parent = v
+                                    elseif v and v:FindFirstChild("PoliceHighlight") then
+                                        v.PoliceHighlight.FillColor = polcolor
+                                    end
+                                elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
+                                    v.PoliceHighlight:Destroy()
+                                end
+                            end
+                        else
                             local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
                             local rounded = math.round(distance)
                             if rounded <= prox then
@@ -353,44 +393,6 @@ ESPSection:NewToggle("Police Proximity ESP", "ESP Police", function(state)
                             elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
                                 v.PoliceHighlight:Destroy()
                             end
-                        end
-                    elseif keyguard then
-                        if not v:FindFirstChild("KeyAccessory") then
-                            local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
-                            local rounded = math.round(distance)
-                            if rounded <= prox then
-                                if v and not v:FindFirstChild("PoliceHighlight") then
-                                    local highlight = Instance.new("Highlight")
-                                    highlight.Name = "PoliceHighlight"
-                                    highlight.FillTransparency = 0.5
-                                    highlight.FillColor = polcolor
-                                    highlight.OutlineTransparency = 0.5
-                                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                    highlight.Parent = v
-                                elseif v and v:FindFirstChild("PoliceHighlight") then
-                                    v.PoliceHighlight.FillColor = polcolor
-                                end
-                            elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
-                                v.PoliceHighlight:Destroy()
-                            end
-                        end
-                    else
-                        local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
-                        local rounded = math.round(distance)
-                        if rounded <= prox then
-                            if v and not v:FindFirstChild("PoliceHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "PoliceHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = polcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("PoliceHighlight") then
-                                v.PoliceHighlight.FillColor = polcolor
-                            end
-                        elseif rounded > prox and v and v:FindFirstChild("PoliceHighlight") then
-                            v.PoliceHighlight:Destroy()
                         end
                     end
                 end
@@ -419,17 +421,19 @@ ESPSection:NewToggle("Keycard Guard Proximity ESP", "ESP Keycard Guards", functi
             if keycardguard then
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Police:GetChildren()) do
-                    if v:FindFirstChild("Lanyard") then
-                        if v and not v:FindFirstChild("KeycardGuardHighlight") then
-                            local highlight = Instance.new("Highlight")
-                            highlight.Name = "KeycardGuardHighlight"
-                            highlight.FillTransparency = 0.5
-                            highlight.FillColor = keycardguardcolor
-                            highlight.OutlineTransparency = 0.5
-                            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                            highlight.Parent = v
-                        elseif v and v:FindFirstChild("KeycardGuardHighlight") then
-                            v.KeycardGuardHighlight.FillColor = keycardguardcolor
+                    if v and v:FindFirstChild("HumanoidRootPart") then
+                        if v:FindFirstChild("Lanyard") then
+                            if v and not v:FindFirstChild("KeycardGuardHighlight") then
+                                local highlight = Instance.new("Highlight")
+                                highlight.Name = "KeycardGuardHighlight"
+                                highlight.FillTransparency = 0.5
+                                highlight.FillColor = keycardguardcolor
+                                highlight.OutlineTransparency = 0.5
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.Parent = v
+                            elseif v and v:FindFirstChild("KeycardGuardHighlight") then
+                                v.KeycardGuardHighlight.FillColor = keycardguardcolor
+                            end
                         end
                     end
                 end
@@ -527,48 +531,50 @@ ESPSection:NewToggle("Civilian Proximity ESP", "ESP Civilians", function(state)
             if civilian then
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Citizens:GetChildren()) do
-                    local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
-                    local rounded = math.round(distance)
-                    if rounded <= prox then
-                        if v.Name == "Citizen" then
-                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "CivilianHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = civcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("CivilianHighlight") then
-                                v.CivilianHighlight.FillColor = civcolor
+                    if v and v:FindFirstChild("HumanoidRootPart") then
+                        local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
+                        local rounded = math.round(distance)
+                        if rounded <= prox then
+                            if v.Name == "Citizen" then
+                                if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "CivilianHighlight"
+                                    highlight.FillTransparency = 0.5
+                                    highlight.FillColor = civcolor
+                                    highlight.OutlineTransparency = 0.5
+                                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                    highlight.Parent = v
+                                elseif v and v:FindFirstChild("CivilianHighlight") then
+                                    v.CivilianHighlight.FillColor = civcolor
+                                end
+                            elseif v.Name == "CitizenHostage" then
+                                if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "CivilianHighlight"
+                                    highlight.FillTransparency = 0.5
+                                    highlight.FillColor = untiedcivcolor
+                                    highlight.OutlineTransparency = 0.5
+                                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                    highlight.Parent = v
+                                elseif v and v:FindFirstChild("CivilianHighlight") then
+                                    v.CivilianHighlight.FillColor = untiedcivcolor
+                                end
+                            elseif v.Name == "CitizenTied" then
+                                if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "CivilianHighlight"
+                                    highlight.FillTransparency = 0.5
+                                    highlight.FillColor = tiedcivcolor
+                                    highlight.OutlineTransparency = 0.5
+                                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                    highlight.Parent = v
+                                elseif v and v:FindFirstChild("CivilianHighlight") then
+                                    v.CivilianHighlight.FillColor = tiedcivcolor
+                                end
                             end
-                        elseif v.Name == "CitizenHostage" then
-                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "CivilianHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = untiedcivcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("CivilianHighlight") then
-                                v.CivilianHighlight.FillColor = untiedcivcolor
-                            end
-                        elseif v.Name == "CitizenTied" then
-                            if v and not v:FindFirstChild("CivilianHighlight") and not v:FindFirstChild("MafiaBossHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "CivilianHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = tiedcivcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("CivilianHighlight") then
-                                v.CivilianHighlight.FillColor = tiedcivcolor
-                            end
+                        elseif rounded > prox and v and v:FindFirstChild("CivilianHighlight") then
+                            v.CivilianHighlight:Destroy()
                         end
-                    elseif rounded > prox and v and v:FindFirstChild("CivilianHighlight") then
-                        v.CivilianHighlight:Destroy()
                     end
                 end
             elseif civilian == false then
@@ -756,23 +762,25 @@ MapSection:NewToggle("Key Guard Proximity ESP", "ESP Key Guards", function(state
             if keyguard then
                 local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
                 for _, v in pairs(game.workspace.Police:GetChildren()) do
-                    if v:FindFirstChild("KeyAccessory") then
-                        local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
-                        local rounded = math.round(distance)
-                        if rounded <= prox then
-                            if v and not v:FindFirstChild("KeyGuardHighlight") then
-                                local highlight = Instance.new("Highlight")
-                                highlight.Name = "KeyGuardHighlight"
-                                highlight.FillTransparency = 0.5
-                                highlight.FillColor = keyguardcolor
-                                highlight.OutlineTransparency = 0.5
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = v
-                            elseif v and v:FindFirstChild("KeyGuardHighlight") then
-                                v.KeyGuardHighlight.FillColor = keyguardcolor
+                    if v and v:FindFirstChild("HumanoidRootPart") then
+                        if v:FindFirstChild("KeyAccessory") then
+                            local distance = (hrp.Position - v.HumanoidRootPart.Position).Magnitude
+                            local rounded = math.round(distance)
+                            if rounded <= prox then
+                                if v and not v:FindFirstChild("KeyGuardHighlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.Name = "KeyGuardHighlight"
+                                    highlight.FillTransparency = 0.5
+                                    highlight.FillColor = keyguardcolor
+                                    highlight.OutlineTransparency = 0.5
+                                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                    highlight.Parent = v
+                                elseif v and v:FindFirstChild("KeyGuardHighlight") then
+                                    v.KeyGuardHighlight.FillColor = keyguardcolor
+                                end
+                            elseif rounded > prox and v and v:FindFirstChild("KeyGuardHighlight") then
+                                v.KeyGuardHighlight:Destroy()
                             end
-                        elseif rounded > prox and v and v:FindFirstChild("KeyGuardHighlight") then
-                            v.KeyGuardHighlight:Destroy()
                         end
                     end
                 end
@@ -844,16 +852,18 @@ MapSection:NewToggle("Mafia Boss ESP", "ESP Mafia Boss", function(state)
         while wait(0.1) do
             if boss then
                 for _, v in pairs(game.workspace.Citizens:GetChildren()) do
-                    if v and v:FindFirstChild("Minty Fedora") and not v:FindFirstChild("MafiaBossHighlight") then
-                        local highlight = Instance.new("Highlight")
-                        highlight.Name = "MafiaBossHighlight"
-                        highlight.FillTransparency = 0.5
-                        highlight.FillColor = bosscolor
-                        highlight.OutlineTransparency = 0.5
-                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                        highlight.Parent = v
-                    elseif v and v:FindFirstChild("MafiaBossHighlight") then
-                        v.MafiaBossHighlight.FillColor = bosscolor
+                    if v and v:FindFirstChild("HumanoidRootPart") then
+                        if v and v:FindFirstChild("Minty Fedora") and not v:FindFirstChild("MafiaBossHighlight") then
+                            local highlight = Instance.new("Highlight")
+                            highlight.Name = "MafiaBossHighlight"
+                            highlight.FillTransparency = 0.5
+                            highlight.FillColor = bosscolor
+                            highlight.OutlineTransparency = 0.5
+                            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                            highlight.Parent = v
+                        elseif v and v:FindFirstChild("MafiaBossHighlight") then
+                            v.MafiaBossHighlight.FillColor = bosscolor
+                        end
                     end
                 end
             elseif boss == false then
