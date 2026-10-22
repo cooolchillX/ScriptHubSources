@@ -1303,7 +1303,7 @@ MapSection:NewToggle("Solve RFID And Correct Sequence ESP", "ESP The Right Ozela
                 for _, v in pairs(game.workspace:GetChildren()) do
                     if v.Name == "colorBoxRNG" then
                         for _, v2 in pairs(game.workspace.Blueprints.prop_stadium_blueprintTableRNG.prop_stadium_blueprint:GetChildren()) do
-                            if v2.Name ~= "main" then
+                            if v2.Name ~= "OzelaBlueprint" then
                                 if v2:FindFirstChild("serial").SurfaceGui.TextLabel.Text == rfidreader.main.serial.SurfaceGui.TextLabel.Text then
                                     c1 = v2.colors["1"].SurfaceGui.TextLabel.Text
                                     c2 = v2.colors["2"].SurfaceGui.TextLabel.Text
