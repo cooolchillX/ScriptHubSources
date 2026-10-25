@@ -244,12 +244,12 @@ ESPSection:NewToggle("NPC ESP", "See NPC's Through Walls", function(state)
     if state then
         features.npcesp = true
         for _, v in pairs(game.workspace:GetDescendants()) do
-            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
+            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) == nil and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
                 table.insert(features.npcesptable, v)
             end
         end
         features.npcespconnect = game.workspace.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
+            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) == nil and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
                 table.insert(features.npcesptable, v)
             end
         end)
@@ -812,12 +812,12 @@ FunSection:NewToggle("NPC Hitbox Expander", "Expands NPC Hitboxes", function(sta
     if state then
         features.npchitbox = true
         for _, v in pairs(game.workspace:GetDescendants()) do
-            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
+            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) == nil and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
                 table.insert(features.npchitboxtable, v)
             end
         end
         features.npchitboxconnect = game.workspace.DescendantAdded:Connect(function(v)
-            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
+            if v and v:IsA("Model") and game.Players:GetPlayerFromCharacter(v) == nil and (v.Name ~= "Broker" and v.Name ~= "Merchant" and v.Name ~= "Rebel Contractor" and v.Name ~= "Rebel Merchant" and v.Name ~= "Vulture Contractor" and v.Name ~= "Vulture Merchant" and v.Name ~= "Scourge" and v.Name ~= "NPC" and v.Name ~= "Wick") then
                 table.insert(features.npchitboxtable, v)
             end
         end)
