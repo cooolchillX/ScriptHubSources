@@ -261,10 +261,18 @@ ESPSection:NewToggle("NPC ESP", "See NPC's Through Walls", function(state)
                         if not v or not v.Parent then
                             table.remove(features.npcesptable, i)
                         else
-                            if not v:FindFirstChild("Humanoid") or v.Parent.Name == "Chars" then
+                            if not v:FindFirstChild("Humanoid") then
                                 table.remove(features.npcesptable, i)
                             else
                                 if v:FindFirstChild("HumanoidRootPart") then
+                                    if game.Players:GetPlayerFromCharacter(v) then
+                                        if v:FindFirstChild("ESPBillboard") then
+                                            v.ESPBillboard:Destroy()
+                                        end
+                                        if v:FindFirstChild("ESPAdornment") then
+                                            v.ESPAdornment:Destroy()
+                                        end
+                                    end
                                     local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
                                     if distance <= features.npcespdistance then
                                         if features.nameesp then
@@ -312,6 +320,14 @@ ESPSection:NewToggle("NPC ESP", "See NPC's Through Walls", function(state)
                                             v.ESPAdornment:Destroy()
                                         end
                                     end
+                                    if game.Players:GetPlayerFromCharacter(v) or v.Parent.Name == "Chars" then
+                                        if v:FindFirstChild("ESPBillboard") then
+                                            v.ESPBillboard:Destroy()
+                                        end
+                                        if v:FindFirstChild("ESPAdornment") then
+                                            v.ESPAdornment:Destroy()
+                                        end
+                                    end
                                 end
                             end
                         end
@@ -330,7 +346,7 @@ ESPSection:NewToggle("NPC ESP", "See NPC's Through Walls", function(state)
         features.npcesptable = {}
         for _, v in pairs(game.workspace:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v:FindFirstChild("Humanoid") and v.Parent.Name ~= "Chars" then
+                if v:FindFirstChild("Humanoid") then
                     if features.nameesp then
                         if v:FindFirstChild("ESPBillboard") then
                             v.ESPBillboard:Destroy()
@@ -829,17 +845,21 @@ FunSection:NewToggle("NPC Hitbox Expander", "Expands NPC Hitboxes", function(sta
                         if not v or not v.Parent then
                             table.remove(features.npchitboxtable, i)
                         else
-                            if not v:FindFirstChild("Humanoid") or v.Parent.Name == "Chars" then
+                            if not v:FindFirstChild("Humanoid") then
                                 table.remove(features.npchitboxtable, i)
                             else
                                 if v:FindFirstChild("Head") then
-                                    v.Head.Size = Vector3.new(5, 5, 5)
+                                    if game.Players:GetPlayerFromCharacter(v) or v.Parent.Name == "Chars" then
+                                        v.Head.Size = Vector3.new(1, 1, 1)
+                                    elseif game.Players:GetPlayerFromCharacter(v) == nil then
+                                        v.Head.Size = Vector3.new(5, 5, 5)
+                                    end
                                 end
                             end
                         end
                     end
                 end, function(err)
-                    warn("NPC ESP Error")
+                    warn("NPC Hitbox Error")
                     warn(debug.traceback(err))
                 end)
             elseif features.npchitbox == false then
@@ -852,7 +872,7 @@ FunSection:NewToggle("NPC Hitbox Expander", "Expands NPC Hitboxes", function(sta
         features.npchitboxtable = {}
         for _, v in pairs(game.workspace:GetDescendants()) do
             if v and v:IsA("Model") then
-                if v:FindFirstChild("Humanoid") and v.Parent.Name ~= "Chars" then
+                if v:FindFirstChild("Humanoid") then
                     if v:FindFirstChild("Head") then
                         v.Head.Size = Vector3.new(1, 1, 1)
                     end
