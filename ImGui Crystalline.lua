@@ -120,6 +120,10 @@ Label.TextColor3 = Color3.new(1, 1, 1)
 Label.TextSize = 14
 Label.TextXAlignment = Enum.TextXAlignment.Left
 
+Window.Image = "rbxassetid://128720628115218"
+Window.ImageTransparency = 0
+Window.ImageColor3 = Color3.fromRGB(255, 255, 255)
+Window.ScaleType = Enum.ScaleType.Stretch
 Window.Name = "Window"
 Window.Parent = Prefabs
 Window.Active = true
@@ -129,10 +133,7 @@ Window.ClipsDescendants = true
 Window.Position = UDim2.new(0, 20, 0, 20)
 Window.Selectable = true
 Window.Size = UDim2.new(0, 200, 0, 200)
-Window.Image = "rbxassetid://74713432438894"
-Window.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
-Window.ScaleType = Enum.ScaleType.Slice
-Window.SliceCenter = Rect.new(12, 12, 12, 12)
+Window.Visible = true
 
 Resizer.Name = "Resizer"
 Resizer.Parent = Window
@@ -980,6 +981,11 @@ function library:AddWindow(title, options)
 	Window.ZIndex = Window.ZIndex + (windows * 10)
     Window.ImageColor3 = Theme.Background
     Window.ImageTransparency = Theme.Transparency.Window
+
+	Window.Image = "rbxassetid://128720628115218"
+	Window.ImageColor3 = Color3.fromRGB(255, 255, 255)
+	Window.ImageTransparency = 0.3
+	Window.ScaleType = Enum.ScaleType.Stretch
 
 	do -- Altering Window Color
 		local Title = Window:FindFirstChild("Title")
@@ -2054,4 +2060,4 @@ function library:AddWindow(title, options)
 
 	return window_data, Window
 end
-return library
+library:AddWindow("Hi", ui_options)
