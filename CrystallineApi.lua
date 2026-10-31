@@ -1189,10 +1189,9 @@ function library:AddWindow(title, options)
 						callback = typeof(callback) == "function" and callback or function()end
 
 						local button = Prefabs:FindFirstChild("Button"):Clone()
-						task.wait()
-						
+                        task.wait()
 						button.Parent = new_tab
-						task.wait()
+                        task.wait()
 						button.Text = button_text
                         button.TextColor3 = Theme.Primary
 						button.Size = UDim2.new(0, gNameLen(button), 0, 20)
@@ -1201,14 +1200,6 @@ function library:AddWindow(title, options)
                         button.BackgroundColor3 = Theme.Teal
                         button.BackgroundTransparency = Theme.Transparency.Button
 						task.wait()
-						button.Text = button_text
-						button.AutomaticSize = Enum.AutomaticSize.X
-						button.Size = UDim2.new(0, 0, 0, 20)
-						button.Parent = new_tab
-						task.wait()
-						local textWidth = button.AbsoluteSize.X
-						button.AutomaticSize = Enum.AutomaticSize.None
-						button.Size = UDim2.new(0, textWidth + 20, 0, 20)
 
 						spawn(function()
 							while true do
