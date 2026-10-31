@@ -22,6 +22,9 @@ local Theme = {
     }
 }
 
+local KeybindConnections = {}
+local KeybindCleanup
+
 do
 	local imgui = game:GetService("CoreGui"):FindFirstChild("imgui")
 	if imgui then imgui:Destroy() end
@@ -102,6 +105,16 @@ local Windows = Instance.new("Frame")
 
 imgui.Name = "imgui"
 imgui.Parent = game:GetService("CoreGui")
+
+KeybindCleanup = imgui.AncestryChanged:Connect(function(_, parent)
+	if parent == nil then
+		for _, v in pairs(KeybindConnections) do
+			v:Disconnect()
+		end
+		KeybindConnections = {}
+		KeybindCleanup:Disconnect()
+	end
+end)
 
 Prefabs.Name = "Prefabs"
 Prefabs.Parent = imgui
@@ -1440,7 +1453,7 @@ function library:AddWindow(title, options)
 							keybind = Keybind
 						end
 
-						UIS.InputBegan:Connect(function(a, b)
+						local bind = UIS.InputBegan:Connect(function(a, b)
 							if checks.binding then
 								spawn(function()
 									wait()
@@ -1452,6 +1465,7 @@ function library:AddWindow(title, options)
 								pcall(callback, keybind)
 							end
 						end)
+						table.insert(KeybindConnections, bind)
 
 						keybind_data:SetKeybind(keybind_options.standard)
 
