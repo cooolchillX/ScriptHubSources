@@ -1634,8 +1634,9 @@ function library:AddWindow(title, options)
 										end
 
 										while Held and Entered2 and (not dropdown_open) do -- Saturation
-											local mouse_location = gMouse()
-											local y = ((palette.AbsoluteSize.Y - (mouse_location.Y - palette.AbsolutePosition.Y)) + 1.5)
+											local mouse_location = UIS:GetMouseLocation()
+                                            local inset = game:GetService("GuiService"):GetGuiInset()
+											local y = palette.AbsoluteSize.Y - (mouse_location.Y - palette.AbsolutePosition.Y - inset.Y)
 											v = y / 100
 
 											Resize(saturation_indicator, {Position = UDim2.new(0, 0, 0, math.abs(y - 100))}, options.tween_time)
