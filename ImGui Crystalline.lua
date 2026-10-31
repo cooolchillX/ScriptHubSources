@@ -790,7 +790,7 @@ Title_4.Name = "Title"
 Title_4.Parent = Keybind
 Title_4.BackgroundColor3 = Color3.new(1, 1, 1)
 Title_4.BackgroundTransparency = 1
-Title_4.Size = UDim2.new(0, 0, 1, 0)
+Title_4.Size = UDim2.new(1, 0, 1, 0)
 Title_4.Font = Enum.Font.GothamBold
 Title_4.Text = "Keybind"
 Title_4.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
@@ -1198,6 +1198,15 @@ function library:AddWindow(title, options)
 						button:GetChildren()[1].ZIndex = button:GetChildren()[1].ZIndex + (windows * 10)
                         button.BackgroundColor3 = Theme.Teal
                         button.BackgroundTransparency = Theme.Transparency.Button
+						task.wait()
+						button.Text = button_text
+						button.AutomaticSize = Enum.AutomaticSize.X
+						button.Size = UDim2.new(0, 0, 0, 20)
+						button.Parent = new_tab
+						task.wait()
+						local textWidth = button.AbsoluteSize.X
+						button.AutomaticSize = Enum.AutomaticSize.None
+						button.Size = UDim2.new(0, textWidth + 20, 0, 20)
 
 						spawn(function()
 							while true do
