@@ -2060,4 +2060,3 @@ function library:AddWindow(title, options)
 
 	return window_data, Window
 end
-library:AddWindow("Hi", ui_options)
